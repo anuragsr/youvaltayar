@@ -5,11 +5,12 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
-       <!--  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" /> -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <title>Youval Tayar | Freelance Art Director Paris</title>        
         <link rel="shortcut icon" type="image/png" href="images/favicon.png">
         <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <link rel="stylesheet" type="text/css" href="css/media.css">
     </head>
     <body>
         <!-- <p class="nav-control">
@@ -235,24 +236,28 @@
                 <div class="clientBox box">
                     <div id="trigger1"></div>
                     <div class="boxContent">
-                        <div class="contentNumber">001</div>
-                        <div class="numOverlay"></div>
-                        <div class="line-down"></div>
-                        <p><%= pr.clientBox %></p>
+                        <div class="content-num-contain">
+                            <div class="contentNumber">001</div>
+                            <div class="numOverlay"></div>
+                            <div class="line-down"></div>                        
+                        </div>
+                        <p><%= pr.clientBox %></p>                        
                     </div>
                 </div>    
                 <div class='rightBox box backgroundCover' style='background-image:url(<%= pr.rightBox %>)'></div>
                 <div class='leftBox box'>
-                    <div id="trigger2"></div>
                     <div class='boxContent'>
                         <p><%= pr.leftBoxBottom %></p>
                     </div>
                 </div>
                 <div class='projetBox box'>
+                    <div id="trigger2"></div>
                     <div class='boxContent'>
-                        <div class='contentNumber white'>002</div>
-                        <div class='numOverlay'></div>
-                        <div class='line-down white'></div>
+                        <div class="content-num-contain">
+                            <div class='contentNumber white'>002</div>
+                            <div class='numOverlay'></div>
+                            <div class='line-down white'></div>
+                        </div>
                         <p><%= pr.projetBox %></p>
                     </div>
                 </div>
@@ -260,9 +265,11 @@
                 <div class='resultatBox box'>
                     <div id="trigger4"></div>
                     <div class='boxContent'>
-                        <div class='contentNumber white'>003</div>
-                        <div class='numOverlay'></div>
-                        <div class='line-down white'></div>
+                        <div class="content-num-contain">
+                            <div class='contentNumber white'>003</div>
+                            <div class='numOverlay'></div>
+                            <div class='line-down white'></div>
+                        </div>
                         <p><%= pr.resultatBox %></p>
                     </div>
                 </div>
@@ -271,23 +278,32 @@
                         <p><%= pr.resultatBoxRight %></p>
                     </div>
                 </div>
-                <div class='resultatBoxLogoLeft box'>
+                <% if (typeof(pr.resultatLogo) !== "undefined") { %>
+                    <div class='resultatBoxLogoLeft box'>
+                        <div id="trigger5"></div>
+                        <div class='boxContent'>
+                            <div class='contentTitle'>Logotype</div>
+                            <%= pr.resultatLogo %>
+                        </div>
+                    </div>
+                <% } else{ %>
                     <div id="trigger5"></div>
-                    <div class='boxContent'>
-                        <div class='contentTitle'>Logotype</div>
-                        <%= pr.resultatLogo %>
+                <% } %>
+                <% if (typeof(pr.resultatFont) !== "undefined") { %>
+                    <div class='resultatBoxLogoCenter box'>
+                        <div class='boxContent'>
+                            <p><%= pr.resultatFont %></p>
+                        </div>
                     </div>
-                </div>
-                <div class='resultatBoxLogoCenter box'>
-                    <div class='boxContent'>
-                        <p><%= pr.resultatFont %></p>
+                <% } %>
+                <% if (typeof(pr.resultatFont) !== "undefined") { %>
+                    <div class='resultatBoxLogoRight box'>
+                        <div class='boxContent'>
+                            <p><%= pr.resultatColor %></p>
+                        </div>
                     </div>
-                </div>
-                <div class='resultatBoxLogoRight box'>
-                    <div class='boxContent'>
-                        <p><%= pr.resultatColor %></p>
-                    </div>
-                </div>
+                <% } %>
+                
                 <% if (typeof(pr.resultatBoxLogoFull) !== "undefined") { %>
                     <div class='resultatBoxLogoFull box backgroundCover' style='background-image:url(<%= pr.resultatBoxLogoFull %>)'>
                         <div id="trigger6"></div>

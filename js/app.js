@@ -214,8 +214,7 @@
         projPlaneArr : [],
         smallPlaneArr : [],
         refPlaneArr : [],
-        historyArr : [],
-        currentParaIdx : 0,
+        currentParaIdx : 0,        
         init: function () {
             var self = this
             ,planeWidth = window.innerWidth/4
@@ -229,11 +228,27 @@
                 {x:-0.5*planeWidth, y:-0.5*planeHeight, z:0},
                 {x: 0.5*planeWidth, y:-0.5*planeHeight, z:0},
                 {x: 1.5*planeWidth, y:-0.5*planeHeight, z:0},
-            ];
+            ]
+           /* ,mobilePlaneWidth = window.innerWidth
+            ,mobilePlaneHeight = window.innerHeight/2.5
+            ,mobilePlanePosArr = [
+                {x:0, y:0.5*planeHeight, z:0},
+                {x:0, y:-1*planeHeight, z:0},
+                {x:0, y:-2*planeHeight, z:0},
+                {x:0, y:-3*planeHeight, z:0},
+                {x:0, y:-4*planeHeight, z:0},
+                {x:0, y:-5*planeHeight, z:0},
+                {x:0, y:-6*planeHeight, z:0},
+                {x:0, y:-7*planeHeight, z:0},
+            ]*/
+            ;
 
             this.planeWidth = planeWidth;
             this.planeHeight = planeHeight;
-            this.planePosArr = planePosArr;
+            this.planePosArr = planePosArr;/*
+            this.mobilePlaneWidth = mobilePlaneWidth;
+            this.mobilePlaneHeight = mobilePlaneHeight;
+            this.mobilePlanePosArr = mobilePlanePosArr;*/
 
             function revCpl(tl){
                 tl.restart();
@@ -368,18 +383,8 @@
             this.currentRoute = "";
             this.router = new app.Router();
             this.instance = new app.Views.App();
-
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
-            this.renderer.domElement.style.position = "absolute";
-            this.renderer.domElement.style.top = "0";
-            this.renderer.domElement.style.left = "0";
-            $(".css-threed").append(this.renderer.domElement);
             
             Backbone.history.start();
-            this.historyArr.push(Backbone.history.getFragment());
-            Backbone.history.on("all", function (route, router) {
-                self.historyArr.push(Backbone.history.getFragment())
-            });
             
             var vis = (function(){
                 var stateKey, 
@@ -433,11 +438,18 @@
             return tmpProjName.join("");
         },
         addCSSProjects : function(){
+            var self = this;
+
+            self.renderer.setSize(window.innerWidth, window.innerHeight);
+            self.renderer.domElement.style.position = "absolute";
+            self.renderer.domElement.style.top = "0";
+            self.renderer.domElement.style.left = "0";
+            
+            $(".css-threed").append(self.renderer.domElement);
+
             var planeWidth = app.planeWidth
             ,planeHeight = app.planeHeight
             ,planePosArr = app.planePosArr
-            ,self = this
-            ;
             _.each($(".projListCon"), function (obj, key) {  
                 var element = obj;
                 element.style.height = planeHeight + "px";
@@ -451,15 +463,23 @@
                 self.menuPlaneArr[key].cssPr = div;
                 self.scene.add(div);                
                 self.renderer.render(self.scene, self.camera)
-            });
+            });                
+            
         },
-        insertWebGLProjects : function(){
+        addWebGLProjects : function(){
+            /*if(window.innerWidth <= 480){
+                var planeWidth = app.mobilePlaneWidth
+                ,planeHeight = app.mobilePlaneHeight
+                ,planePosArr = app.mobilePlanePosArr
+                ,self = this
+            }else{                
+            }*/
             var planeWidth = app.planeWidth
             ,planeHeight = app.planeHeight
             ,planePosArr = app.planePosArr
-            ,home3DArr = []
-            ,self = this
-            ,camera = new THREE.PerspectiveCamera(2 * Math.atan( window.innerHeight / ( 2 * 1000 ) )*180/Math.PI, window.innerWidth / window.innerHeight, 1, 10000)
+            ,self = this;
+            
+            var camera = new THREE.PerspectiveCamera(2 * Math.atan( window.innerHeight / ( 2 * 1000 ) )*180/Math.PI, window.innerWidth / window.innerHeight, 1, 10000)
             ,light = new THREE.HemisphereLight(0xffffff, 0xffffff)
             ,projectrenderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
             ,menurenderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
@@ -467,6 +487,7 @@
             ,menuscene = new THREE.Scene()
             //,refPlane = new THREE.Mesh(new THREE.BoxGeometry(window.innerWidth, window.innerHeight, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:0, color:0xff0000, side: THREE.FrontSide }))
             ;
+
             
             //refPlane.position.set(0, 0, 0);
             camera.position.set(0, 0, 1000);                     
@@ -717,7 +738,8 @@
                 index = key + 1
                 ,tl = new TimelineMax()
                 ,scene = new ScrollMagic.Scene({
-                    triggerElement: "#trigger" + index
+                    triggerElement: "#trigger" + index,
+                    //triggerHook: $("#trigger" + index).offset().top
                 })
 
                 switch(obj.length){
@@ -783,18 +805,44 @@
                     
                     var headerView = new app.Views.HeaderView();
                     headerView.render();
-
+                    
                     $(".burger").addClass("menu-open")
                     $($(".header-el")[0]).css("opacity", 0);
                     $($(".header-el")[1]).css("opacity", 1);
+                    
+                    if(window.innerWidth <= 480){
+                        _.each($(".projListCon"), function (obj, key) {  
+                            console.log(obj)
+                            $(obj).find(".white-layer").css({
+                                background:"url("+ app.currProjSet.projArr[key].background +")",
+                                backgroundSize:"cover",
+                                opacity: 0
+                            })
+                            //$(".css-threed").append($(obj))
+                        }); 
+                        TweenMax.staggerTo(".white-layer", 1, {opacity:0.4}, 0.05)
+                    }
+
                 }
             });            
             
-            menuTimeline
-            .staggerTo(".projListCon", 0.3, {top:0, opacity:1}, 0.05, "enterProj")            
-            .to(".projListCon .text", 1, {opacity:1, y:0, color:"rgba(0, 0, 0, 0.15)"}, "enterProj")            
-            .to(".menu-container", 1, {opacity:1}, "enterProj+=0.5")
-            ;
+
+            if(window.innerWidth <= 480){
+
+                menuTimeline
+                .set(".white-layer", {css:{opacity:0}})
+                .staggerTo(".projListCon", 1, {top:50, opacity:1}, 0.05, "enterProj")
+                .to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "enterProj")            
+                //.to(".projListCon .text", 1, {opacity:1, y:0, color:"rgba(0, 0, 0, 0.15)"}, "enterProj")            
+                //.to(".menu-container", 1, {opacity:1}, "enterProj+=0.5")
+                ;
+            }else{
+                menuTimeline
+                .staggerTo(".projListCon", 0.3, {top:0, opacity:1}, 0.05, "enterProj")            
+                .to(".projListCon .text", 1, {opacity:1, y:0, color:"rgba(0, 0, 0, 0.15)"}, "enterProj")            
+                .to(".menu-container", 1, {opacity:1}, "enterProj+=0.5")
+                ;
+            }
 
             app.menuTimeline = menuTimeline;
         },
@@ -940,7 +988,14 @@
             })
         },
         prepareMenuCSS : function(){
-            $("body").css("overflow-y", "hidden");
+            if(window.innerWidth <=480){
+                $("body").css({
+                    overflowY:"visible"
+                });
+                //$(".css-threed").css("height", window.innerHeight*2);
+            }else{
+                $("body").css("overflow-y", "hidden");                
+            }
             $(".webGL, .projListCon").css({
                 opacity:0
             })
@@ -959,6 +1014,7 @@
             $("#projetsReview").css({
                 visibility: "hidden"
             })     
+
     
             $($(".header-el")[0]).css("opacity", 0);
             $($(".header-el")[1]).css("opacity", 1);
@@ -1058,19 +1114,23 @@
                 app.scene.remove(obj.cssPr);
             });
             
-            var tempMenuplaneArr = [];
-            _.each(app.currProjSet.projArr, function(obj, key){
-                var tempMenuPr = _.filter(app.menuPlaneArr, function(subobj){
-                    return subobj.pr == obj;
-                })[0];
-                tempMenuPr.pl.position.set(app.smallPlaneArr[key].position.x,app.smallPlaneArr[key].position.y,app.smallPlaneArr[key].position.z)
-                tempMenuPr.cssPr.position.set(app.planePosArr[key].x,app.planePosArr[key].y,app.planePosArr[key].z)
-                app.menuscene.add(tempMenuPr.pl);
-                app.scene.add(tempMenuPr.cssPr);
-                tempMenuplaneArr.push(tempMenuPr);
-            });                        
-            app.menuPlaneArr = tempMenuplaneArr;
-            app.render();
+
+            if(window.innerWidth <= 480){
+            }else{
+                var tempMenuplaneArr = [];
+                _.each(app.currProjSet.projArr, function(obj, key){
+                    var tempMenuPr = _.filter(app.menuPlaneArr, function(subobj){
+                        return subobj.pr == obj;
+                    })[0];
+                    tempMenuPr.pl.position.set(app.smallPlaneArr[key].position.x,app.smallPlaneArr[key].position.y,app.smallPlaneArr[key].position.z)
+                    tempMenuPr.cssPr.position.set(app.planePosArr[key].x,app.planePosArr[key].y,app.planePosArr[key].z)
+                    app.menuscene.add(tempMenuPr.pl);
+                    app.scene.add(tempMenuPr.cssPr);
+                    tempMenuplaneArr.push(tempMenuPr);
+                });                        
+                app.menuPlaneArr = tempMenuplaneArr;
+                app.render();
+            }
         },
         isAnimating : function(){
             var returnObj = false;
@@ -1135,7 +1195,6 @@
     });
 
     app.Extensions.View = Backbone.View.extend({
-
         initialize: function () {
             this.router = new app.Router();
         },
@@ -1145,28 +1204,6 @@
               this.$el.addClass('page');
             }
             return this;
-        },
-        transitionIn: function (callback) {
-            var view = this,
-                delay
-            var transitionIn = function () {
-              view.$el.addClass('is-visible');
-              view.$el.one('transitionend', function () {
-                if (_.isFunction(callback)) {
-                  callback();
-                }
-              })
-            };
-            _.delay(transitionIn, 20);
-        },
-        transitionOut: function (callback) {
-            var view = this;
-            view.$el.removeClass('is-visible');
-            view.$el.one('transitionend', function () {
-                if (_.isFunction(callback)) {
-                  callback();
-                };
-            });
         }
     });
 
@@ -1191,10 +1228,9 @@
             ;
             _.each(app.currProjSet.projArr, function(obj){
                 tex = texloader.load(obj.background);
-                //console.log(new THREE.Texture( obj.background ))
                 //tex.repeat.set(1, 1);
                 //tex.offset.set(0, 0);
-                //tex.minFilter = THREE.MinFilter
+                tex.minFilter = THREE.NearestFilter;
                 obj.texture = tex;
             });
             
@@ -1206,7 +1242,7 @@
 
             manager.onLoad = function () {
 
-                app.insertWebGLProjects();
+                app.addWebGLProjects();
                  
                 var mainView = new app.Views.MainView();
                 mainView.render();
@@ -1215,9 +1251,16 @@
                 headerView.render();
 
                 var menuPageText = new app.Views.MenuPageText();
-                menuPageText.render();                             
-                
-                app.addCSSProjects();
+                menuPageText.render();    
+
+                if(window.innerWidth <= 480){
+                    _.each($(".projListCon"), function (obj, key) {  
+                        console.log(obj)
+                        $(".css-threed").append($(obj))
+                    }); 
+                }else{
+                    app.addCSSProjects();
+                }                       
 
                 _.each($(".projListCon .text"), function(obj, key){                
                     $(obj).css({
@@ -1370,7 +1413,6 @@
             app.currProjSet = app.areTitlesInPara(tempPara);
             app.ghostText = app.currProjSet.para;
             app.currentParaIdx = app.initParaArr.indexOf(tempPara);
-            console.log(app.currProjSet)
             
             var titrePosArr = []
             ,matchedElArr = []
@@ -1837,6 +1879,7 @@
             ,posArr = []
             ;
             $(".projListCon .text").show();
+
             _.each(matched, function(obj, key){
                 var initPos = $(obj).position();
                 var finPos = $($(".projListCon .text")[key]).offset();
@@ -1940,6 +1983,7 @@
                 bboxArr.push(bboxPos);
             });
 
+            $(".main .ghost").remove();
             _.each($(".projListCon .text"), function(obj, key){
                 var el = $(obj).clone();
                 el.addClass("ghost")
@@ -2209,160 +2253,164 @@
                 var ghostTextView = new app.Views.GhostText()
                 ghostTextView.render();         
                 
-                $(".main .ghost").remove();
-                $(".projListCon .text").show();
-                _.each($(".projListCon .text"), function(obj, key){
-                    var el = $(obj).clone();
-                    el.addClass("ghost")
-                    el.css({
-                        position: "absolute",
-                        top: $(obj).offset().top,
-                        left: $(obj).offset().left
-                    })
-                    $(".main").append(el)
-                });
-                $(".projListCon .text").hide();
-
-                _.each($("#ghost-text .text"), function(obj){
-                    tempObj = {
-                        value : $(obj).text(),
-                        position : $(obj).offset(),
-                        matched : false
-                    }
-                    titrePosArr.push(tempObj);
-                });
-
-                for(j = 0;j < titrePosArr.length;j++){
-                    count = 0;
-                    _.each($(".main .ghost"), function(obj, key){
-                        if(count == 0 && !$(obj).hasClass("matched") && titrePosArr[j].value == $(obj).text()){
-                            $(obj).addClass("matched");
-                            count++;
-                        }
+                if(window.innerWidth <= 480){
+                }else{
+                    $(".main .ghost").remove();
+                    $(".projListCon .text").show();
+                    _.each($(".projListCon .text"), function(obj, key){
+                        var el = $(obj).clone();
+                        el.addClass("ghost")
+                        el.css({
+                            position: "absolute",
+                            top: $(obj).offset().top,
+                            left: $(obj).offset().left
+                        })
+                        $(".main").append(el)
                     });
-                };
+                    $(".projListCon .text").hide();
 
-                var matchedEl = $(".matched").toArray();
-                for(j = 0; j < titrePosArr.length; j++){
-                    for(i = 0; i < matchedEl.length; i++){
-                        if(matchedEl[i]!=null){
-                            if(titrePosArr[j].value == $(matchedEl[i]).text()){
-                                matchedElArr.push(matchedEl[i]);
-                                matchedEl[i] = null;
-                                break;
+                    _.each($("#ghost-text .text"), function(obj){
+                        tempObj = {
+                            value : $(obj).text(),
+                            position : $(obj).offset(),
+                            matched : false
+                        }
+                        titrePosArr.push(tempObj);
+                    });
+
+                    for(j = 0;j < titrePosArr.length;j++){
+                        count = 0;
+                        _.each($(".main .ghost"), function(obj, key){
+                            if(count == 0 && !$(obj).hasClass("matched") && titrePosArr[j].value == $(obj).text()){
+                                $(obj).addClass("matched");
+                                count++;
+                            }
+                        });
+                    };
+
+                    var matchedEl = $(".matched").toArray();
+                    for(j = 0; j < titrePosArr.length; j++){
+                        for(i = 0; i < matchedEl.length; i++){
+                            if(matchedEl[i]!=null){
+                                if(titrePosArr[j].value == $(matchedEl[i]).text()){
+                                    matchedElArr.push(matchedEl[i]);
+                                    matchedEl[i] = null;
+                                    break;
+                                }
                             }
                         }
-                    }
-                };
+                    };
 
-                _.each(matchedElArr, function(obj){
-                    var initPos = $(obj).position();
-                    var finPos = self._getPosition($(obj), titrePosArr);
-                    posArr.push({
-                        start : initPos,
-                          end : finPos
+                    _.each(matchedElArr, function(obj){
+                        var initPos = $(obj).position();
+                        var finPos = self._getPosition($(obj), titrePosArr);
+                        posArr.push({
+                            start : initPos,
+                              end : finPos
+                        });
                     });
-                });
 
-                var matArr = [], cssPrArr = [];
-                _.each(app.menuPlaneArr, function(obj, key){
-                    if(idx != key){
-                        matArr.push(obj.pl.material);
-                    }
-                    cssPrArr.push(obj.cssPr.element);
-                })
+                    var matArr = [], cssPrArr = [];
+                    _.each(app.menuPlaneArr, function(obj, key){
+                        if(idx != key){
+                            matArr.push(obj.pl.material);
+                        }
+                        cssPrArr.push(obj.cssPr.element);
+                    })
 
-                var planeToAnim = currentPlane.pl;
-                var refPlane = currentPlane.refPl;
-                var time = 0.5;
-                app.startWebGLAnimation();
+                    var planeToAnim = currentPlane.pl;
+                    var refPlane = currentPlane.refPl;
+                    var time = 0.5;
+                    app.startWebGLAnimation();
 
-                menuToProjTl
-                .add("hideMenuComp")
-                .to(".burger li", 1, {opacity:1, x:0, y:0}, "hideMenuComp")
-                .to(".burger #menu-line1", 0.5, {top:17, left:0, y:1, width:25, rotationZ:90}, "hideMenuComp")
-                .to(".burger #menu-line2", 0.5, {width:45, left:-2, top:17}, "hideMenuComp")
-                .to(".burger #menu-line3", 0.5, {top:18, left:16, y:0, width:25, rotationZ:90}, "hideMenuComp")                    
-                .staggerTo(matArr, 1, {opacity:0}, 0, "hideMenuComp")
-                .staggerTo(cssPrArr, 1, {opacity:0}, 0, "hideMenuComp")
-                .to(planeToAnim.material, 1, {opacity:0.3}, "hideMenuComp")
-                .to($(".main .ghost").not(".matched"), 1, {opacity:0}, "hideMenuComp")
-                ;
+                    menuToProjTl
+                    .add("hideMenuComp")
+                    .to(".burger li", 1, {opacity:1, x:0, y:0}, "hideMenuComp")
+                    .to(".burger #menu-line1", 0.5, {top:17, left:0, y:1, width:25, rotationZ:90}, "hideMenuComp")
+                    .to(".burger #menu-line2", 0.5, {width:45, left:-2, top:17}, "hideMenuComp")
+                    .to(".burger #menu-line3", 0.5, {top:18, left:16, y:0, width:25, rotationZ:90}, "hideMenuComp")                    
+                    .staggerTo(matArr, 1, {opacity:0}, 0, "hideMenuComp")
+                    .staggerTo(cssPrArr, 1, {opacity:0}, 0, "hideMenuComp")
+                    .to(planeToAnim.material, 1, {opacity:0.3}, "hideMenuComp")
+                    .to($(".main .ghost").not(".matched"), 1, {opacity:0}, "hideMenuComp")
+                    ;
 
-                _.each(matchedElArr, function(obj, key){
-                    var str = "";
-                    if(posArr[key].start.top > posArr[key].end.top){
-                        str+= "skewY(-5deg) ";
-                    }else{
-                        str+= "skewY(5deg) ";
-                    }
-                    if(posArr[key].start.left > posArr[key].end.left){
-                        str+= "skewX(-5deg) ";
-                    }else{
-                        str+= "skewX(5deg) ";
-                    }
-                    menuToProjTl.to(obj, 1, {transform: str}, "hideMenuComp");                
-                });
+                    _.each(matchedElArr, function(obj, key){
+                        var str = "";
+                        if(posArr[key].start.top > posArr[key].end.top){
+                            str+= "skewY(-5deg) ";
+                        }else{
+                            str+= "skewY(5deg) ";
+                        }
+                        if(posArr[key].start.left > posArr[key].end.left){
+                            str+= "skewX(-5deg) ";
+                        }else{
+                            str+= "skewX(5deg) ";
+                        }
+                        menuToProjTl.to(obj, 1, {transform: str}, "hideMenuComp");                
+                    });
 
-                menuToProjTl
-                .add("focusProj")
-                .to(planeToAnim.geometry.vertices[0], time, {
-                    ease:Power2.easeInOut,
-                    x:refPlane.geometry.vertices[0].x - planeToAnim.position.x,
-                    y:refPlane.geometry.vertices[0].y - planeToAnim.position.y,
-                    onUpdate:function(){
-                        planeToAnim.geometry.verticesNeedUpdate = true;
-                    } 
-                }, "focusProj")            
-                .to(planeToAnim.geometry.vertices[1], time, {
-                    ease:Power2.easeInOut,
-                    x:refPlane.geometry.vertices[1].x - planeToAnim.position.x,
-                    y:refPlane.geometry.vertices[1].y - planeToAnim.position.y,
-                    onUpdate:function(){
-                        planeToAnim.geometry.verticesNeedUpdate = true;
-                    }
-                }, "focusProj+=0.1")        
-                .to(planeToAnim.geometry.vertices[2], time, {
-                    ease:Power2.easeInOut,
-                    x:refPlane.geometry.vertices[2].x - planeToAnim.position.x,
-                    y:refPlane.geometry.vertices[2].y - planeToAnim.position.y,
-                    onUpdate:function(){
-                        planeToAnim.geometry.verticesNeedUpdate = true;
-                    }
-                }, "focusProj+=0.2")
-                .to(planeToAnim.geometry.vertices[3], time, {
-                    ease:Power2.easeInOut,
-                    x:refPlane.geometry.vertices[3].x - planeToAnim.position.x,
-                    y:refPlane.geometry.vertices[3].y - planeToAnim.position.y,
-                    onUpdate:function(){
-                        planeToAnim.geometry.verticesNeedUpdate = true;
-                    }
-                }, "focusProj+=0.3")
-                .add("moveLetters")
-                .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
-                ;
+                    menuToProjTl
+                    .add("focusProj")
+                    .to(planeToAnim.geometry.vertices[0], time, {
+                        ease:Power2.easeInOut,
+                        x:refPlane.geometry.vertices[0].x - planeToAnim.position.x,
+                        y:refPlane.geometry.vertices[0].y - planeToAnim.position.y,
+                        onUpdate:function(){
+                            planeToAnim.geometry.verticesNeedUpdate = true;
+                        } 
+                    }, "focusProj")            
+                    .to(planeToAnim.geometry.vertices[1], time, {
+                        ease:Power2.easeInOut,
+                        x:refPlane.geometry.vertices[1].x - planeToAnim.position.x,
+                        y:refPlane.geometry.vertices[1].y - planeToAnim.position.y,
+                        onUpdate:function(){
+                            planeToAnim.geometry.verticesNeedUpdate = true;
+                        }
+                    }, "focusProj+=0.1")        
+                    .to(planeToAnim.geometry.vertices[2], time, {
+                        ease:Power2.easeInOut,
+                        x:refPlane.geometry.vertices[2].x - planeToAnim.position.x,
+                        y:refPlane.geometry.vertices[2].y - planeToAnim.position.y,
+                        onUpdate:function(){
+                            planeToAnim.geometry.verticesNeedUpdate = true;
+                        }
+                    }, "focusProj+=0.2")
+                    .to(planeToAnim.geometry.vertices[3], time, {
+                        ease:Power2.easeInOut,
+                        x:refPlane.geometry.vertices[3].x - planeToAnim.position.x,
+                        y:refPlane.geometry.vertices[3].y - planeToAnim.position.y,
+                        onUpdate:function(){
+                            planeToAnim.geometry.verticesNeedUpdate = true;
+                        }
+                    }, "focusProj+=0.3")
+                    .add("moveLetters")
+                    .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
+                    ;
 
-                _.each(matchedElArr, function(obj, key){
-                    menuToProjTl.to(obj, 1, {
-                        top: posArr[key].end.top,
-                        left: posArr[key].end.left
-                    }, "moveLetters");
-                });
+                    _.each(matchedElArr, function(obj, key){
+                        menuToProjTl.to(obj, 1, {
+                            top: posArr[key].end.top,
+                            left: posArr[key].end.left
+                        }, "moveLetters");
+                    });
 
-                menuToProjTl
-                .add("changeColorLetters")
-                .to("#ghost-text", 0.5, {opacity:1}, "changeColorLetters")
-                .to($(".main .ghost"), 0.5, {opacity:0}, "changeColorLetters")
-                .add("changeColorLetters2")
-                .to("#ghost-text .text", 1, {color:"#fff"}, "changeColorLetters2")
-                .to(".main", 1, {backgroundColor:"rgba(0,0,0,0.6)"}, "changeColorLetters2")
-                .to(planeToAnim.material, 1, {opacity:1}, "changeColorLetters2")
-                .to(["header", "#projetsReview", ".profile"], 1, {color:"#fff", borderBottomColor:"#fff"}, "changeColorLetters2")
-                .fromTo(".header img", 1, {filter:"invert(0%)"},{filter:"invert(100%)"}, "changeColorLetters2")
-                .to(["nav .menu-line", "nav .burger li"], 1, {backgroundColor:"#fff"}, "changeColorLetters2")
-                .to("#social-icons", 1, {borderTopColor:"#fff"}, "changeColorLetters2")
-                .to("#nav .social", 1, {borderColor:"#ccc"}, "changeColorLetters2")
-                .to("#nav .social i", 1, {color:"#ccc"}, "changeColorLetters2")                   
+                    menuToProjTl
+                    .add("changeColorLetters")
+                    .to("#ghost-text", 0.5, {opacity:1}, "changeColorLetters")
+                    .to($(".main .ghost"), 0.5, {opacity:0}, "changeColorLetters")
+                    .add("changeColorLetters2")
+                    .to("#ghost-text .text", 1, {color:"#fff"}, "changeColorLetters2")
+                    .to(".main", 1, {backgroundColor:"rgba(0,0,0,0.6)"}, "changeColorLetters2")
+                    .to(planeToAnim.material, 1, {opacity:1}, "changeColorLetters2")
+                    .to(["header", "#projetsReview", ".profile"], 1, {color:"#fff", borderBottomColor:"#fff"}, "changeColorLetters2")
+                    .fromTo(".header img", 1, {filter:"invert(0%)"},{filter:"invert(100%)"}, "changeColorLetters2")
+                    .to(["nav .menu-line", "nav .burger li"], 1, {backgroundColor:"#fff"}, "changeColorLetters2")
+                    .to("#social-icons", 1, {borderTopColor:"#fff"}, "changeColorLetters2")
+                    .to("#nav .social", 1, {borderColor:"#ccc"}, "changeColorLetters2")
+                    .to("#nav .social i", 1, {color:"#ccc"}, "changeColorLetters2")                   
+
+                }
         },
         _resetMenu:function(){
             _.each(app.menuPlaneArr, function (obj, key) {  
@@ -2401,8 +2449,11 @@
                     ctx.currentPage = next; 
 
                     app.prepareMenuCSS();
-
-                    $(".project-container").css("opacity", 1);
+                    if(window.innerHeight <= 480){
+                        //TweenMax.set($(".projListCon"), {clearProps:"z-index"})
+                    }else{
+                        $(".project-container").css("opacity", 1);
+                    }
                     
                     app.createMenuTl(); 
                 }
@@ -2410,166 +2461,168 @@
             posArr = []
             ;        
             
-            $(".projListCon .text").show();
-
-            _.each($(".projListCon .text"), function(obj){
-                tempObj = {
-                    value : $(obj).text(),
-                    position : $(obj).offset(),
-                    matched : false
-                }
-                titrePosArr.push(tempObj);
-            });
-          
-            for(j = 0;j < titrePosArr.length;j++){
-                count = 0;
-                _.each($("#random-text .text"), function(obj, key){
-                    if(count == 0 && !$(obj).hasClass("matched") && titrePosArr[j].value == $(obj).text()){
-                        $(obj).addClass("matched");                        
-                        count++;
+            if(window.innerWidth <= 480){
+            }else{
+                $(".projListCon .text").show();
+                _.each($(".projListCon .text"), function(obj){
+                    tempObj = {
+                        value : $(obj).text(),
+                        position : $(obj).offset(),
+                        matched : false
                     }
+                    titrePosArr.push(tempObj);
                 });
-            }
+              
+                for(j = 0;j < titrePosArr.length;j++){
+                    count = 0;
+                    _.each($("#random-text .text"), function(obj, key){
+                        if(count == 0 && !$(obj).hasClass("matched") && titrePosArr[j].value == $(obj).text()){
+                            $(obj).addClass("matched");                        
+                            count++;
+                        }
+                    });
+                }
 
-            var matchedEl = $(".matched").toArray();
-            for(j = 0; j < titrePosArr.length; j++){
-                for(i = 0; i < matchedEl.length; i++){
-                    if(matchedEl[i]!=null){
-                        if(titrePosArr[j].value == $(matchedEl[i]).text()){
-                            matchedElArr.push(matchedEl[i]);  
-                            matchedEl[i] = null;
-                            break;
+                var matchedEl = $(".matched").toArray();
+                for(j = 0; j < titrePosArr.length; j++){
+                    for(i = 0; i < matchedEl.length; i++){
+                        if(matchedEl[i]!=null){
+                            if(titrePosArr[j].value == $(matchedEl[i]).text()){
+                                matchedElArr.push(matchedEl[i]);  
+                                matchedEl[i] = null;
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
-            _.each(matchedElArr, function(obj){
-                var initPos = $(obj).position();
-                var finPos = self._getPosition($(obj), titrePosArr);
-                posArr.push({
-                    start : initPos,
-                      end : finPos
+                _.each(matchedElArr, function(obj){
+                    var initPos = $(obj).position();
+                    var finPos = self._getPosition($(obj), titrePosArr);
+                    posArr.push({
+                        start : initPos,
+                          end : finPos
+                    });
                 });
-            });
 
-            var matArr = [], cssPrArr = [];
-            _.each(app.projPlaneArr, function(obj, key){
-                if(idx != key){
-                    matArr.push(obj.pl.material);
-                }
-            })
+                var matArr = [], cssPrArr = [];
+                _.each(app.projPlaneArr, function(obj, key){
+                    if(idx != key){
+                        matArr.push(obj.pl.material);
+                    }
+                })
 
-            var smallRefPlane = app.smallPlaneArr[idx];
-            var planeToAnim = currentPlane.pl;
-            var time = 0.5;
+                var smallRefPlane = app.smallPlaneArr[idx];
+                var planeToAnim = currentPlane.pl;
+                var time = 0.5;
 
-            app.startWebGLAnimation();                
+                app.startWebGLAnimation();                
+                
+                projToMenuTl
+                .add("hideProjectComp")
+                .to(planeToAnim.material, 1, {opacity:0.3}, "hideProjectComp")
+                .to($(".matched"), 1, {color:"rgba(0,0,0,0.15)"}, "hideProjectComp")
+                .to($("#random-text .text").not(".matched"), 1, {opacity:0}, "hideProjectComp")
+                .to($("#projetsReview"), 1, {opacity:0}, "hideProjectComp")
+                .to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "hideProjectComp")
+                .to("#projetsReview div.projetsDetails", 0.2, {opacity:0, height:0}, "hideProjectComp")
+                .to(["header", "#projetsReview", ".profile"], 1, {color:"#000", borderBottomColor:"#000"}, "hideProjectComp")
+                .fromTo(".header img", 1, {filter:"invert(100%)"},{filter:"invert(0%)"}, "hideProjectComp")
+                .to(["nav .menu-line", "nav .burger li"], 1, {backgroundColor:"#000"}, "hideProjectComp")
+                .to("#social-icons", 1, {borderTopColor:"#000"}, "hideProjectComp")
+                .to("#nav .social", 1, {borderColor:"#333"}, "hideProjectComp")
+                .to("#nav .social i", 1, {color:"#333"}, "hideProjectComp")
+                ;
+
+                _.each(matchedElArr, function(obj, key){                
+                    projToMenuTl.set(obj, {
+                      css : {
+                          position: "absolute",
+                          top: posArr[key].start.top,
+                          left: posArr[key].start.left
+                      }
+                    });
+                });
+
+                _.each($(".matched"), function(obj, key){
+                    var str = "";
+                    if(posArr[key].start.top > posArr[key].end.top){
+                        str+= "skewY(-5deg) ";
+                    }else{
+                        str+= "skewY(5deg) ";
+                    }
+                    if(posArr[key].start.left > posArr[key].end.left){
+                        str+= "skewX(-5deg) ";
+                    }else{
+                        str+= "skewX(5deg) ";
+                    }
+                    projToMenuTl.to(obj, 1, {transform: str}, "hideProjectComp");                
+                });
+
+                projToMenuTl
+                .add("focusProj")
+                .to($(".matched"), 1, {transform:"skew(0)"}, "focusProj")                        
+                ;
+
+                _.each(app.projPlaneArr, function(obj, key){
+                    var planeToAnim = obj.pl;
+                    var smallRefPlane = app.smallPlaneArr[key];
+                    projToMenuTl
+                    .to(planeToAnim.geometry.vertices[0], time, {
+                        ease:Power2.easeInOut,
+                        x:smallRefPlane.geometry.vertices[0].x + smallRefPlane.position.x,
+                        y:smallRefPlane.geometry.vertices[0].y + smallRefPlane.position.y,
+                        onUpdate:function(){
+                            planeToAnim.geometry.verticesNeedUpdate = true;
+                        } 
+                    }, "focusProj")            
+                    .to(planeToAnim.geometry.vertices[1], time, {
+                        ease:Power2.easeInOut,
+                        x:smallRefPlane.geometry.vertices[1].x + smallRefPlane.position.x,
+                        y:smallRefPlane.geometry.vertices[1].y + smallRefPlane.position.y,
+                        onUpdate:function(){
+                            planeToAnim.geometry.verticesNeedUpdate = true;
+                        }
+                    }, "focusProj+=0.1")        
+                    .to(planeToAnim.geometry.vertices[2], time, {
+                        ease:Power2.easeInOut,
+                        x:smallRefPlane.geometry.vertices[2].x + smallRefPlane.position.x,
+                        y:smallRefPlane.geometry.vertices[2].y + smallRefPlane.position.y,
+                        onUpdate:function(){
+                            planeToAnim.geometry.verticesNeedUpdate = true;
+                        }
+                    }, "focusProj+=0.2")
+                    .to(planeToAnim.geometry.vertices[3], time, {
+                        ease:Power2.easeInOut,
+                        x:smallRefPlane.geometry.vertices[3].x + smallRefPlane.position.x,
+                        y:smallRefPlane.geometry.vertices[3].y + smallRefPlane.position.y,
+                        onUpdate:function(){
+                            planeToAnim.geometry.verticesNeedUpdate = true;
+                        }
+                    }, "focusProj+=0.3")
+                })
             
-            projToMenuTl
-            .add("hideProjectComp")
-            .to(planeToAnim.material, 1, {opacity:0.3}, "hideProjectComp")
-            .to($(".matched"), 1, {color:"rgba(0,0,0,0.15)"}, "hideProjectComp")
-            .to($("#random-text .text").not(".matched"), 1, {opacity:0}, "hideProjectComp")
-            .to($("#projetsReview"), 1, {opacity:0}, "hideProjectComp")
-            .to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "hideProjectComp")
-            .to("#projetsReview div.projetsDetails", 0.2, {opacity:0, height:0}, "hideProjectComp")
-            .to(["header", "#projetsReview", ".profile"], 1, {color:"#000", borderBottomColor:"#000"}, "hideProjectComp")
-            .fromTo(".header img", 1, {filter:"invert(100%)"},{filter:"invert(0%)"}, "hideProjectComp")
-            .to(["nav .menu-line", "nav .burger li"], 1, {backgroundColor:"#000"}, "hideProjectComp")
-            .to("#social-icons", 1, {borderTopColor:"#000"}, "hideProjectComp")
-            .to("#nav .social", 1, {borderColor:"#333"}, "hideProjectComp")
-            .to("#nav .social i", 1, {color:"#333"}, "hideProjectComp")
-            ;
-
-            _.each(matchedElArr, function(obj, key){                
-                projToMenuTl.set(obj, {
-                  css : {
-                      position: "absolute",
-                      top: posArr[key].start.top,
-                      left: posArr[key].start.left
-                  }
+                _.each(matchedElArr, function(obj, key){
+                    projToMenuTl.to(obj, 1, {
+                        top: posArr[key].end.top - 155,
+                        left: posArr[key].end.left - 55
+                    }, "focusProj");
                 });
-            });
 
-            _.each($(".matched"), function(obj, key){
-                var str = "";
-                if(posArr[key].start.top > posArr[key].end.top){
-                    str+= "skewY(-5deg) ";
-                }else{
-                    str+= "skewY(5deg) ";
-                }
-                if(posArr[key].start.left > posArr[key].end.left){
-                    str+= "skewX(-5deg) ";
-                }else{
-                    str+= "skewX(5deg) ";
-                }
-                projToMenuTl.to(obj, 1, {transform: str}, "hideProjectComp");                
-            });
-
-            projToMenuTl
-            .add("focusProj")
-            .to($(".matched"), 1, {transform:"skew(0)"}, "focusProj")                        
-            ;
-
-            _.each(app.projPlaneArr, function(obj, key){
-                var planeToAnim = obj.pl;
-                var smallRefPlane = app.smallPlaneArr[key];
                 projToMenuTl
-                .to(planeToAnim.geometry.vertices[0], time, {
-                    ease:Power2.easeInOut,
-                    x:smallRefPlane.geometry.vertices[0].x + smallRefPlane.position.x,
-                    y:smallRefPlane.geometry.vertices[0].y + smallRefPlane.position.y,
-                    onUpdate:function(){
-                        planeToAnim.geometry.verticesNeedUpdate = true;
-                    } 
-                }, "focusProj")            
-                .to(planeToAnim.geometry.vertices[1], time, {
-                    ease:Power2.easeInOut,
-                    x:smallRefPlane.geometry.vertices[1].x + smallRefPlane.position.x,
-                    y:smallRefPlane.geometry.vertices[1].y + smallRefPlane.position.y,
-                    onUpdate:function(){
-                        planeToAnim.geometry.verticesNeedUpdate = true;
-                    }
-                }, "focusProj+=0.1")        
-                .to(planeToAnim.geometry.vertices[2], time, {
-                    ease:Power2.easeInOut,
-                    x:smallRefPlane.geometry.vertices[2].x + smallRefPlane.position.x,
-                    y:smallRefPlane.geometry.vertices[2].y + smallRefPlane.position.y,
-                    onUpdate:function(){
-                        planeToAnim.geometry.verticesNeedUpdate = true;
-                    }
-                }, "focusProj+=0.2")
-                .to(planeToAnim.geometry.vertices[3], time, {
-                    ease:Power2.easeInOut,
-                    x:smallRefPlane.geometry.vertices[3].x + smallRefPlane.position.x,
-                    y:smallRefPlane.geometry.vertices[3].y + smallRefPlane.position.y,
-                    onUpdate:function(){
-                        planeToAnim.geometry.verticesNeedUpdate = true;
-                    }
-                }, "focusProj+=0.3")
-            })
-        
-            _.each(matchedElArr, function(obj, key){
-                projToMenuTl.to(obj, 1, {
-                    top: posArr[key].end.top - 155,
-                    left: posArr[key].end.left - 55
-                }, "focusProj");
-            });
+                .add("changeColorLetters")
+                .to(".css-threed", 1, {opacity:1}, "changeColorLetters")
+                .to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "changeColorLetters")
+                ;
 
-            projToMenuTl
-            .add("changeColorLetters")
-            .to(".css-threed", 1, {opacity:1}, "changeColorLetters")
-            .to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "changeColorLetters")
-            ;
+                _.each(app.projPlaneArr, function(obj, key){
+                    var planeToAnim = obj.pl;
+                    projToMenuTl
+                    .to(planeToAnim.material, 1, {opacity:0.3}, "changeColorLetters")
+                })
 
-            _.each(app.projPlaneArr, function(obj, key){
-                var planeToAnim = obj.pl;
-                projToMenuTl
-                .to(planeToAnim.material, 1, {opacity:0.3}, "changeColorLetters")
-            })
-
-            app.projToMenuTl = projToMenuTl;
+                app.projToMenuTl = projToMenuTl;
+            }
         }
     });
 
@@ -2595,8 +2648,7 @@
             TweenMax.to($(".header-el")[1], 0.1, {opacity:0})
             TweenMax.to($(".header-el")[0], 0.1, {opacity:1})      
             if(app.currentRoute == "home"){
-                var view = new app.Views.Home();
-                app.instance.goto(view);
+                Backbone.history.loadUrl(Backbone.history.fragment);
             }else{
                 Backbone.history.navigate("", {trigger:true})
             }
@@ -2772,19 +2824,40 @@
             'click .allProj': '_animateToMenu'
         },
         _scrollToSection: function(e){
-            var scroll;
-            switch(e.currentTarget.className){
-                case 'clientLink':
-                    scroll = 1;
-                    break; 
-                case 'projetLink':
-                    scroll = 2;
-                    break;
-                case 'resultatLink':
-                    scroll = 4;
-                    break; 
+            var scrollEl, scroll;
+            if(window.innerWidth <= 480){
+                switch(e.currentTarget.className){
+                    case 'clientLink':
+                        scrollEl = $("#trigger1");
+                        break; 
+                    case 'projetLink':
+                        scrollEl = $("#trigger2");
+                        break;
+                    case 'resultatLink':
+                        scrollEl = $("#trigger4");
+                        break; 
+                } 
+                var op = $(scrollEl).parent().css("opacity");
+                if(op == "0"){
+                    TweenMax.to(window, 0.5, {scrollTo:{y:scrollEl.offset().top - 20}})
+                }else{
+                    TweenMax.to(window, 0.5, {scrollTo:{y:scrollEl.offset().top}})
+                }
+            }else{
+                switch(e.currentTarget.className){
+                    case 'clientLink':
+                        scroll = 1;
+                        break; 
+                    case 'projetLink':
+                        scroll = 2;
+                        break;
+                    case 'resultatLink':
+                        scroll = 4;
+                        break; 
+                } 
+                TweenMax.to(window, 0.5, {scrollTo:{y:scroll*window.innerHeight}})
             }
-            TweenMax.to(window, 0.5, {scrollTo:{y:scroll*window.innerHeight}})
+
         },
         _animateToMenu: function(e){
             TweenMax.to(window, 1, {

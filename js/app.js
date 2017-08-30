@@ -491,6 +491,7 @@
             
             //refPlane.position.set(0, 0, 0);
             camera.position.set(0, 0, 1000);                     
+            //camera.rotateX(-0.4);
             light.color.set(0xffffff);          
             
             //1.  Add to home
@@ -546,14 +547,14 @@
                 var smallplane = new THREE.Mesh(new THREE.BoxGeometry(planeWidth, planeHeight, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:0, color:0xffffff, side: THREE.FrontSide }));
                 smallplane.position.set(planePosArr[key].x, planePosArr[key].y, planePosArr[key].z);
                 smallplane.name = "Small Ref Plane";
-                //projectscene.add(smallplane);
+                projectscene.add(smallplane);
                 self.smallPlaneArr.push(smallplane);
                 
                 var refPlane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0xff0000, side: THREE.FrontSide }))
-                refPlane.position.set(0,0,key*0);
+                refPlane.position.set(0,0,key*50);
                 
                 var plane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ transparent:true, opacity:0, map: obj.texture, side: THREE.FrontSide }));
-                plane.position.set(0,0,key*0);
+                plane.position.set(0,0,key*50);
                 
                 var imgAspect = plane.material.map.image.width/plane.material.map.image.height,
                 windowAspect = window.innerWidth/window.innerHeight;                
@@ -596,7 +597,7 @@
                     plane.material.opacity = 1;
                 }
                 projectscene.add(plane);
-                //projectscene.add(refPlane);
+                projectscene.add(refPlane);
                 self.refPlaneArr.push(refPlane);
                 //if(key == 0)
                 self.projPlaneArr.push({
@@ -632,7 +633,7 @@
                     );
                 }
                 menuscene.add(menuplane);
-                //menuscene.add(self.refPlaneArr[key]);
+                menuscene.add(self.refPlaneArr[key]);
                 self.menuPlaneArr.push({
                     pl:menuplane,
                     pr:obj,
@@ -670,7 +671,14 @@
             this.projectrenderer.render(this.projectscene, this.camera);
             this.renderer.render(this.scene, this.camera);
         }, 
-        createHomeTl: function(){
+        createHomeTl: function(){            
+            if(typeof app.homeTimeline !== "undefined"){
+                app.homeTimeline.restart();
+                app.homeTimeline.pause();
+                app.homeTimeline.seek(0).kill();
+                delete app.homeTimeline;
+            }
+            
             var homeTimeLine = new TimelineMax({
                 onComplete:homeTlCpl,
                 onCompleteParams:["{self}"]
@@ -807,20 +815,14 @@
                     headerView.render();
                     
                     $(".burger").addClass("menu-open")
-                    $($(".header-el")[0]).css("opacity", 0);
-                    $($(".header-el")[1]).css("opacity", 1);
+                    /*
                     
+                    $($(".header-el")[0]).css("opacity", 0);
+                    $($(".header-el")[0]).css("visibility", "hidden");
+                    $($(".header-el")[1]).css("opacity", 1);
+                    */
                     if(window.innerWidth <= 480){
-                        _.each($(".projListCon"), function (obj, key) {  
-                            console.log(obj)
-                            $(obj).find(".white-layer").css({
-                                background:"url("+ app.currProjSet.projArr[key].background +")",
-                                backgroundSize:"cover",
-                                opacity: 0
-                            })
-                            //$(".css-threed").append($(obj))
-                        }); 
-                        TweenMax.staggerTo(".white-layer", 1, {opacity:0.4}, 0.05)
+                        
                     }
 
                 }
@@ -831,8 +833,10 @@
 
                 menuTimeline
                 .set(".white-layer", {css:{opacity:0}})
-                .staggerTo(".projListCon", 1, {top:50, opacity:1}, 0.05, "enterProj")
-                .to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "enterProj")            
+                .set(".projListCon", {css:{top:"+=20"}})
+                .staggerTo(".projListCon", 0.5, {top:"-=20", opacity:1}, 0.2, "enterProj")
+                .to(".main", 0.5, {backgroundColor:"rgba(0,0,0,0)"}, "enterProj")            
+                .staggerTo(".white-layer", 0.5, {opacity:1}, 0.2)
                 //.to(".projListCon .text", 1, {opacity:1, y:0, color:"rgba(0, 0, 0, 0.15)"}, "enterProj")            
                 //.to(".menu-container", 1, {opacity:1}, "enterProj+=0.5")
                 ;
@@ -847,6 +851,7 @@
             app.menuTimeline = menuTimeline;
         },
         _resetProjects:function(){
+            var idx = app.currProjSet.projArr.indexOf(app.currentProject);
             _.each(app.projPlaneArr, function (obj, key) {  
                 obj.pl.position.set(app.refPlane.position.x, app.refPlane.position.y, app.refPlane.position.z);
                 for(var j = 0; j < 4; j++){
@@ -858,7 +863,10 @@
                 }
                 obj.pl.geometry.verticesNeedUpdate = true;
                 obj.pl.material.opacity = 1;
+                /*if(idx == key){
+                }*/
             });
+
             app.render();
         },
         createProjectTl: function(){
@@ -992,15 +1000,27 @@
                 $("body").css({
                     overflowY:"visible"
                 });
+                $(".projListCon").css({
+                    top:50
+                })
+                _.each($(".projListCon"), function (obj, key) {  
+                    console.log(obj)
+                    $(obj).find(".white-layer").css({
+                        background:"url("+ app.currProjSet.projArr[key].background +")",
+                        backgroundSize:"cover",
+                        opacity: 0
+                    })
+                    //$(".css-threed").append($(obj))
+                }); 
                 //$(".css-threed").css("height", window.innerHeight*2);
             }else{
                 $("body").css("overflow-y", "hidden");                
+                $(".projListCon").css({
+                    top:-20
+                })
             }
             $(".webGL, .projListCon").css({
                 opacity:0
-            })
-            $(".projListCon").css({
-                top:-20
             })
             $(".outer.css-threed").css({
                 visibility:"visible"
@@ -1013,11 +1033,11 @@
             })
             $("#projetsReview").css({
                 visibility: "hidden"
-            })     
-
+            })    
     
-            $($(".header-el")[0]).css("opacity", 0);
-            $($(".header-el")[1]).css("opacity", 1);
+            /*$($(".header-el")[0]).css("opacity", 0);
+            $($(".header-el")[0]).css("visibility", "hidden");
+            $($(".header-el")[1]).css("opacity", 1);*/
             $(".burger").addClass("menu-open")
         },
         prepareProjCSS : function(){
@@ -1109,15 +1129,24 @@
             app.projPlaneArr = tempProjplaneArr;
 
             //Reorder Menu page projects
-            _.each(app.menuPlaneArr, function(obj, key){
-                app.menuscene.remove(obj.pl);
-                app.scene.remove(obj.cssPr);
-            });
             
-
+            var tempMenuplaneArr = [];
             if(window.innerWidth <= 480){
+                $(".projListCon").remove();
+                _.each(app.currProjSet.projArr, function(obj, key){
+                    var tempMenuPr = _.filter(app.menuPlaneArr, function(subobj){
+                        return subobj.pr == obj;
+                    })[0];
+                    tempMenuPr.cssPr.css("top", 50);
+                    $(".css-threed").append(tempMenuPr.cssPr)
+                    tempMenuplaneArr.push(tempMenuPr);
+                });
             }else{
-                var tempMenuplaneArr = [];
+                _.each(app.menuPlaneArr, function(obj, key){
+                    app.menuscene.remove(obj.pl);
+                    app.scene.remove(obj.cssPr);
+                });
+                
                 _.each(app.currProjSet.projArr, function(obj, key){
                     var tempMenuPr = _.filter(app.menuPlaneArr, function(subobj){
                         return subobj.pr == obj;
@@ -1128,9 +1157,13 @@
                     app.scene.add(tempMenuPr.cssPr);
                     tempMenuplaneArr.push(tempMenuPr);
                 });                        
-                app.menuPlaneArr = tempMenuplaneArr;
                 app.render();
             }
+            app.menuPlaneArr = tempMenuplaneArr;
+
+            /*_.each(app.currProjSet.projArr, function(obj, key){
+                var currRefPlane = 
+            })*/
         },
         isAnimating : function(){
             var returnObj = false;
@@ -1255,8 +1288,9 @@
 
                 if(window.innerWidth <= 480){
                     _.each($(".projListCon"), function (obj, key) {  
-                        console.log(obj)
+                        $(obj).css("top", 50);
                         $(".css-threed").append($(obj))
+                        app.menuPlaneArr[key].cssPr = $(obj).clone();
                     }); 
                 }else{
                     app.addCSSProjects();
@@ -1779,6 +1813,7 @@
 
                         app.prepareProjCSS();
                         app.createProjectTl();
+                        //app._resetProjects();
                     }, 0)                    
                 }
             });
@@ -1869,7 +1904,7 @@
                     ctx.$el.append( next.$el );
                     ctx.currentPage = next;                                    
 
-                    app.homeTimeline.seek(0).kill();
+                    app.reorderProjects();
                     app.prepareMenuCSS();
                     app.createMenuTl();                    
                 }
@@ -1921,15 +1956,27 @@
                 });
             });
 
-            homeToMenuTl
-            .add("moveLetters")
-            .to(matched, 1, {transform:"skew(0)"}, "moveLetters")
-            _.each(matched, function(obj, key){
-                homeToMenuTl.to(obj, 1, {
-                    top: posArr[key].end.top - 155,
-                    left: posArr[key].end.left - 55
-                }, "moveLetters");
-            });
+            if(window.innerWidth <= 480){
+                homeToMenuTl
+                .add("moveLetters")
+                .to(matched, 1, {transform:"skew(0)"}, "moveLetters")
+                _.each(matched, function(obj, key){
+                    homeToMenuTl.to(obj, 1, {
+                        top: posArr[key].end.top,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }else{
+                homeToMenuTl
+                .add("moveLetters")
+                .to(matched, 1, {transform:"skew(0)"}, "moveLetters")
+                _.each(matched, function(obj, key){
+                    homeToMenuTl.to(obj, 1, {
+                        top: posArr[key].end.top - 155,
+                        left: posArr[key].end.left - 55
+                    }, "moveLetters");
+                });
+            }
 
             app.homeToMenuTl = homeToMenuTl;
         },
@@ -1942,7 +1989,6 @@
                     ctx.$el.append( next.$el );
                     ctx.currentPage = next;
                     
-                    app.reorderProjects();
 
                     var mainView = new app.Views.MainView();
                     mainView.render();
@@ -1955,6 +2001,8 @@
 
                     var reviews = new app.Views.ProjetReview();
                     reviews.render();
+                    
+                    app.reorderProjects();
 
                     app.prepareHomeCSS();
                     app.createHomeTl();
@@ -2241,10 +2289,12 @@
                         var reviews = new app.Views.ProjetReview();
                         reviews.render();
                         
+                        //app.reorderProjects();
                         app.prepareProjCSS();
                         app.createProjectTl();
 
                         self._resetMenu();
+                        //app._resetProjects();                        
                     }
                 }),
                 posArr = []
@@ -2414,16 +2464,16 @@
         },
         _resetMenu:function(){
             _.each(app.menuPlaneArr, function (obj, key) {  
-                obj.pl.position.set(app.smallPlaneArr[key].position.x, app.smallPlaneArr[key].position.y, app.smallPlaneArr[key].position.z);
+                //obj.pl.position.set(app.smallPlaneArr[key].position.x, app.smallPlaneArr[key].position.y, app.smallPlaneArr[key].position.z);
                 for(var j = 0; j < 4; j++){
                     obj.pl.geometry.vertices[j].set(
                         app.smallPlaneArr[key].geometry.vertices[j].x,
                         app.smallPlaneArr[key].geometry.vertices[j].y,
                         app.smallPlaneArr[key].geometry.vertices[j].z,
                     );
-                    obj.pl.geometry.verticesNeedUpdate = true;
-                    obj.pl.material.opacity = 1;
+                    //obj.pl.geometry.verticesNeedUpdate = true;
                 }
+                obj.pl.material.opacity = 1;
             });
             app.render();
         },
@@ -2645,8 +2695,11 @@
             TweenMax.to($(e.currentTarget).find("img")[1], .7, {rotationZ:"-=25", ease:Power4.easeOut})            
         },
         _navigateToHome : function(e){
-            TweenMax.to($(".header-el")[1], 0.1, {opacity:0})
+//            console.log(e)
+            
+            /*TweenMax.to($(".header-el")[1], 0.1, {opacity:0})
             TweenMax.to($(".header-el")[0], 0.1, {opacity:1})      
+            */
             if(app.currentRoute == "home"){
                 Backbone.history.loadUrl(Backbone.history.fragment);
             }else{

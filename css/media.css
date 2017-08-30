@@ -13,7 +13,8 @@
 @media (max-width:1024px)  {	
 	/* big landscape tablets, laptops, and desktops */
 	.bg-video{
-		width: 75%;
+		width: 80%;
+		margin-top: 1em;
 	}
 	.text{
 		font-size:3.5em;
@@ -35,9 +36,9 @@
 		padding: 20px 20px;
 	}
 	#projetsReview{
-		padding: 20px 40px;		
+		padding: 5em 40px;		
 	}
-	.header-el, #projetsReview, .arrow-down, .back-container, .projetNav{
+	.header-el, #projetsReview, .arrow-down, .back-container, .projetNav, .allProj{
 		zoom:0.6;
 	}
 	.arrow-down p{
@@ -77,6 +78,23 @@
 	.projListCon .text{
         color: rgba(0,0,0,1);
         opacity: 1;
-        font-size: 3.5em;
+        //font-size: 3.5em;
+	}
+	.screen-video{
+	    padding-top: 10px;
+	}
+	.contentTitle{
+		top:25px;
+	}
+	.back-container, .arrow-down{
+		zoom:1;
+	}
+	.arrow-down{
+		zoom: 1.3;
+		bottom:2em;
+	}
+	.back-container{
+		left: 1.5em;
+		bottom: 3em;
 	}
 }

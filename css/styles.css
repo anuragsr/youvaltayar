@@ -704,6 +704,7 @@ a.menuProjLink{
 .resultatBox2 {height: 60vh;}
 .resultatBox3 {height: 40vh; background: #222; color: #fff; font-style: italic; overflow: hidden; position: relative;}
 .resultatBox3 a { position: relative; z-index: 10; color: #fff; text-decoration: none;}
+.resultatBox3 .boxContent { text-align: center;}
 .navBox { width: 90%; background: #fff; color:#222; clear: both; padding: 5% 5% 6.2%; }
 .navBox ul li {float: left;width: 33.33%;}
 .navBox ul li:last-child img {float: right;}

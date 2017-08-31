@@ -229,26 +229,7 @@
                 {x: 0.5*planeWidth, y:-0.5*planeHeight, z:0},
                 {x: 1.5*planeWidth, y:-0.5*planeHeight, z:0},
             ]
-           /* ,mobilePlaneWidth = window.innerWidth
-            ,mobilePlaneHeight = window.innerHeight/2.5
-            ,mobilePlanePosArr = [
-                {x:0, y:0.5*planeHeight, z:0},
-                {x:0, y:-1*planeHeight, z:0},
-                {x:0, y:-2*planeHeight, z:0},
-                {x:0, y:-3*planeHeight, z:0},
-                {x:0, y:-4*planeHeight, z:0},
-                {x:0, y:-5*planeHeight, z:0},
-                {x:0, y:-6*planeHeight, z:0},
-                {x:0, y:-7*planeHeight, z:0},
-            ]*/
-            ;
-
-            this.planeWidth = planeWidth;
-            this.planeHeight = planeHeight;
-            this.planePosArr = planePosArr;/*
-            this.mobilePlaneWidth = mobilePlaneWidth;
-            this.mobilePlaneHeight = mobilePlaneHeight;
-            this.mobilePlanePosArr = mobilePlanePosArr;*/
+            ;           
 
             function revCpl(tl){
                 tl.restart();
@@ -286,6 +267,7 @@
             
             tl
             .to([".main", ".css-threed"], 0.1, {clearProps:"display"})
+            .to(".body", 0.1, {clearProps:"overflowY"})
             .to(".profile-content", 0.1, {display:"block", zIndex:4})
             .add("showSq")
             .to(".profile-square", 0.5, {opacity:1}, "showSq")
@@ -305,6 +287,7 @@
             }
             tl.add("showProf", 1.5)
             .to(".inner-text", 0.5, {opacity:1}, "showProf")
+            .to("body", 0.1, {overflowY: "hidden"}, "showProf")      
             .to([".main", ".css-threed"], 0.1, {display:"none"}, "showProf")
             ;
 
@@ -381,14 +364,17 @@
                 })
             })            
 
+            this.currentParaIdx = Math.floor(Math.random() * this.initParaArr.length);
             /*
               This statement does the following
               1. Matches paragraph for project first letters
               2. Sets the loading of all background textures
               3. Adds webgl projects for home, menu and project 
             */
-            this.currentParaIdx = Math.floor(Math.random() * this.initParaArr.length);
             this.currProjSet = this.areTitlesInPara(this.initParaArr[this.currentParaIdx]);                        
+            this.planeWidth = planeWidth;
+            this.planeHeight = planeHeight;
+            this.planePosArr = planePosArr;
             this.currentRoute = "";
             this.router = new app.Router();
             this.instance = new app.Views.App();
@@ -476,13 +462,6 @@
             
         },
         addWebGLProjects : function(){
-            /*if(window.innerWidth <= 480){
-                var planeWidth = app.mobilePlaneWidth
-                ,planeHeight = app.mobilePlaneHeight
-                ,planePosArr = app.mobilePlanePosArr
-                ,self = this
-            }else{                
-            }*/
 
             var planeWidth = app.planeWidth
             ,planeHeight = app.planeHeight
@@ -495,7 +474,6 @@
             ,menurenderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
             ,projectscene = new THREE.Scene()
             ,menuscene = new THREE.Scene()
-            //,refPlane = new THREE.Mesh(new THREE.BoxGeometry(window.innerWidth, window.innerHeight, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:0, color:0xff0000, side: THREE.FrontSide }))
             ;
             
             camera.position.set(0, 0, 1000);
@@ -542,7 +520,6 @@
                     refPlane.scale.x = window.innerHeight*imgAspect;
                     refPlane.scale.y = window.innerHeight;                   
                 }
-                //console.log(homeplane);
                 refPlane.updateMatrix(); 
                 refPlane.geometry.applyMatrix( refPlane.matrix );
                 refPlane.matrix.identity();
@@ -788,58 +765,37 @@
                     
                     var headerView = new app.Views.HeaderView();
                     headerView.render();
-                    
-                    $(".burger").addClass("menu-open")                  
-                    app.stopWebGLAnimation()/*
-                    $($(".header-el")[0]).css("opacity", 0);
-                    $($(".header-el")[0]).css("visibility", "hidden");*/
+
+                    app.stopWebGLAnimation()
+
+                    $(".header-el-burger").css("opacity", 0);
+                    $(".header-el-burger").css("visibility", "hidden");
                 }
             });            
             
             if(window.innerWidth <= 480){
-
                 menuTimeline
                 .add("enterProj")
                 .staggerTo(".projListCon", 0.5, {opacity:1}, 0.1, "enterProj")
-                .staggerTo(".white-layer", 0.5, {opacity:1}, 0.1, "enterProj")
+                .staggerTo(".white-layer", 0.5, {opacity:1}, 0.1, "enterProj")                
                 .to(".projListCon .text", 1, {opacity:1, y:0, color:"rgba(0,0,0,1)"})            
-                /*
-                .set(".white-layer", {css:{opacity:0}})
-                .set(".projListCon", {css:{top:"+=20"}})
-                .to(".main", 0.5, {backgroundColor:"rgba(0,0,0,0)"}, "enterProj")            
-                */
-                //.to(".menu-container", 1, {opacity:1}, "enterProj+=0.5")
+                .to($(".burger #menu-line1"), 0.5, {top:4, left:8, y:4, width:25, rotationZ:0}, "enterProj")
+                .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "enterProj")
+                .to($(".burger #menu-line3"), 0.5, {top:20, left:8, y:6, width:25, rotationZ:0}, "enterProj")
                 ;
             }else{
                 var menuProjects = _.pluck(app.currProjSet.projArr, 'menuPr');
                 var menuPlanes = _.pluck(menuProjects, 'pl');
-                var menuPositions = _.pluck(menuPlanes, 'position');
                 var menuMaterials = _.pluck(menuPlanes, 'material');
-              /*  _.each(menuMaterials, function(obj, key){
-                    TweenMax.to(obj, 0, {opacity:0});
-                });
-                _.each(menuPositions, function(obj, key){
-                    TweenMax.to(obj, 0, {y:"-=20"});
-                });*/
                 app.startWebGLAnimation()
                 
                 menuTimeline
-                //.set(".projListCon", {css:{top:"+=20"}})
-                //.set("", {css:{opacity:1}})
                 .staggerTo(menuMaterials, 1, {opacity:1}, 0, "enterProj")            
                 .staggerTo(".projListCon", 1, {opacity:1}, 0, "enterProj")            
                 .to(".project-container", 0.5, {opacity:0}, "enterProj")            
                 .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"})            
-                /*
-                .add("enterProj")
-                //.staggerTo(menuPositions, 0.3, {y:"+=20"}, 0.05, "enterProj")            
-                */;
-                /* _.each(menuPlaneArr, function(obj, key){
-                    TweenMax.to(obj.pl.position, 1, {y:0}, "enterProj");
-                });*/
-                //app.render();
+                ;
             }
-
             app.menuTimeline = menuTimeline;
         },
         _resetMenu:function(){
@@ -1016,8 +972,7 @@
                 _.each($(".projListCon"), function (obj, key) {  
                     $(obj).find(".white-layer").css({
                         background:"url("+ app.currProjSet.projArr[key].background +")",
-                        backgroundSize:"cover",
-                        //opacity: 0
+                        backgroundSize:"cover"
                     })
                     $(obj).find(".projetsDetails").css({
                         opacity:1
@@ -1045,10 +1000,8 @@
                 visibility: "hidden"
             })    
     
-            /*$($(".header-el")[0]).css("opacity", 0);
-            $($(".header-el")[0]).css("visibility", "hidden");
-            $($(".header-el")[1]).css("opacity", 1);*/
-            $(".burger").addClass("menu-open")
+            $(".header-el-burger").css("opacity", 0);
+            $(".header-el-burger").css("visibility", "hidden");
         },
         prepareProjCSS : function(){
             var currProjPlane = _.filter(app.currProjSet.projArr, function(obj, key){
@@ -1118,11 +1071,6 @@
             
             //Clear Menu Scene
             if(window.innerWidth <= 480){                    
-                //obj.menuPr.cssPr[0].style.x = obj.smallRefPlane.position.x,obj.smallRefPlane.position.y + 20,obj.smallRefPlane.position.z)
-                /*_.each(currProjArr, function(obj, key){
-                    app.menuscene.remove(obj.projPr);
-                    app.scene.remove(obj.cssPr);
-                });*/
                 $(".projListCon").remove();
             }else{
                 _.each(currProjArr, function(obj, key){
@@ -1137,7 +1085,6 @@
                 
                 //Reorder Menu page projects
                 if(window.innerWidth <= 480){                    
-                    //obj.menuPr.cssPr[0].style.x = obj.smallRefPlane.position.x,obj.smallRefPlane.position.y + 20,obj.smallRefPlane.position.z)
                     $(".css-threed").append(obj.menuPr.cssPr)
                 }else{
                     obj.menuPr.pl.position.set(obj.smallRefPlane.position.x,obj.smallRefPlane.position.y,obj.smallRefPlane.position.z)
@@ -1260,11 +1207,13 @@
                 app.addWebGLProjects();
                  
                 var mainView = new app.Views.MainView();
-                mainView.render();
-                
+                mainView.render();                            
                 var headerView = new app.Views.HeaderView();
                 headerView.render();
 
+                var menuHeaderView = new app.Views.MenuHeaderView();
+                menuHeaderView.render();
+                
                 var menuPageText = new app.Views.MenuPageText();
                 menuPageText.render();    
 
@@ -1295,11 +1244,12 @@
 
                         var reviews = new app.Views.ProjetReview();
                         reviews.render();
-
+                        
                         app.prepareHomeCSS();
                         break;
                     case 'menu':
                         //Render Menu
+                      
                         app.prepareMenuCSS();
                         break;
                     case 'projet':
@@ -1309,7 +1259,7 @@
 
                         var reviews = new app.Views.ProjetReview();
                         reviews.render();
-
+                        
                         app.prepareProjCSS();
                         break;
                 }
@@ -1713,7 +1663,6 @@
             .add("changeColorLetters")
             .to("#ghost-text", 1, {opacity:1}, "changeColorLetters")
             .to("#random-text", 1, {opacity:0}, "changeColorLetters")
-            //.to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "changeColorLetters")
             ;     
         },
         _animateHomeToProject : function(previous, next, ctx){
@@ -1886,6 +1835,9 @@
                     ctx.$el.append( next.$el );
                     ctx.currentPage = next;                                    
 
+                    var menuHeaderView = new app.Views.MenuHeaderView();
+                    menuHeaderView.render();
+                    
                     app.reorderProjects();
                     app.prepareMenuCSS();                
                     app.createMenuTl();
@@ -1908,6 +1860,27 @@
 
             homeToMenuTl
             .to(unmatched, 1, {opacity:0}, "hideLetters")
+            .to($(".burger li")[0], 0.3, {x:-4, y:-4}, "hideLetters")
+            .to($(".burger li")[1], 0.3, {y:-4}, "hideLetters")
+            .to($(".burger li")[2], 0.3, {x:4, y:-4}, "hideLetters")
+            .to($(".burger li")[3], 0.3, {x:-4, y:4}, "hideLetters")
+            .to($(".burger li")[4], 0.3, {y:4}, "hideLetters")
+            .to($(".burger li")[5], 0.3, {x:4, y:4}, "hideLetters")            
+            .to($(".burger li"), 0.3, {delay:0.2, opacity:0}, "hideLetters")                            
+            
+            if(window.innerWidth <= 480){
+                homeToMenuTl
+                .to($(".burger #menu-line1"), 0.5, {top:4, left:8, y:4, width:25, rotationZ:0}, "hideLetters")
+                .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "hideLetters")
+                .to($(".burger #menu-line3"), 0.5, {top:20, left:8, y:6, width:25, rotationZ:0}, "hideLetters")
+            }else{
+                homeToMenuTl
+                .to($(".burger #menu-line1"), 0.5, {top:6, left:8, y:4, width:25, rotationZ:0}, "hideLetters")
+                .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "hideLetters")
+                .to($(".burger #menu-line3"), 0.5, {top:18, left:8, y:6, width:25, rotationZ:0}, "hideLetters")
+            }
+
+            homeToMenuTl
             .to("a.projectTrigger", 1, {color:"rgba(0,0,0,0.15)"}, "hideLetters")
             .to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "hideLetters")
             .to(".home-container", 1, {opacity:0}, "hideLetters")
@@ -1969,8 +1942,7 @@
                     previous.remove();
                     next.render({ page: true });
                     ctx.$el.append( next.$el );
-                    ctx.currentPage = next;
-                    
+                    ctx.currentPage = next;                    
 
                     var mainView = new app.Views.MainView();
                     mainView.render();
@@ -1992,7 +1964,7 @@
             }),
             bboxArr = []
             ;
-
+            
             app.currentParaIdx = Math.floor(Math.random() * app.initParaArr.length);
             app.currProjSet = app.areTitlesInPara(app.initParaArr[app.currentParaIdx]);
             app.ghostText = app.currProjSet.para;
@@ -2055,7 +2027,8 @@
             .to(".burger #menu-line1", 0.5, {top:17, left:0, y:1, width:25, rotationZ:90}, "hideMenuComp")
             .to(".burger #menu-line2", 0.5, {width:45, left:-2, top:17}, "hideMenuComp")
             .to(".burger #menu-line3", 0.5, {top:18, left:16, y:0, width:25, rotationZ:90}, "hideMenuComp")
-            .to([".menu-container", ".css-threed"], 1, {opacity:0}, "hideMenuComp")
+            .to([".menu-container", ".projListCon"], 1, {opacity:0}, "hideMenuComp")
+            
             .to(matchedEl, 1, {color:"rgba(0,0,0,1)"}, "hideMenuComp")
 
             _.each(matchedEl, function(obj, key){
@@ -2273,7 +2246,7 @@
             }),
             posArr = []
             ;
-            
+
             var ghostTextView = new app.Views.GhostText()
             ghostTextView.render();         
             
@@ -2391,7 +2364,7 @@
 
             if(window.innerWidth <= 480){
                 menuToProjTl
-                .to($(".css-threed"), 1, {opacity:0}, "hideMenuComp")            
+                .to($(".projListCon"), 1, {opacity:0}, "hideMenuComp")            
             }else{                
                 menuToProjTl
                 .add("focusProj")
@@ -2475,10 +2448,9 @@
                     next.render({ page: true });
                     ctx.$el.append( next.$el );
                     ctx.currentPage = next; 
-
                     app.prepareMenuCSS();
                     
-                    if(window.innerWidth <= 480){
+                    if(window.innerWidth <= 480){                                           
                         $(".project-container").css("opacity", 0);
                         //TweenMax.set($(".projListCon"), {clearProps:"z-index"})
                     }else{
@@ -2490,7 +2462,7 @@
             }),
             posArr = []
             ;        
-            
+        
             $(".projListCon .text").show();
             _.each($(".projListCon .text"), function(obj){
                 tempObj = {
@@ -2548,6 +2520,27 @@
                 .add("hideProjectComp")
                 .to(planeToAnim.material, 1, {opacity:0.2}, "hideProjectComp")
             }
+            projToMenuTl
+            .to($(".burger li")[0], 0.3, {x:-4, y:-4}, "hideProjectComp")
+            .to($(".burger li")[1], 0.3, {y:-4}, "hideProjectComp")
+            .to($(".burger li")[2], 0.3, {x:4, y:-4}, "hideProjectComp")
+            .to($(".burger li")[3], 0.3, {x:-4, y:4}, "hideProjectComp")
+            .to($(".burger li")[4], 0.3, {y:4}, "hideProjectComp")
+            .to($(".burger li")[5], 0.3, {x:4, y:4}, "hideProjectComp")            
+            .to($(".burger li"), 0.3, {delay:0.2, opacity:0}, "hideProjectComp")                            
+            
+            if(window.innerWidth <= 480){
+                projToMenuTl
+                .to($(".burger #menu-line1"), 0.5, {top:4, left:8, y:4, width:25, rotationZ:0}, "hideProjectComp")
+                .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "hideProjectComp")
+                .to($(".burger #menu-line3"), 0.5, {top:20, left:8, y:6, width:25, rotationZ:0}, "hideProjectComp")
+            }else{
+                projToMenuTl
+                .to($(".burger #menu-line1"), 0.5, {top:6, left:8, y:4, width:25, rotationZ:0}, "hideProjectComp")
+                .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "hideProjectComp")
+                .to($(".burger #menu-line3"), 0.5, {top:18, left:8, y:6, width:25, rotationZ:0}, "hideProjectComp")
+            }
+            
             projToMenuTl
             .to($(".matched"), 1, {color:"rgba(0,0,0,0.15)"}, "hideProjectComp")
             .to($("#random-text .text").not(".matched"), 1, {opacity:0}, "hideProjectComp")
@@ -2664,14 +2657,14 @@
     });
 
     app.Views.HeaderView = app.Extensions.View.extend({
-        el: '.header-el',
+        el: '.header-el-burger',
         events: {
             'mouseenter .home-link': '_rotateLogo',
             'mouseleave .home-link': '_normalLogo',
             'click .home-link': '_navigateToHome',
             'mouseenter .burger': '_animBurger',
             'mouseleave .burger': '_normBurger',
-            'click .burger': '_navigateToMenuOrHome',         
+            'click .burger': '_navigateToMenu',         
             'mouseenter #nav .social': '_glowIcons',
             'mouseleave #nav .social': '_normIcons',
         },
@@ -2743,19 +2736,7 @@
                 }
             }
         },
-        _navigateToMenuOrHome : function(e){
-            TweenMax.to($(e.currentTarget).find("li")[0], 0.3, {x:-4, y:-4})
-            TweenMax.to($(e.currentTarget).find("li")[1], 0.3, {y:-4})
-            TweenMax.to($(e.currentTarget).find("li")[2], 0.3, {x:4, y:-4})
-            TweenMax.to($(e.currentTarget).find("li")[3], 0.3, {x:-4, y:4})
-            TweenMax.to($(e.currentTarget).find("li")[4], 0.3, {y:4})
-            TweenMax.to($(e.currentTarget).find("li")[5], 0.3, {x:4, y:4})            
-            TweenMax.to($(e.currentTarget).find("li"), 0.3, {delay:0.2, opacity:0})                            
-
-            TweenMax.to($(e.currentTarget).find("#menu-line1"), 0.5, {top:6, left:8, y:5, width:25, rotationZ:0})
-            TweenMax.to($(e.currentTarget).find("#menu-line2"), 0.5, {width:25, left:8})
-            TweenMax.to($(e.currentTarget).find("#menu-line3"), 0.5, {top:18, left:8, y:5, width:25, rotationZ:0})
-            
+        _navigateToMenu : function(e){            
             TweenMax.to("a.projetTrigger", 0.5, {
                 bottom:0,
                 onComplete: function(){
@@ -2766,6 +2747,100 @@
         render: function () {
             var template = _.template($('script[name=header]').html());
             this.$el.html(template());
+            return app.Extensions.View.prototype.render.apply(this, arguments);
+        }
+    });
+
+    app.Views.MenuHeaderView = app.Extensions.View.extend({
+        el: '.header-el-menu',
+        events: {
+            'mouseenter .home-link': '_rotateLogo',
+            'mouseleave .home-link': '_normalLogo',
+            'click .home-link': '_navigateToHome',
+            'mouseenter .burger': '_animBurger',
+            'mouseleave .burger': '_normBurger',
+            'click .burger': '_navigateToHome',         
+            'mouseenter #nav .social': '_glowIcons',
+            'mouseleave #nav .social': '_normIcons',
+        },
+        _rotateLogo : function(e){
+            TweenMax.to($(e.currentTarget).find("img")[1], .7, {rotationZ:"+=25", ease:Power4.easeOut})            
+        },
+        _normalLogo : function(e){
+            TweenMax.to($(e.currentTarget).find("img")[1], .7, {rotationZ:"-=25", ease:Power4.easeOut})            
+        },
+        _navigateToHome : function(e){            
+            Backbone.history.navigate("", {trigger:true})
+        },
+        _glowIcons : function(e){
+            if(app.isAnimating()){
+                return;
+            }else{
+                if(app.currentRoute != "projet"){
+                    TweenMax.to(e.currentTarget, 0.1, {border: "1px solid #666"});
+                    TweenMax.to($(e.currentTarget).find("i"), 0.1, {color: "#666"});
+                }else{
+                    TweenMax.to(e.currentTarget, 0.1, {border: "1px solid #CCC"});
+                    TweenMax.to($(e.currentTarget).find("i"), 0.1, {color: "#CCC"});
+                }
+            }
+        },
+        _normIcons : function(e){
+            if(app.isAnimating()){
+                return;
+            }else{
+                if(app.currentRoute != "projet"){
+                    TweenMax.to(e.currentTarget, 0.1, {border: "1px solid #333"});
+                    TweenMax.to($(e.currentTarget).find("i"), 0.1, {color: "#333"});
+                }else{
+                    TweenMax.to(e.currentTarget, 0.1, {border: "1px solid #FFF"});
+                    TweenMax.to($(e.currentTarget).find("i"), 0.1, {color: "#FFF"});
+                }
+            }
+        },
+        _animBurger : function(e){
+            if(app.isAnimating()){
+                return;
+            }else{
+                if(app.currentRoute != "menu"){
+                    TweenMax.to($(e.currentTarget).find("li")[0], 0.2, {x:-2, y:-2})
+                    TweenMax.to($(e.currentTarget).find("li")[1], 0.2, {y:-2})
+                    TweenMax.to($(e.currentTarget).find("li")[2], 0.2, {x:2, y:-2})
+                    TweenMax.to($(e.currentTarget).find("li")[3], 0.2, {x:-2, y:2})
+                    TweenMax.to($(e.currentTarget).find("li")[4], 0.2, {y:2})
+                    TweenMax.to($(e.currentTarget).find("li")[5], 0.2, {x:2, y:2})
+                }else{
+                    TweenMax.to($(e.currentTarget).find("#menu-line1"), 0.3, { y:2 })
+                    TweenMax.to($(e.currentTarget).find("#menu-line3"), 0.3, { y:8 })
+                }
+            }
+        },
+        _normBurger : function(e){
+            if(app.isAnimating()){
+                return;
+            }else{
+                if(app.currentRoute != "menu"){
+                    TweenMax.to($(e.currentTarget).find("li"), 0.3, {x:0, y:0})
+                }else{
+                    TweenMax.to($(e.currentTarget).find("#menu-line1"), 0.3, { y:4 })
+                    TweenMax.to($(e.currentTarget).find("#menu-line3"), 0.3, { y:6 })
+                }
+            }
+        },
+        render: function () {
+            var template = _.template($('script[name=header]').html());
+            this.$el.html(template());        
+            this.$el.find("li").css("opacity", 0);                           
+            if(window.innerWidth <= 480){                
+                this.$el.find("#menu-line1").css({top:4, left:8, width:25, transform:"rotateZ(0) translateY(4px)"});
+                this.$el.find("#menu-line2").css({width:25, left:8});
+                this.$el.find("#menu-line3").css({top:20, left:8, width:25, transform:"rotateZ(0) translateY(6px)"});
+            }else{
+                this.$el.find("#menu-line1").css({top:6, left:8, width:25, transform:"rotateZ(0) translateY(4px)"});
+                this.$el.find("#menu-line2").css({width:25, left:8});
+                this.$el.find("#menu-line3").css({top:18, left:8, width:25, transform:"rotateZ(0) translateY(6px)"});
+            }
+
             return app.Extensions.View.prototype.render.apply(this, arguments);
         }
     });

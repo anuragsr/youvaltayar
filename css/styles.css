@@ -171,7 +171,7 @@ img.loader-img-anim{
     position: absolute;
     top:0;
     left:0;
-    overflow:hidden;
+    //overflow:hidden;
     height: 100%;
     width: 100%;
     text-align: center;
@@ -246,9 +246,15 @@ img.loader-img-anim{
 }
 .youval-image{
     position: absolute;
+    bottom: 0;
+    right: 0;
     height: 100%;
-    top: 0;
-    left: 0;
+}
+.youval-btm-img{
+    top:0;
+}
+.youval-pic-bottom-tablet img{
+    visibility: hidden;
 }
 .inner-text{
     opacity:0;

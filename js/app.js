@@ -272,9 +272,9 @@
                 TweenMax.set($(".projetContent"), {clearProps:"display"})
                 TweenMax.set($(".projetContent"), {css:{display: "none"}})      
                 TweenMax.set(".projetNav", {css:{opacity:0}})
-                if(app.currentRoute == "projet"){
-                    TweenMax.set("body", {css:{overflowY: "hidden"}})      
-                }
+                TweenMax.set("body", {css:{overflowY: "visible"}})      
+                /*if(app.currentRoute == "projet"){
+                }*/
             }
 
             var tl = new TimelineMax({
@@ -285,18 +285,27 @@
             });
             
             tl
-            .to(["canvas", "#main"], 0.1, {clearProps:"display"})
+            .to([".main", ".css-threed"], 0.1, {clearProps:"display"})
             .to(".profile-content", 0.1, {display:"block", zIndex:4})
             .add("showSq")
             .to(".profile-square", 0.5, {opacity:1}, "showSq")
-            .staggerTo(_.shuffle($(".profile-inner").slice()), 0.3, {
-                width:"100%", 
-                padding:"10%",
-                ease:Expo.easeOut
-            }, 0.07, "showSq" ,showCloseBtn, [])
-            .add("showProf", 1.5)
+
+            if(window.innerWidth <= 480){
+                tl.staggerTo(_.shuffle($(".profile-inner").slice()), 0.3, {
+                    width:"100%", 
+                    padding:"5%",
+                    ease:Expo.easeOut
+                }, 0.07, "showSq" ,showCloseBtn, [])
+            }else{
+                tl.staggerTo(_.shuffle($(".profile-inner").slice()), 0.3, {
+                    width:"100%", 
+                    padding:"10%",
+                    ease:Expo.easeOut
+                }, 0.07, "showSq" ,showCloseBtn, [])
+            }
+            tl.add("showProf", 1.5)
             .to(".inner-text", 0.5, {opacity:1}, "showProf")
-            .to(["canvas", "#main"], 0.1, {display:"none"}, "showProf")
+            .to([".main", ".css-threed"], 0.1, {display:"none"}, "showProf")
             ;
 
             tl.stop();

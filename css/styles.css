@@ -550,7 +550,7 @@ div.projetsDetails{
 .projListCon{
     cursor:pointer; 
     opacity:0;
-    top:-20px; 
+    //top:-20px; 
     background-color:transparent;
 }
 .projListCon p{
@@ -565,6 +565,7 @@ a.menuProjLink{
     height: 100%;
     width: 100%;
     display: table;
+    background: rgba(255,255,255,0.7);
 }
 .projDetInner{
     padding-top: 20px;
@@ -574,7 +575,7 @@ a.menuProjLink{
     font-family: 'FuturaBold';
 }
 .white-layer {
-    background-color: #fff;
+    //background-color: #fff;
     position: absolute;
     top: 0;
     left: 0;
@@ -582,7 +583,7 @@ a.menuProjLink{
     bottom: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.9;
+    opacity: 1;
     z-index: -1;
 }
 .white-layer-table {
@@ -596,6 +597,7 @@ a.menuProjLink{
 }
 .projListCon .text{
     opacity: 0;
+    color: rgba(0,0,0,1);
 }
 
 /* Project Page CSS */

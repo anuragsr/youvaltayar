@@ -526,12 +526,20 @@ div.projetsDetails{
     margin-top: 30px;
     padding-left: 5px;
     position: relative;
+    width: 100%;
 }
 #random-text, #ghost-text{
     position: absolute;
     top: 0;
     width: 100%;
-    white-space: nowrap;
+   /* font-family: 'FuturaBold', sans-serif;
+    color: rgba(0,0,0,0.15);
+    font-size: 4.5em;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    line-height: 1.2em;*/
+    
+    //white-space: nowrap;
     //word-wrap:break-word;
 }
 #ghost-text{

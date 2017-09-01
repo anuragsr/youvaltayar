@@ -985,6 +985,14 @@
             ,self = this
             ;            
 
+           /* app.ghostText = para;
+            var ghostTextView = new app.Views.GhostText()
+            ghostTextView.render();
+
+            var ghostTextView = new app.Views.GhostText()
+            ghostTextView.render();
+         */      
+
             _.each(para, function(obj){
                 paraArr.push({value:obj, matched:false});
             });
@@ -1053,6 +1061,7 @@
 
             return {
                 para: finalPara.join(""),
+                //para: para,
                 ready: ready,
                 projArr: projArr
             };

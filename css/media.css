@@ -1,15 +1,21 @@
 @media (max-width:1281px) { /* hi-res laptops and desktops */ 
+	.text-container{
+		width: 70%;
+	}
+	/*#random-text, #ghost-text{
+		//word-wrap: break-word;
+	}*/
+	.text{
+		font-size:4em;
+		padding: 10px;
+	}
 }
 
 @media (max-width:1024px)  {	
 	/* big landscape tablets, laptops, and desktops */
 	.bg-video{
-		width: 80%;
+		width: 70%;
 		margin-top: 1em;
-	}
-	.text{
-		font-size:3.5em;
-		padding: 10px;
 	}
 	.projListCon p{
 		padding-top: 1em;
@@ -30,12 +36,21 @@
 	}	
 }
 
-@media (max-width:480px)  {	
-	/* smartphones, Android phones, landscape iPhone */
+@media (max-width:768px)  {	
 	.text{
 		font-size:2em;
 		padding: 5px;
 	}
+	/*#random-text, #ghost-text{
+		font-size:3em;
+	}*/
+}
+
+@media (max-width:480px)  {	
+	/* smartphones, Android phones, landscape iPhone */
+	/*#random-text, #ghost-text{
+		font-size:2em;
+	}	*/
 	.main, .css-threed{
 		padding: 20px 20px;
 	}

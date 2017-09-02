@@ -537,8 +537,9 @@ div.projetsDetails{
     font-size: 4.5em;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    line-height: 1.2em;*/
-    
+    */
+    line-height: 5em;
+
     //white-space: nowrap;
     //word-wrap:break-word;
 }
@@ -552,12 +553,15 @@ div.projetsDetails{
     text-decoration: none;
 }
 .text{
-    display: inline-block;
+    //display: inline-block;
     font-family: 'FuturaBold', sans-serif;
     color: rgba(0,0,0,0.15);
     font-size: 4.5em;
     text-transform: uppercase;
-    padding: 20px;
+    padding: 10px;
+    position: relative;
+    //transform: skew(0deg);
+    //transform: skewX(31deg) skewY(30deg);
 }
 
 /* Project Squares on Menu Page */

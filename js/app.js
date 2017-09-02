@@ -1,4 +1,10 @@
 (function () {
+    jQuery.fn.cleanWhitespace = function() {
+        this.contents().filter(
+            function() { return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); })
+            .remove();
+        return this;
+    }
     window.app = {
         Views: {},
         Extensions: {},
@@ -301,7 +307,7 @@
                     return;
                 }else{
                     e.preventDefault();
-                    TweenMax.to($(e.currentTarget).find(".text"), 0.5, {y:-20})
+                    TweenMax.to($(e.currentTarget).find(".text"), 0.5, {top:-20})
                 }
             });
 
@@ -310,14 +316,14 @@
                     return;
                 }else{
                     e.preventDefault();
-                    TweenMax.to($(e.currentTarget).find(".text"), 0.5, {y:0})
+                    TweenMax.to($(e.currentTarget).find(".text"), 0.5, {top:0})
                 }
             });
 
             $(document).on("click", ".projListCon", function(e){ 
                 e.preventDefault();
                 TweenMax.to($(e.currentTarget).find(".text"), 0.5, {
-                    y:0,
+                    top:0,
                     onComplete: function(){
                         Backbone.history.navigate($(e.currentTarget).find(".menuProjLink")[0].hash, {trigger:true})
                     }
@@ -374,7 +380,9 @@
               2. Sets the loading of all background textures
               3. Adds webgl projects for home, menu and project 
             */
-            this.currProjSet = this.areTitlesInPara(this.initParaArr[this.currentParaIdx]);                        
+
+            //For Home Page Inititally
+            this.currProjSet = this.getHomePara(this.areTitlesInPara(this.initParaArr[this.currentParaIdx]));
             this.planeWidth = planeWidth;
             this.planeHeight = planeHeight;
             this.planePosArr = planePosArr;
@@ -447,7 +455,7 @@
             app.camera.aspect = window.innerWidth / window.innerHeight;
             app.camera.fov = 2 * Math.atan( window.innerHeight / ( 2 * 1000 ) )*180/Math.PI;
             app.camera.updateProjectionMatrix();
-
+            
             //Adjust home projects
             _.each(homePr, function(obj, key){
                 obj.rd.setSize( window.innerWidth, window.innerHeight );
@@ -525,9 +533,9 @@
                 if(obj == "<")
                     tmpProjName[key] = '<br/>';
                 else if(obj == " ")
-                    tmpProjName[key] = '<div class="text">&nbsp;</div>';
+                    tmpProjName[key] = '<span class="text">&nbsp;</span>';
                 else if(!_.contains(["b","r","/",">"], obj))
-                    tmpProjName[key] = '<div class="text">' + obj + '</div>';
+                    tmpProjName[key] = '<span class="text">' + obj + '</span>';
             });
             return tmpProjName.join("");
         },
@@ -558,7 +566,6 @@
                 self.scene.add(div);                
                 self.renderer.render(self.scene, self.camera)
             });                
-            
         },
         addWebGLProjects : function(){
             var planeWidth = app.planeWidth
@@ -890,9 +897,9 @@
             if(window.innerWidth <= 480){
                 menuTimeline
                 .add("enterProj")
-                .staggerTo(".projListCon", 0.5, {opacity:1}, 0.1, "enterProj")
-                .staggerTo(".white-layer", 0.5, {opacity:1}, 0.1, "enterProj")                
-                .to(".projListCon .text", 1, {opacity:1, y:0, color:"rgba(0,0,0,1)"})            
+                .staggerTo(".projListCon", 1, {opacity:1}, 0.2, "enterProj")
+                .staggerTo(".white-layer", 1, {opacity:1}, 0.2, "enterProj")                
+                .to(".projListCon .text", 1, {opacity:1, y:0, color:"rgba(0,0,0,1)"}, "enterProj")            
                 .to($(".burger #menu-line1"), 0.5, {top:4, left:8, y:4, width:25, rotationZ:0}, "enterProj")
                 .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "enterProj")
                 .to($(".burger #menu-line3"), 0.5, {top:20, left:8, y:6, width:25, rotationZ:0}, "enterProj")
@@ -904,10 +911,10 @@
                 app.startWebGLAnimation()
                 
                 menuTimeline
-                .staggerTo(menuMaterials, 1, {opacity:1}, 0, "enterProj")            
-                .staggerTo(".projListCon", 1, {opacity:1}, 0, "enterProj")            
-                .to(".project-container", 0.5, {opacity:0}, "enterProj")            
-                .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"})            
+                .staggerTo(".projListCon", 0.5, {opacity:1}, 0.1, "enterProj")            
+                .staggerTo(menuMaterials, 0.5, {opacity:1}, 0.1, "enterProj")            
+                .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"}, "enterProj")            
+                .to(".project-container", 0.5, {opacity:0})            
                 ;
             }
             app.menuTimeline = menuTimeline;
@@ -930,7 +937,6 @@
                     }
                 }
             });
-
         },
         _resetProjects:function(){
             _.each(app.currProjSet.projArr, function (obj, key) {  
@@ -975,8 +981,6 @@
             var matches = []
             ,tempArr = []
             ,paraArr = []
-            ,projArr = []
-            ,finalPara = []
             ,ready = true
             ,pos = 0
             ,i = -1
@@ -984,14 +988,6 @@
             ,tempEl
             ,self = this
             ;            
-
-           /* app.ghostText = para;
-            var ghostTextView = new app.Views.GhostText()
-            ghostTextView.render();
-
-            var ghostTextView = new app.Views.GhostText()
-            ghostTextView.render();
-         */      
 
             _.each(para, function(obj){
                 paraArr.push({value:obj, matched:false});
@@ -1039,11 +1035,21 @@
                     paraArr[pos+4].toInsert = false;
                 }
             }
+            if(ready){
+                app.paraArr = paraArr;
+                return paraArr;
+            }
+            else
+                console.log("Not Matching");
+        },
+        getHomePara : function(paraArr){
+            var finalPara = []
+            ,projArr = []
+            ;
 
             _.each(paraArr, function(obj){
                 if(obj.matched){
-                    tempEl = '<div class="text"><a href="#!/projets/' + obj.url + '" class="projectTrigger" >' + obj.value + '</a></div>';
-                    
+                    tempEl = '<span class="text"><a href="#!/projets/' + obj.url + '" class="projectTrigger" >' + obj.value + '</a></span>';
                     tempPr = _.filter(app.projects, function(pr){
                         return pr.url == obj.url; 
                     })[0]
@@ -1052,19 +1058,105 @@
                     projArr.push(tempPr);                   
                 }else if(obj.value=="<br/>"){
                     finalPara.push("<br/>");
-                }else if(obj.value==" "){
-                    finalPara.push('<div class="text">&nbsp;</div>');
                 }else if(obj.toInsert){
-                    finalPara.push('<div class="text">' + obj.value + '</div>');
+                    finalPara.push("<span class='text'>" + obj.value + "</span>");
                 }
             });
 
             return {
                 para: finalPara.join(""),
                 //para: para,
-                ready: ready,
                 projArr: projArr
             };
+        },
+        prepareLettersForAnim: function(animCase){
+            var paraArr = [];
+            var pos, i; 
+            var fromEl, toEl;
+            switch(animCase){
+                case "homeToProj" :
+                    fromEl = $("#ghost-text");
+                    toEl = $("#random-text");
+                break;
+
+                case "projToHome" :
+                    fromEl = $("#random-text");
+                    toEl = $("#ghost-text");
+                break;
+            }
+
+            var projHtml = $('<textarea />').html(app.currentProject.titre).text();
+
+            _.each(projHtml, function(obj){
+                paraArr.push({value:obj, toInsert:true});
+            });
+            
+            while(pos != -1){
+                pos = projHtml.indexOf("<br/>", i + 1);
+                i = pos;
+                if(pos!= -1){
+                    paraArr[pos].value = "<br/>";
+                    paraArr[pos+1].toInsert = false;
+                    paraArr[pos+2].toInsert = false;
+                    paraArr[pos+3].toInsert = false;
+                    paraArr[pos+4].toInsert = false;
+                }
+            }
+
+            var finalPara = [];
+            fromEl.html("");
+            _.each(paraArr, function(obj){
+                if(obj.value=="<br/>"){
+                    finalPara.push('<br/>');
+                }else if(obj.value==" "){
+                    finalPara.push('<span class="text">&nbsp;</span>');
+                }else if(obj.toInsert){
+                    finalPara.push('<span class="text">' + obj.value + '</span>');
+                }
+            });
+            fromEl.append(finalPara.join(""));
+
+            paraArr = app.paraArr;
+            finalPara = [];
+            
+            toEl.html("");
+            _.each(paraArr, function(obj, key){
+                if(obj.matched){
+                    tempEl = '<span class="text"><a href="#!/projets/' + obj.url + '" class="projectTrigger" >' + obj.value + '</a></span>';
+                    finalPara.push(tempEl);                                    
+                }else if(obj.value=="<br/>"){
+                    finalPara.push("<br/>");
+                }else if(obj.value==" "){
+                    finalPara.push('<span class="text">&nbsp;</span>');
+                }else if(obj.toInsert){
+                    finalPara.push('<span class="text">' + obj.value + '</span>');
+                }
+            });
+            toEl.append(finalPara.join(""));
+
+            /*_.each($("#random-text"), function(obj, key){
+                paraArr.push({value:obj, toInsert:true});
+            });
+            var homePara = app.initParaArr[app.currentParaIdx];
+
+            while(pos != -1){
+                pos = homePara.indexOf("<br/>", i + 1);
+                i = pos;
+                if(pos!= -1){
+                    paraArr[pos].value = "<br/>";
+                    paraArr[pos+1].toInsert = false;
+                    paraArr[pos+2].toInsert = false;
+                    paraArr[pos+3].toInsert = false;
+                    paraArr[pos+4].toInsert = false;
+                }
+            }
+
+            $("#random-text").html("");
+            _.each(homePara, function(obj){                
+                
+            });
+            $("#random-text")
+            $("#ghost-text").append(finalPara.join(""));*/
         },
         prepareHomeCSS : function(){
             $("body").css("overflow-y", "hidden");
@@ -1152,7 +1244,7 @@
             $(".main").css({
                 backgroundColor: "rgba(0,0,0,0.6)"
             })
-            $("#random-text .text").css({
+            $(".text").css({
                 color: "#fff"
             })
             $(".back-container, .arrow-down").css({
@@ -1452,7 +1544,7 @@
                     app.currentRoute = 'projet';
                     app.homeTimeline.pause();
                     console.log("//To Project");
-                    this._animateHomeToProject(previous, next, ctx);                   
+                    this._animatehomeToProj(previous, next, ctx);                   
                 }else{
                     //To Home
                     console.log("//To Home");
@@ -1502,7 +1594,7 @@
             paraArrCopy.splice(app.currentParaIdx, 1);
             var tempPara = paraArrCopy[Math.floor(Math.random() * paraArrCopy.length)];
 
-            app.currProjSet = app.areTitlesInPara(tempPara);
+            app.currProjSet = app.getHomePara(app.areTitlesInPara(tempPara));
             app.ghostText = app.currProjSet.para;
             app.currentParaIdx = app.initParaArr.indexOf(tempPara);
             
@@ -1638,7 +1730,7 @@
         },
         _animateProjectToHome : function(previous, next, ctx){
             app.currentParaIdx = Math.floor(Math.random() * app.initParaArr.length);
-            app.currProjSet = app.areTitlesInPara(app.initParaArr[app.currentParaIdx]);
+            app.currProjSet = app.getHomePara(app.areTitlesInPara(app.initParaArr[app.currentParaIdx]));
             app.ghostText = app.currProjSet.para;
             var titrePosArr = []
             ,matchedElArr = []
@@ -1646,8 +1738,37 @@
             ,ghostTextView = new app.Views.GhostText()
             ,self = this
             ;
+            var currProjArr = app.currProjSet.projArr
+            ,projToHomeTl = new TimelineMax({
+                onComplete: function(){
+                    previous.remove();
+                    next.render({ page: true });
+                    ctx.$el.append( next.$el );
+                    ctx.currentPage = next;
+
+                    app.reorderProjects();
+
+                    var mainView = new app.Views.MainView();
+                    mainView.render();
+                    
+                    var headerView = new app.Views.HeaderView();
+                    headerView.render();
+                    
+                    var homePageText = new app.Views.HomePageText();
+                    homePageText.render();
+
+                    var reviews = new app.Views.ProjetReview();
+                    reviews.render();
+
+                    app.prepareHomeCSS();
+                    app.createHomeTl();
+                }
+            });
 
             ghostTextView.render();
+
+            //app.prepareLettersForAnim("projToHome")
+
             _.each($("#ghost-text .text"), function(obj){
                 tempObj = {
                     value : $(obj).text(),
@@ -1696,34 +1817,6 @@
                 });
             });
 
-
-            var currProjArr = app.currProjSet.projArr
-            ,projToHomeTl = new TimelineMax({
-                onComplete: function(){
-                    previous.remove();
-                    next.render({ page: true });
-                    ctx.$el.append( next.$el );
-                    ctx.currentPage = next;
-
-                    app.reorderProjects();
-
-                    var mainView = new app.Views.MainView();
-                    mainView.render();
-                    
-                    var headerView = new app.Views.HeaderView();
-                    headerView.render();
-                    
-                    var homePageText = new app.Views.HomePageText();
-                    homePageText.render();
-
-                    var reviews = new app.Views.ProjetReview();
-                    reviews.render();
-
-                    app.prepareHomeCSS();
-                    app.createHomeTl();
-                }
-            });
-
             projToHomeTl
             .add("fixLetters")
             .to($("body"), 0.1, {overflowY:"hidden"}, "fixLetters")
@@ -1734,16 +1827,28 @@
             .to($(".project-container"), 1, {opacity:0}, "fixLetters")
             .to($(".main"), 1, {backgroundColor:"rgba(255,255,255,0.7)"}, "fixLetters")
             ;
-
-            _.each(matchedElArr, function(obj, key){                
-                projToHomeTl.set(obj, {
-                  css : {
-                      position: "absolute",
-                      top: posArr[key].start.top,
-                      left: posArr[key].start.left
-                  }
+            if(window.innerWidth <= 768){
+                _.each(matchedElArr, function(obj, key){                
+                    projToHomeTl.set(obj, {
+                      css : {
+                          position: "absolute",
+                          top: posArr[key].start.top,
+                          left: posArr[key].start.left
+                      }
+                    });
                 });
-            });
+            }else{
+                _.each(matchedElArr, function(obj, key){                
+                    projToHomeTl.set(obj, {
+                      css : {
+                          position: "absolute",
+                          top: posArr[key].start.top - 5,
+                          left: posArr[key].start.left
+                      }
+                    });
+                });
+            }
+            
             
             projToHomeTl
             .add("skewLetters")
@@ -1774,21 +1879,31 @@
             projToHomeTl
             .add("moveLetters")
             .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
-            
-            _.each(matchedElArr, function(obj, key){
-                projToHomeTl.to(obj, 1, {
-                    top: posArr[key].end.top,
-                    left: posArr[key].end.left
-                }, "moveLetters");
-            });
+            if(window.innerWidth <= 768){
+                _.each(matchedElArr, function(obj, key){
+                    projToHomeTl.to(obj, 1, {
+                        top: posArr[key].end.top,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }else{
+                _.each(matchedElArr, function(obj, key){
+                    projToHomeTl.to(obj, 1, {
+                        top: posArr[key].end.top - 5,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }
 
             projToHomeTl
             .add("changeColorLetters")
             .to("#ghost-text", 1, {opacity:1}, "changeColorLetters")
             .to("#random-text", 1, {opacity:0}, "changeColorLetters")
-            ;     
+            ;    
+
+            app.projToHomeTl = projToHomeTl; 
         },
-        _animateHomeToProject : function(previous, next, ctx){
+        _animatehomeToProj : function(previous, next, ctx){
             app.ghostText = app.insertTitle(app.currentProject.titre);
 
             var titrePosArr = []
@@ -1800,6 +1915,35 @@
             ;
             ghostTextView.render();
 
+            var currProjArr = app.currProjSet.projArr
+            ,homeToProjTl = new TimelineMax({
+                onComplete: function(){
+                    app.homeTimeline.seek(0).kill()
+
+                    previous.remove();
+                    next.render({ page: true });
+                    ctx.$el.append( next.$el );
+                    ctx.currentPage = next;
+
+                    var mainView = new app.Views.MainView();
+                    mainView.render();
+                    
+                    var headerView = new app.Views.HeaderView();
+                    headerView.render();
+                    
+                    var projPageText = new app.Views.ProjectPageText();
+                    projPageText.render();
+
+                    var reviews = new app.Views.ProjetReview();
+                    reviews.render();
+
+                    app.prepareProjCSS();
+                    app.createProjectTl();
+                }
+            });
+
+            //app.prepareLettersForAnim("homeToProj");            
+
             _.each($("#ghost-text .text"), function(obj){
                 tempObj = {
                     value : $(obj).text(),
@@ -1808,7 +1952,7 @@
                 }
                 titrePosArr.push(tempObj);
             });
-
+            
             for(j = 0;j < titrePosArr.length;j++){
                 count = 0;
                 _.each($("#random-text .text"), function(obj, key){
@@ -1840,53 +1984,35 @@
                       end : finPos
                 });
             });
+           
 
-            var currProjArr = app.currProjSet.projArr
-            ,homeToProjectTl = new TimelineMax({
-                onComplete: function(){
-                    setTimeout(function(){
-
-                        app.homeTimeline.seek(0).kill()
-
-                        previous.remove();
-                        next.render({ page: true });
-                        ctx.$el.append( next.$el );
-                        ctx.currentPage = next;
-
-                        var mainView = new app.Views.MainView();
-                        mainView.render();
-                        
-                        var headerView = new app.Views.HeaderView();
-                        headerView.render();
-                        
-                        var projPageText = new app.Views.ProjectPageText();
-                        projPageText.render();
-
-                        var reviews = new app.Views.ProjetReview();
-                        reviews.render();
-
-                        app.prepareProjCSS();
-                        app.createProjectTl();
-                        //app._resetProjects();
-                    }, 0)                    
-                }
-            });
-
-            homeToProjectTl
+            homeToProjTl
             .add("fixLetters")
             .to($("#random-text .text").not(".matched"), 1, {opacity:0}, "fixLetters")
             .to($("a.projectTrigger"), 1, {bottom:0}, "fixLetters")
-            ;
+            ;        
 
-            _.each(matchedElArr, function(obj, key){                
-                homeToProjectTl.set(obj, {
-                  css : {
-                      position: "absolute",
-                      top: posArr[key].start.top,
-                      left: posArr[key].start.left
-                  }
+            if(window.innerWidth <= 768){
+                _.each(matchedElArr, function(obj, key){                
+                    homeToProjTl.set(obj, {
+                      css : {
+                          position: "absolute",
+                          top: posArr[key].start.top,
+                          left: posArr[key].start.left
+                      }
+                    });
                 });
-            });
+            }else{
+                _.each(matchedElArr, function(obj, key){                
+                    homeToProjTl.set(obj, {
+                      css : {
+                          position: "absolute",
+                          top: posArr[key].start.top - 5,
+                          left: posArr[key].start.left
+                      }
+                    });
+                });
+            }
 
             _.each(matchedElArr, function(obj, key){
                 var str = "";
@@ -1900,20 +2026,30 @@
                 }else{
                     str+= "skewX(5deg) ";
                 }
-                homeToProjectTl.to(obj, 1, {transform: str}, "fixLetters");                
+                homeToProjTl.to(obj, 1, {transform: str}, "fixLetters");                
             });
 
-            homeToProjectTl
+            homeToProjTl
             .add("moveLetters")
             .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
-            _.each(matchedElArr, function(obj, key){
-                homeToProjectTl.to(obj, 1, {
-                    top: posArr[key].end.top,
-                    left: posArr[key].end.left
-                }, "moveLetters");
-            });
+            
+            if(window.innerWidth <= 768){
+                _.each(matchedElArr, function(obj, key){
+                    homeToProjTl.to(obj, 1, {
+                        top: posArr[key].end.top,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }else{
+                _.each(matchedElArr, function(obj, key){
+                    homeToProjTl.to(obj, 1, {
+                        top: posArr[key].end.top - 5,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }
 
-            homeToProjectTl
+            homeToProjTl
             .add("changeColorLetters")
             .to("#ghost-text", 1, {opacity:1}, "changeColorLetters")
             .to("#random-text", 1, {opacity:0}, "changeColorLetters")
@@ -1929,8 +2065,10 @@
             ;
 
             _.each(matchedElArr, function(obj, key){
-                homeToProjectTl.to([obj, $(obj).find("a")], 1, {color:"#fff"}, "changeColorLetters");
+                homeToProjTl.to([obj, $(obj).find("a")], 1, {color:"#fff"}, "changeColorLetters");
             });
+
+            app.homeToProjTl = homeToProjTl;
         },
         _getPosition: function(context, titreArr){
             var currentLetter = $(context).text(), tempArr = [];
@@ -2089,7 +2227,7 @@
             ;
             
             app.currentParaIdx = Math.floor(Math.random() * app.initParaArr.length);
-            app.currProjSet = app.areTitlesInPara(app.initParaArr[app.currentParaIdx]);
+            app.currProjSet = app.getHomePara(app.areTitlesInPara(app.initParaArr[app.currentParaIdx]));
             app.ghostText = app.currProjSet.para;
             var titrePosArr = []
             ,matchedElArr = []
@@ -2637,6 +2775,7 @@
                 ;
             }else{
                 var planeToAnim = app.currentProject.projPr;
+                var smallRefPlane = app.currentProject.smallRefPlane;
                 var time = 0.5;
                 app.startWebGLAnimation();                
                 projToMenuTl
@@ -2721,58 +2860,59 @@
                         left: posArr[key].end.left - 55
                     }, "focusProj");
                 });
-                _.each(currProjArr, function(obj, key){
+               /* _.each(currProjArr, function(obj, key){
                     var planeToAnim = obj.projPr,
                     smallRefPlane = obj.smallRefPlane
                     ;
 
-                    projToMenuTl
-                    .to(planeToAnim.geometry.vertices[0], time, {
-                        ease:Power2.easeInOut,
-                        x:smallRefPlane.geometry.vertices[0].x + smallRefPlane.position.x,
-                        y:smallRefPlane.geometry.vertices[0].y + smallRefPlane.position.y,
-                        onUpdate:function(){
-                            planeToAnim.geometry.verticesNeedUpdate = true;
-                        } 
-                    }, "focusProj")            
-                    .to(planeToAnim.geometry.vertices[1], time, {
-                        ease:Power2.easeInOut,
-                        x:smallRefPlane.geometry.vertices[1].x + smallRefPlane.position.x,
-                        y:smallRefPlane.geometry.vertices[1].y + smallRefPlane.position.y,
-                        onUpdate:function(){
-                            planeToAnim.geometry.verticesNeedUpdate = true;
-                        }
-                    }, "focusProj+=0.1")        
-                    .to(planeToAnim.geometry.vertices[2], time, {
-                        ease:Power2.easeInOut,
-                        x:smallRefPlane.geometry.vertices[2].x + smallRefPlane.position.x,
-                        y:smallRefPlane.geometry.vertices[2].y + smallRefPlane.position.y,
-                        onUpdate:function(){
-                            planeToAnim.geometry.verticesNeedUpdate = true;
-                        }
-                    }, "focusProj+=0.2")
-                    .to(planeToAnim.geometry.vertices[3], time, {
-                        ease:Power2.easeInOut,
-                        x:smallRefPlane.geometry.vertices[3].x + smallRefPlane.position.x,
-                        y:smallRefPlane.geometry.vertices[3].y + smallRefPlane.position.y,
-                        onUpdate:function(){
-                            planeToAnim.geometry.verticesNeedUpdate = true;
-                        }
-                    }, "focusProj+=0.3")
-                })
+                })*/
+
+                projToMenuTl
+                .to(planeToAnim.geometry.vertices[0], time, {
+                    ease:Power2.easeInOut,
+                    x:smallRefPlane.geometry.vertices[0].x + smallRefPlane.position.x,
+                    y:smallRefPlane.geometry.vertices[0].y + smallRefPlane.position.y,
+                    onUpdate:function(){
+                        planeToAnim.geometry.verticesNeedUpdate = true;
+                    } 
+                }, "focusProj")            
+                .to(planeToAnim.geometry.vertices[1], time, {
+                    ease:Power2.easeInOut,
+                    x:smallRefPlane.geometry.vertices[1].x + smallRefPlane.position.x,
+                    y:smallRefPlane.geometry.vertices[1].y + smallRefPlane.position.y,
+                    onUpdate:function(){
+                        planeToAnim.geometry.verticesNeedUpdate = true;
+                    }
+                }, "focusProj+=0.1")        
+                .to(planeToAnim.geometry.vertices[2], time, {
+                    ease:Power2.easeInOut,
+                    x:smallRefPlane.geometry.vertices[2].x + smallRefPlane.position.x,
+                    y:smallRefPlane.geometry.vertices[2].y + smallRefPlane.position.y,
+                    onUpdate:function(){
+                        planeToAnim.geometry.verticesNeedUpdate = true;
+                    }
+                }, "focusProj+=0.2")
+                .to(planeToAnim.geometry.vertices[3], time, {
+                    ease:Power2.easeInOut,
+                    x:smallRefPlane.geometry.vertices[3].x + smallRefPlane.position.x,
+                    y:smallRefPlane.geometry.vertices[3].y + smallRefPlane.position.y,
+                    onUpdate:function(){
+                        planeToAnim.geometry.verticesNeedUpdate = true;
+                    }
+                }, "focusProj+=0.3")
               
             
 
                 projToMenuTl
                 .add("changeColorLetters")
-                .to(".css-threed", 1, {opacity:1}, "changeColorLetters")
+                //.to(".css-threed", 1, {opacity:1}, "changeColorLetters")
                 .to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "changeColorLetters")
                 ;
 
-                _.each(currProjArr, function(obj, key){
+                /*_.each(currProjArr, function(obj, key){
                     projToMenuTl
                     .to(obj.projPr.material, 1, {opacity:0.3}, "changeColorLetters")
-                })
+                })*/
             }
             
             app.projToMenuTl = projToMenuTl;
@@ -2812,8 +2952,8 @@
                     TweenMax.to(e.currentTarget, 0.1, {border: "1px solid #666"});
                     TweenMax.to($(e.currentTarget).find("i"), 0.1, {color: "#666"});
                 }else{
-                    TweenMax.to(e.currentTarget, 0.1, {border: "1px solid #CCC"});
-                    TweenMax.to($(e.currentTarget).find("i"), 0.1, {color: "#CCC"});
+                    TweenMax.to(e.currentTarget, 0.1, {border: "1px solid #FFF"});
+                    TweenMax.to($(e.currentTarget).find("i"), 0.1, {color: "#FFF"});
                 }
             }
         },
@@ -2825,8 +2965,8 @@
                     TweenMax.to(e.currentTarget, 0.1, {border: "1px solid #333"});
                     TweenMax.to($(e.currentTarget).find("i"), 0.1, {color: "#333"});
                 }else{
-                    TweenMax.to(e.currentTarget, 0.1, {border: "1px solid #FFF"});
-                    TweenMax.to($(e.currentTarget).find("i"), 0.1, {color: "#FFF"});
+                    TweenMax.to(e.currentTarget, 0.1, {border: "1px solid #CCC"});
+                    TweenMax.to($(e.currentTarget).find("i"), 0.1, {color: "#CCC"});
                 }
             }
         },
@@ -3176,25 +3316,26 @@
 
     app.Views.HomePageText = app.Extensions.View.extend({
         el: '#random-text',
-        clicked: false,
-        //mo: false,
         events: {
-            //'click a.projectTrigger': '_animateHomeToProject',
             'mouseenter a.projectTrigger': '_letterUp',
             'mouseleave a.projectTrigger': '_letterDown'
         },
         _letterUp : function(e){
             e.preventDefault();       
-            var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
-            if(!this.clicked){
+            if(app.isAnimating()){
+                return;
+            }else{
+                var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
                 app.homeTimeline.tweenFromTo("label_"+idx+"-=0", "exitLabel_"+idx);
                 app.currentProject = app.currProjSet.projArr[idx];                        
             }
         },
         _letterDown : function(e){
             e.preventDefault();
-            var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
-            if(!this.clicked){
+            if(app.isAnimating()){
+                return;
+            }else{
+                var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
                 app.homeTimeline.play();
             }
         },       
@@ -3214,9 +3355,9 @@
                 if(obj == "<")
                     tmpProjName[key] = '<br/>';
                 else if(obj == " ")
-                    tmpProjName[key] = '<div class="text">&nbsp;</div>';
+                    tmpProjName[key] = '<span class="text">&nbsp;</span>';
                 else if(!_.contains(["b","r","/",">"], obj))
-                    tmpProjName[key] = '<div class="text">' + obj + '</div>';
+                    tmpProjName[key] = '<span class="text">' + obj + '</span>';
             });
             return tmpProjName.join("");
         },

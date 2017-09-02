@@ -4,11 +4,11 @@
 	}
 	/*#random-text, #ghost-text{
 		//word-wrap: break-word;
-	}*/
-	.text{
 		font-size:4em;
+	}*/
+	/*.text{
 		padding: 10px;
-	}
+	}*/
 }
 
 @media (max-width:1024px)  {	
@@ -34,23 +34,27 @@
 	.youval-pic-bottom-tablet img{
 		visibility: visible;
 	}	
+	/*#random-text, #ghost-text{
+		font-size:4em;
+	}*/
 }
 
 @media (max-width:768px)  {	
 	.text{
-		font-size:2em;
 		padding: 5px;
-	}
-	/*#random-text, #ghost-text{
 		font-size:3em;
-	}*/
+	}
+	#random-text, #ghost-text{
+		line-height: 3em;
+	}
 }
 
 @media (max-width:480px)  {	
 	/* smartphones, Android phones, landscape iPhone */
-	/*#random-text, #ghost-text{
+	.text{
 		font-size:2em;
-	}	*/
+		padding: 2px;
+	}
 	.main, .css-threed{
 		padding: 20px 20px;
 	}
@@ -132,5 +136,8 @@
 	#close-profile{
 	    top: -1em;
     	left: 2.5em;
+	}
+	#random-text, #ghost-text {
+		line-height: 2em;
 	}
 }

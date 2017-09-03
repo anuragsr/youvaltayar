@@ -570,7 +570,7 @@ div.projetsDetails{
     opacity:0;
     //top:-20px; 
     background-color:transparent;
-    margin-bottom: -1px;
+    //margin:-1px;
 }
 .projListCon p{
     font-size: 0.8em;

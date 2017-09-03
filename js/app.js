@@ -239,6 +239,7 @@
             ;           
 
             window.addEventListener( 'resize', self.onWindowResize, false );
+            //window.addEventListener( 'mousemove', self.onMouseMove, false );
 
             function revCpl(tl){
                 tl.restart();
@@ -430,6 +431,16 @@
                 }
             });           
         },
+        onMouseMove: function(event){
+            event.preventDefault();
+            /*if(app.isAnimating()){
+                return;
+            }else{
+                var mouseX = ( event.clientX - window.innerWidth / 2 ) / 3;
+                var mouseY = -1*( event.clientY - window.innerHeight / 2 ) / 3;
+                $(".text").css({"transform":"skewX("+ -1*mouseX*0.01 +"deg) skewY("+ -1*mouseY*0.03 +"deg)"})
+            }*/
+        },
         onWindowResize: function(){
             var currProjArr   = app.currProjSet.projArr;
             var menuPr        = _.pluck(currProjArr, 'menuPr');
@@ -457,7 +468,7 @@
             app.camera.updateProjectionMatrix();
             
             //Adjust home projects
-            _.each(homePr, function(obj, key){
+         /*   _.each(homePr, function(obj, key){
                 obj.rd.setSize( window.innerWidth, window.innerHeight );
                 obj.pl.position.set(bigRefPlane[key].position.x, bigRefPlane[key].position.y, bigRefPlane[key].position.z);                
                 for(var j = 0; j < 4; j++){
@@ -469,11 +480,10 @@
                     obj.pl.geometry.verticesNeedUpdate = true;
                     obj.rd.render(obj.sc, app.camera);
                 }
-            })
+            })*/
 
             //Adjust project page projects 
-            app.projectrenderer.setSize( window.innerWidth, window.innerHeight );
-            _.each(projPr, function(obj, key){
+        /*    _.each(projPr, function(obj, key){
                 obj.position.set(bigRefPlane[key].position.x, bigRefPlane[key].position.y, bigRefPlane[key].position.z);                
                 for(var j = 0; j < 4; j++){
                     obj.geometry.vertices[j].set(
@@ -484,17 +494,20 @@
                     obj.geometry.verticesNeedUpdate = true;
                     app.render();
                 }
-            })   
+            }) */  
 
-            //Adjust Menu Projects
+            //Adjust Renderers
+            app.projectrenderer.setSize( window.innerWidth, window.innerHeight );
             app.renderer.setSize( window.innerWidth, window.innerHeight );
             app.menurenderer.setSize( window.innerWidth, window.innerHeight );        
             _.each(currProjArr, function(obj){
+                app.projectscene.remove(obj.bigRefPlane);
+                app.projectscene.remove(obj.smallRefPlane);
+                app.menuscene.remove(obj.bigRefPlane);
                 app.menuscene.remove(obj.smallRefPlane);
                 app.scene.remove(obj.menuPr.cssPr);
             })
             _.each(currProjArr, function(obj, key){
-
                 var smallplane = new THREE.Mesh(new THREE.BoxGeometry(planeWidth, planeHeight, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0x0000ff, side: THREE.FrontSide }));
                 smallplane.position.set(planePosArr[key].x, planePosArr[key].y, planeZPos);
                 smallplane.name = "Small Ref Plane";
@@ -515,14 +528,85 @@
                 }
 
                 var cssPr = obj.menuPr.cssPr;
-                cssPr.element.style.height = planeHeight + "px";
+                cssPr.element.style.height = planeHeight + 1 + "px";
                 cssPr.element.style.width = planeWidth + "px"; 
                 cssPr.position.x = planePosArr[key].x;
-                cssPr.position.y = planePosArr[key].y;
-                cssPr.position.z = planePosArr[key].z;
+                cssPr.position.y = planePosArr[key].y - 1;
+                cssPr.position.z = 0;
 
                 obj.menuPr.cssPr.position.set(planePosArr[key].x,obj.smallRefPlane.position.y,obj.smallRefPlane.position.z)
                 app.scene.add(cssPr);
+
+                var refPlane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0xff0000, side: THREE.FrontSide }))
+                var imgAspect = obj.projPr.material.map.image.width/obj.projPr.material.map.image.height,
+                windowAspect = window.innerWidth/window.innerHeight;
+
+                if (windowAspect > imgAspect){
+                    refPlane.scale.x = window.innerWidth;
+                    refPlane.scale.y = window.innerWidth/imgAspect;                
+                }
+                else{
+                    refPlane.scale.x = window.innerHeight*imgAspect;
+                    refPlane.scale.y = window.innerHeight;                   
+                }
+                refPlane.updateMatrix(); 
+                refPlane.geometry.applyMatrix( refPlane.matrix );
+                refPlane.matrix.identity();
+                refPlane.position.set( 0, 0, 0 );
+                refPlane.rotation.set( 0, 0, 0 );
+                refPlane.scale.set( 1, 1, 1 );
+                //app.projectscene.add(refPlane);
+                //app.menuscene.add(refPlane);
+
+                obj.bigRefPlane = refPlane;
+                for(var j = 0; j < 4; j++){
+                    obj.projPr.geometry.vertices[j].set(
+                        obj.bigRefPlane.geometry.vertices[j].x,
+                        obj.bigRefPlane.geometry.vertices[j].y,
+                        obj.bigRefPlane.geometry.vertices[j].z
+                    );
+                    obj.projPr.geometry.verticesNeedUpdate = true;
+                    app.render();
+                }
+
+                obj.homePr.rd.setSize( window.innerWidth, window.innerHeight );
+                obj.homePr.pl.position.set(refPlane.position.x, refPlane.position.y, refPlane.position.z);                
+                for(var j = 0; j < 4; j++){
+                    obj.homePr.pl.geometry.vertices[j].set(
+                        refPlane.geometry.vertices[j].x,
+                        refPlane.geometry.vertices[j].y,
+                        refPlane.geometry.vertices[j].z,
+                    );
+                    obj.homePr.pl.geometry.verticesNeedUpdate = true;
+                    obj.homePr.rd.render(obj.homePr.sc, app.camera);
+                }
+                /*var imgAspect = obj.projPr.material.map.image.width/obj.projPr.material.map.image.height,
+                windowAspect = window.innerWidth/window.innerHeight;
+
+                if (windowAspect > imgAspect){
+                    obj.bigRefPlane.scale.x = window.innerWidth;
+                    obj.bigRefPlane.scale.y = window.innerWidth/imgAspect;                
+                }
+                else{
+                    obj.bigRefPlane.scale.x = window.innerHeight*imgAspect;
+                    obj.bigRefPlane.scale.y = window.innerHeight;                   
+                }
+                obj.bigRefPlane.updateMatrix(); 
+                obj.bigRefPlane.geometry.applyMatrix( obj.bigRefPlane.matrix );
+                obj.bigRefPlane.matrix.identity();
+                obj.bigRefPlane.position.set( 0, 0, 0 );
+                obj.bigRefPlane.rotation.set( 0, 0, 0 );
+                obj.bigRefPlane.scale.set( 1, 1, 1 );
+
+                for(var j = 0; j < 4; j++){
+                    obj.projPr.geometry.vertices[j].set(
+                        obj.bigRefPlane.geometry.vertices[j].x,
+                        obj.bigRefPlane.geometry.vertices[j].y,
+                        obj.bigRefPlane.geometry.vertices[j].z
+                    );
+                    obj.projPr.geometry.verticesNeedUpdate = true;
+                    app.render();
+                }*/
                 app.render();
             })            
         },   
@@ -554,12 +638,12 @@
             ,planePosArr = app.planePosArr
             _.each($(".projListCon"), function (obj, key) {  
                 var element = obj;
-                element.style.height = planeHeight + "px";
+                element.style.height = planeHeight + 1 + "px";
                 element.style.width = planeWidth + "px";                
                 //CSS Object
                 div = new THREE.CSS3DObject(element);
                 div.position.x = planePosArr[key].x;
-                div.position.y = planePosArr[key].y;
+                div.position.y = planePosArr[key].y - 1;
                 div.position.z = 0;
 
                 self.currProjSet.projArr[key].menuPr.cssPr = div;
@@ -911,11 +995,12 @@
                 app.startWebGLAnimation()
                 
                 menuTimeline
-                .staggerTo(".projListCon", 0.5, {opacity:1}, 0.1, "enterProj")            
-                .staggerTo(menuMaterials, 0.5, {opacity:1}, 0.1, "enterProj")            
+                .staggerTo(".projListCon", 0.5, {opacity:1}, 0.05, "enterProj")            
                 .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"}, "enterProj")            
                 .to(".project-container", 0.5, {opacity:0})            
                 ;
+                
+                TweenMax.staggerTo(menuMaterials, 0.5, {opacity:1}, 0.05)            
             }
             app.menuTimeline = menuTimeline;
         },
@@ -1068,95 +1153,6 @@
                 //para: para,
                 projArr: projArr
             };
-        },
-        prepareLettersForAnim: function(animCase){
-            var paraArr = [];
-            var pos, i; 
-            var fromEl, toEl;
-            switch(animCase){
-                case "homeToProj" :
-                    fromEl = $("#ghost-text");
-                    toEl = $("#random-text");
-                break;
-
-                case "projToHome" :
-                    fromEl = $("#random-text");
-                    toEl = $("#ghost-text");
-                break;
-            }
-
-            var projHtml = $('<textarea />').html(app.currentProject.titre).text();
-
-            _.each(projHtml, function(obj){
-                paraArr.push({value:obj, toInsert:true});
-            });
-            
-            while(pos != -1){
-                pos = projHtml.indexOf("<br/>", i + 1);
-                i = pos;
-                if(pos!= -1){
-                    paraArr[pos].value = "<br/>";
-                    paraArr[pos+1].toInsert = false;
-                    paraArr[pos+2].toInsert = false;
-                    paraArr[pos+3].toInsert = false;
-                    paraArr[pos+4].toInsert = false;
-                }
-            }
-
-            var finalPara = [];
-            fromEl.html("");
-            _.each(paraArr, function(obj){
-                if(obj.value=="<br/>"){
-                    finalPara.push('<br/>');
-                }else if(obj.value==" "){
-                    finalPara.push('<span class="text">&nbsp;</span>');
-                }else if(obj.toInsert){
-                    finalPara.push('<span class="text">' + obj.value + '</span>');
-                }
-            });
-            fromEl.append(finalPara.join(""));
-
-            paraArr = app.paraArr;
-            finalPara = [];
-            
-            toEl.html("");
-            _.each(paraArr, function(obj, key){
-                if(obj.matched){
-                    tempEl = '<span class="text"><a href="#!/projets/' + obj.url + '" class="projectTrigger" >' + obj.value + '</a></span>';
-                    finalPara.push(tempEl);                                    
-                }else if(obj.value=="<br/>"){
-                    finalPara.push("<br/>");
-                }else if(obj.value==" "){
-                    finalPara.push('<span class="text">&nbsp;</span>');
-                }else if(obj.toInsert){
-                    finalPara.push('<span class="text">' + obj.value + '</span>');
-                }
-            });
-            toEl.append(finalPara.join(""));
-
-            /*_.each($("#random-text"), function(obj, key){
-                paraArr.push({value:obj, toInsert:true});
-            });
-            var homePara = app.initParaArr[app.currentParaIdx];
-
-            while(pos != -1){
-                pos = homePara.indexOf("<br/>", i + 1);
-                i = pos;
-                if(pos!= -1){
-                    paraArr[pos].value = "<br/>";
-                    paraArr[pos+1].toInsert = false;
-                    paraArr[pos+2].toInsert = false;
-                    paraArr[pos+3].toInsert = false;
-                    paraArr[pos+4].toInsert = false;
-                }
-            }
-
-            $("#random-text").html("");
-            _.each(homePara, function(obj){                
-                
-            });
-            $("#random-text")
-            $("#ghost-text").append(finalPara.join(""));*/
         },
         prepareHomeCSS : function(){
             $("body").css("overflow-y", "hidden");
@@ -1332,7 +1328,12 @@
                 if(app.projToHomeTl._active){
                     returnObj = true;
                 }
-            }
+            }/*
+            if(!(typeof app.letterTl === "undefined")){
+                if(app.letterTl._active){
+                    returnObj = true;
+                }
+            }*/
             return returnObj;
         }
     };
@@ -1440,15 +1441,7 @@
                     }); 
                 }else{
                     app.addCSSProjects();
-                }                       
-
-             /*   _.each($(".projListCon .text"), function(obj, key){                
-                    $(obj).css({
-                        position: "absolute",
-                        top: $(obj).position().top,
-                        left: $(obj).position().left
-                    });
-                });*/
+                }                                      
 
                 app.currentRoute = $(view.el)[0].className;
                 switch(app.currentRoute){
@@ -1478,11 +1471,12 @@
                         app.prepareProjCSS();
                         break;
                 }
-              
                 view.render({ page: true });
                 ctx.$el.append( view.$el );
-                ctx.currentPage = view;
+                ctx.currentPage = view;                
                 
+                //app.fixLettersForSkew()
+
                 loaderTl.play();
 
                 //console.log( 'Loading complete!');
@@ -1820,12 +1814,12 @@
             projToHomeTl
             .add("fixLetters")
             .to($("body"), 0.1, {overflowY:"hidden"}, "fixLetters")
-            .to($("#random-text .text").not(".matched"), 1, {opacity:0}, "fixLetters")
-            .to($(".matched"), 1, {color:"rgba(0,0,0,0.15)"}, "fixLetters")
-            .to($(".linkmatched"), 1, {color:"rgba(0,0,0,1)"}, "fixLetters")
-            .to($("a.projectTrigger"), 1, {bottom:0}, "fixLetters")
-            .to($(".project-container"), 1, {opacity:0}, "fixLetters")
-            .to($(".main"), 1, {backgroundColor:"rgba(255,255,255,0.7)"}, "fixLetters")
+            .to($("#random-text .text").not(".matched"), 0.5, {opacity:0}, "fixLetters")
+            .to($(".matched"), 0.5, {color:"rgba(0,0,0,0.15)"}, "fixLetters")
+            .to($(".linkmatched"), 0.5, {color:"rgba(0,0,0,1)"}, "fixLetters")
+            .to($("a.projectTrigger"), 0.5, {bottom:0}, "fixLetters")
+            .to($(".project-container"), 0.5, {opacity:0}, "fixLetters")
+            .to($(".main"), 0.5, {backgroundColor:"rgba(255,255,255,0.7)"}, "fixLetters")
             ;
             if(window.innerWidth <= 768){
                 _.each(matchedElArr, function(obj, key){                
@@ -1852,13 +1846,13 @@
             
             projToHomeTl
             .add("skewLetters")
-            .to(["header", "#projetsReview", ".profile"], 1, {color:"#000", borderBottomColor:"#fff"}, "skewLetters")
-            .fromTo(".header img", 1, {filter:"invert(100%)"},{filter:"invert(0%)"}, "skewLetters")
-            .to(["nav .menu-line", "nav .burger li"], 1, {backgroundColor:"#000"}, "skewLetters")
-            .to("#social-icons", 1, {borderTopColor:"#000"}, "skewLetters")
-            .to("#nav .social", 1, {borderColor:"#333"}, "skewLetters")
+            .to(["header", "#projetsReview", ".profile"], 0.5, {color:"#000", borderBottomColor:"#fff"}, "skewLetters")
+            .fromTo(".header img", 0.5, {filter:"invert(100%)"},{filter:"invert(0%)"}, "skewLetters")
+            .to(["nav .menu-line", "nav .burger li"], 0.5, {backgroundColor:"#000"}, "skewLetters")
+            .to("#social-icons", 0.5, {borderTopColor:"#000"}, "skewLetters")
+            .to("#nav .social", 0.5, {borderColor:"#333"}, "skewLetters")
             .to("#projetsReview div.projetsDetails svg", 0.2, {attr:{stroke:"#00"}}, "skewLetters")
-            .to("#nav .social i", 1, {color:"#333"}, "skewLetters")
+            .to("#nav .social i", 0.5, {color:"#333"}, "skewLetters")
             .to("#projetsReview div.projetsDetails", 0.2, {opacity:0, height:0}, "skewLetters")
             ;
             _.each(matchedElArr, function(obj, key){
@@ -1905,6 +1899,7 @@
         },
         _animatehomeToProj : function(previous, next, ctx){
             app.ghostText = app.insertTitle(app.currentProject.titre);
+            app.homeTimeline.pause();
 
             var titrePosArr = []
             ,matchedElArr = []
@@ -1941,8 +1936,6 @@
                     app.createProjectTl();
                 }
             });
-
-            //app.prepareLettersForAnim("homeToProj");            
 
             _.each($("#ghost-text .text"), function(obj){
                 tempObj = {
@@ -1985,11 +1978,17 @@
                 });
             });
            
+           /* app.homeTimeline.tweenTo("label_"+idx+"-=0", {
+                onComplete: function(){
+                    app.homeToProjTl.play();//TweenMax.to($(".home-container canvas")[idx], 0.5, {opacity:1});
+                }
+            });*/
 
             homeToProjTl
             .add("fixLetters")
-            .to($("#random-text .text").not(".matched"), 1, {opacity:0}, "fixLetters")
-            .to($("a.projectTrigger"), 1, {bottom:0}, "fixLetters")
+            .to($("a.projectTrigger"), 0.3, {bottom:0}, "fixLetters")
+            //.to($(".project-container"), 0.5, {opacity:1})
+            .to($("#random-text .text").not(".matched"), 0.5, {opacity:0}, "fixLetters")
             ;        
 
             if(window.innerWidth <= 768){
@@ -2013,7 +2012,8 @@
                     });
                 });
             }
-
+            homeToProjTl
+            .add("skewLetters")
             _.each(matchedElArr, function(obj, key){
                 var str = "";
                 if(posArr[key].start.top > posArr[key].end.top){
@@ -2026,7 +2026,7 @@
                 }else{
                     str+= "skewX(5deg) ";
                 }
-                homeToProjTl.to(obj, 1, {transform: str}, "fixLetters");                
+                homeToProjTl.to(obj, 1, {transform: str}, "skewLetters");                
             });
 
             homeToProjTl
@@ -2069,6 +2069,7 @@
             });
 
             app.homeToProjTl = homeToProjTl;
+            //app.homeToProjTl.pause();
         },
         _getPosition: function(context, titreArr){
             var currentLetter = $(context).text(), tempArr = [];
@@ -3317,17 +3318,39 @@
     app.Views.HomePageText = app.Extensions.View.extend({
         el: '#random-text',
         events: {
+            'click a.projectTrigger': '_navigateToProj',
             'mouseenter a.projectTrigger': '_letterUp',
             'mouseleave a.projectTrigger': '_letterDown'
         },
+        _navigateToProj: function(e){
+            e.preventDefault();
+            app.homeTimeline.pause();
+            var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
+            app.homeTimeline.tweenTo("exitLabel_"+idx, {
+                onComplete: function(){
+                    Backbone.history.navigate('#!/projets/' + app.currentProject.url, { trigger:true })            
+                }
+            }).duration(0);
+        },
         _letterUp : function(e){
-            e.preventDefault();       
+            e.preventDefault();
             if(app.isAnimating()){
                 return;
             }else{
                 var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
-                app.homeTimeline.tweenFromTo("label_"+idx+"-=0", "exitLabel_"+idx);
-                app.currentProject = app.currProjSet.projArr[idx];                        
+                app.currentProject = app.currProjSet.projArr[idx];                          
+                if($(e.currentTarget).css("bottom") == "0px"){
+                    app.homeTimeline.pause();
+                    TweenMax.to("a.projectTrigger", 0.3, {
+                        bottom:0,
+                        onComplete : function(){
+                            TweenMax.to("a.projectTrigger", {clearProps: "bottom"})
+                            app.homeTimeline.tweenFromTo("label_"+idx+"-=0", "exitLabel_"+idx);
+                        }
+                    })
+                }else{
+                    app.homeTimeline.tweenTo("exitLabel_"+idx);
+                }
             }
         },
         _letterDown : function(e){
@@ -3335,7 +3358,6 @@
             if(app.isAnimating()){
                 return;
             }else{
-                var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
                 app.homeTimeline.play();
             }
         },       

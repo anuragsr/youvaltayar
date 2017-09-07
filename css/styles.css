@@ -1,8 +1,3 @@
-.nav-control{
-    position: fixed;
-    top: 0;
-    z-index:4;
-}
 body{
     -webkit-user-select: none; /* Safari, iOS, and Android */
        -moz-user-select: none; /* Firefox */
@@ -570,6 +565,7 @@ div.projetsDetails{
     opacity:0;
     //top:-20px; 
     background-color:transparent;
+    //border: 2px solid black;
     //margin:-1px;
 }
 .projListCon p{

@@ -1,10 +1,4 @@
 (function () {
-    jQuery.fn.cleanWhitespace = function() {
-        this.contents().filter(
-            function() { return (this.nodeType == 3 && !/\S/.test(this.nodeValue)); })
-            .remove();
-        return this;
-    }
     window.app = {
         Views: {},
         Extensions: {},
@@ -210,21 +204,34 @@
             "LOST IN<br/>THE MATRIX?<br/>COME, I'll BE<br/>YOUR GUIDE",
             "YA GETTING<br/>BORED?<br/>JUST CLICK<br/>MY LOGO"
         ],  
-        scene : new THREE.Scene(),
-        light : new THREE.HemisphereLight(0xffffff, 0xffffff),
-        renderer : new THREE.CSS3DRenderer(),
-        camera : new THREE.PerspectiveCamera(2 * Math.atan( window.innerHeight / ( 2 * 1000 ) )*180/Math.PI, window.innerWidth / window.innerHeight, 1, 10000),
-        refPlane : new THREE.Mesh(new THREE.BoxGeometry(window.innerWidth, window.innerHeight, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0xff0000, side: THREE.FrontSide })),
-        homePlaneArr : [],
-        menuPlaneArr : [],
-        projPlaneArr : [],
-        smallPlaneArr : [],
-        refPlaneArr : [],
-        currentParaIdx : 0,        
-        init: function () {
-            
-            var self = this
-            ,planeWidth = window.innerWidth/4
+        currentParaIdx : 0,
+        isMobile: function(){
+            if(    navigator.userAgent.match(/Android/i)
+                || navigator.userAgent.match(/webOS/i)
+                || navigator.userAgent.match(/iPhone/i)
+                || navigator.userAgent.match(/iPod/i)
+                || navigator.userAgent.match(/BlackBerry/i)
+                || navigator.userAgent.match(/Windows Phone/i)
+                || window.innerWidth <= 480
+                ){
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
+        isTablet: function(){
+            if(window.innerWidth <= 768 && window.innerWidth > 480){
+                return true;
+            }
+            else {
+                return false;
+            }   
+        },     
+        init: function(){            
+            var self = this;
+
+            var planeWidth = window.innerWidth/4
             ,planeHeight = window.innerHeight/3.8        
             ,planePosArr = [
                 {x:-1.5*planeWidth, y:0.5*planeHeight, z:0},
@@ -237,142 +244,35 @@
                 {x: 1.5*planeWidth, y:-0.5*planeHeight, z:0},
             ]
             ;           
-
-            window.addEventListener( 'resize', self.onWindowResize, false );
-            //window.addEventListener( 'mousemove', self.onMouseMove, false );
-
-            function revCpl(tl){
-                tl.restart();
-                tl.pause();        
-                if(app.currentRoute != "projet"){
-                    TweenMax.set($(".projetContent"), {css:{display: "none"}} )
-                }else{
-                    TweenMax.set("body", {css:{overflowY: "visible"}})      
-                    TweenMax.set($(".projetContent"), {clearProps: "display"} )
-                }       
-                setTimeout(function(){
-                    TweenMax.set(".projetNav", {css:{opacity:1}})
-                }, 500)
-            }
-
-            function showCloseBtn(){
-                TweenMax.to("#close-profile", 0.5, {opacity:1})
-            }
-
-            function tlCpl(tl){
-                TweenMax.set($(".projetContent"), {clearProps:"display"})
-                TweenMax.set($(".projetContent"), {css:{display: "none"}})      
-                TweenMax.set(".projetNav", {css:{opacity:0}})
-                TweenMax.set("body", {css:{overflowY: "visible"}})      
-                /*if(app.currentRoute == "projet"){
-                }*/
-            }
-
-            var tl = new TimelineMax({
-                onComplete:tlCpl,
-                onCompleteParams:["{self}"],
-                onReverseComplete:revCpl,
-                onReverseCompleteParams:["{self}"]
-            });
-            
-            tl
-            .to([".main", ".css-threed"], 0.1, {clearProps:"display"})
-            .to(".body", 0.1, {clearProps:"overflowY"})
-            .to(".profile-content", 0.1, {display:"block", zIndex:4})
-            .add("showSq")
-            .to(".profile-square", 0.5, {opacity:1}, "showSq")
-
-            if(window.innerWidth <= 480){
-                tl.staggerTo(_.shuffle($(".profile-inner").slice()), 0.3, {
-                    width:"100%", 
-                    padding:"5%",
-                    ease:Expo.easeOut
-                }, 0.07, "showSq" ,showCloseBtn, [])
-            }else{
-                tl.staggerTo(_.shuffle($(".profile-inner").slice()), 0.3, {
-                    width:"100%", 
-                    padding:"10%",
-                    ease:Expo.easeOut
-                }, 0.07, "showSq" ,showCloseBtn, [])
-            }
-            tl.add("showProf", 1.5)
-            .to(".inner-text", 0.5, {opacity:1}, "showProf")
-            .to("body", 0.1, {overflowY: "hidden"}, "showProf")      
-            .to([".main", ".css-threed"], 0.1, {display:"none"}, "showProf")
-            ;
-
-            tl.stop();
-
-            $(document).on("mouseenter", ".projListCon", function(e){ 
-                if(app.isAnimating()){
-                    return;
-                }else{
-                    e.preventDefault();
-                    TweenMax.to($(e.currentTarget).find(".text"), 0.5, {top:-20})
-                }
-            });
-
-            $(document).on("mouseleave", ".projListCon", function(e){ 
-                if(app.isAnimating()){
-                    return;
-                }else{
-                    e.preventDefault();
-                    TweenMax.to($(e.currentTarget).find(".text"), 0.5, {top:0})
-                }
-            });
-
-            $(document).on("click", ".projListCon", function(e){ 
-                e.preventDefault();
-                TweenMax.to($(e.currentTarget).find(".text"), 0.5, {
-                    top:0,
-                    onComplete: function(){
-                        Backbone.history.navigate($(e.currentTarget).find(".menuProjLink")[0].hash, {trigger:true})
-                    }
-                })
-            });
-
-            $(document).on('click', ".profile", function(e){   
-                e.preventDefault();
-                tl.play();
-            })
-
-            $(document).on('click', "#close-profile", function(e){   
-                e.preventDefault();   
-                TweenMax.to("#close-profile", 0.5, {rotationZ:180, opacity:0})
-                tl.reverse();
-            })
-
-            $(document).on('mouseenter', "#close-profile", function(e){
-                TweenMax.to($(this), 0.7, {
-                    width:55,  
-                    height:55,
-                    border:"2px solid #ccc",    
-                    rotationZ:90,             
-                    ease:Power2.easeOut
-                })
-                TweenMax.to($(".close-top"), 0.5, {
-                    top:1,
-                })
-                TweenMax.to($(".close-bottom"), 0.5, {
-                    top:-1,
-                })
-            })
-
-            $(document).on('mouseleave', "#close-profile", function(e){
-                TweenMax.to($(this), 0.7, {
-                    width:45,  
-                    height:45,
-                    border:"4px solid #ccc",
-                    rotationZ:0,
-                    ease:Power2.easeOut
-                })
-                TweenMax.to($(".close-top"), 0.5, {
-                    top:1,
-                })
-                TweenMax.to($(".close-bottom"), 0.5, {
-                    top:-1,
-                })
-            })            
+            if(app.isTablet()){
+                console.log("Applying Tab Settings")
+                planeWidth = window.innerWidth/2
+                ,planeHeight = window.innerHeight/4        
+                ,planePosArr = [
+                    {x:-0.5*planeWidth, y: 1.5*planeHeight, z:0},
+                    {x: 0.5*planeWidth, y: 1.5*planeHeight, z:0},                    
+                    {x:-0.5*planeWidth, y: 0.5*planeHeight, z:0},
+                    {x: 0.5*planeWidth, y: 0.5*planeHeight, z:0},
+                    {x:-0.5*planeWidth, y:-0.5*planeHeight, z:0},
+                    {x: 0.5*planeWidth, y:-0.5*planeHeight, z:0},
+                    {x:-0.5*planeWidth, y:-1.5*planeHeight, z:0},
+                    {x: 0.5*planeWidth, y:-1.5*planeHeight, z:0},
+                ];
+            }else if(app.isMobile()){
+                console.log("Applying Mobile Settings")
+                planeWidth = window.innerWidth
+                ,planeHeight = window.innerHeight/2.5        
+                ,planePosArr = [
+                    {x:0, y: 0.25*planeHeight, z:0},
+                    {x:0, y:-0.75*planeHeight, z:0},                    
+                    {x:0, y:-1.75*planeHeight, z:0},
+                    {x:0, y:-2.75*planeHeight, z:0},
+                    {x:0, y:-3.75*planeHeight, z:0},
+                    {x:0, y:-4.75*planeHeight, z:0},
+                    {x:0, y:-5.75*planeHeight, z:0},
+                    {x:0, y:-6.75*planeHeight, z:0},
+                ];
+            }                                        
 
             this.currentParaIdx = Math.floor(Math.random() * this.initParaArr.length);
             /*
@@ -381,9 +281,8 @@
               2. Sets the loading of all background textures
               3. Adds webgl projects for home, menu and project 
             */
-
-            //For Home Page Inititally
             this.currProjSet = this.getHomePara(this.areTitlesInPara(this.initParaArr[this.currentParaIdx]));
+
             this.planeWidth = planeWidth;
             this.planeHeight = planeHeight;
             this.planePosArr = planePosArr;
@@ -392,6 +291,9 @@
             this.instance = new app.Views.App();
             
             Backbone.history.start();
+            window.addEventListener( 'resize', self.onWindowResize, false );
+            //window.addEventListener( 'mousemove', self.onMouseMove, false );
+            //window.addEventListener('scroll', function() { console.log("Scrolled"); });
             
             var vis = (function(){
                 var stateKey, 
@@ -433,25 +335,27 @@
         },
         onMouseMove: function(event){
             event.preventDefault();
-            /*if(app.isAnimating()){
+            if(app.isAnimating()){
                 return;
             }else{
                 var mouseX = ( event.clientX - window.innerWidth / 2 ) / 3;
                 var mouseY = -1*( event.clientY - window.innerHeight / 2 ) / 3;
                 $(".text").css({"transform":"skewX("+ -1*mouseX*0.01 +"deg) skewY("+ -1*mouseY*0.03 +"deg)"})
-            }*/
+            }
         },
         onWindowResize: function(){
-            var currProjArr   = app.currProjSet.projArr;
-            var menuPr        = _.pluck(currProjArr, 'menuPr');
-            var projPr        = _.pluck(currProjArr, 'projPr');
-            var homePr        = _.pluck(currProjArr, 'homePr');
-            var homeRenderArr = _.pluck(currProjArr, 'homerenderer');
-            var bigRefPlane   = _.pluck(currProjArr, 'bigRefPlane');
-            var smallRefPlane = _.pluck(currProjArr, 'smallRefPlane');            
-            var planeWidth = window.innerWidth/4;
-            var planeHeight = window.innerHeight/3.8;
-            var planePosArr = [
+            var currProjArr   = app.currProjSet.projArr
+            var menuPr        = _.pluck(currProjArr, 'menuPr')
+            var projPr        = _.pluck(currProjArr, 'projPr')
+            var homePr        = _.pluck(currProjArr, 'homePr')
+            var homeRenderArr = _.pluck(currProjArr, 'homerenderer')
+            var bigRefPlane   = _.pluck(currProjArr, 'bigRefPlane')
+            var smallRefPlane = _.pluck(currProjArr, 'smallRefPlane')            
+            var planeZPos = 0;
+
+            var planeWidth = window.innerWidth/4
+            ,planeHeight = window.innerHeight/3.8        
+            ,planePosArr = [
                 {x:-1.5*planeWidth, y:0.5*planeHeight, z:0},
                 {x:-0.5*planeWidth, y:0.5*planeHeight, z:0},
                 {x: 0.5*planeWidth, y:0.5*planeHeight, z:0},
@@ -460,41 +364,48 @@
                 {x:-0.5*planeWidth, y:-0.5*planeHeight, z:0},
                 {x: 0.5*planeWidth, y:-0.5*planeHeight, z:0},
                 {x: 1.5*planeWidth, y:-0.5*planeHeight, z:0},
-            ];
-            var planeZPos = 0;
+            ]
+            ;
+        
+            $(".menu-css-container, .menu-container canvas").css("top", 0);                                                
+
+            if(app.isTablet()){
+                console.log("Resize To Tab")
+                planeWidth = window.innerWidth/2
+                ,planeHeight = window.innerHeight/4        
+                ,planePosArr = [
+                    {x:-0.5*planeWidth, y: 1.5*planeHeight, z:0},
+                    {x: 0.5*planeWidth, y: 1.5*planeHeight, z:0},                    
+                    {x:-0.5*planeWidth, y: 0.5*planeHeight, z:0},
+                    {x: 0.5*planeWidth, y: 0.5*planeHeight, z:0},
+                    {x:-0.5*planeWidth, y:-0.5*planeHeight, z:0},
+                    {x: 0.5*planeWidth, y:-0.5*planeHeight, z:0},
+                    {x:-0.5*planeWidth, y:-1.5*planeHeight, z:0},
+                    {x: 0.5*planeWidth, y:-1.5*planeHeight, z:0},
+                ];
+                $(".menu-css-container, .menu-container canvas").css("top", 250);                                                
+                //$("body").css("overflow", "visible");
+            }else if(app.isMobile()){
+                console.log("Resize To Mobile")
+                $("body").css("overflow", "hidden");
+
+                planeWidth = window.innerWidth
+                ,planeHeight = window.innerHeight/2.5        
+                ,planePosArr = [
+                    {x:0, y: 0.25*planeHeight, z:0},
+                    {x:0, y:-0.75*planeHeight, z:0},                    
+                    {x:0, y:-1.75*planeHeight, z:0},
+                    {x:0, y:-2.75*planeHeight, z:0},
+                    {x:0, y:-3.75*planeHeight, z:0},
+                    {x:0, y:-4.75*planeHeight, z:0},
+                    {x:0, y:-5.75*planeHeight, z:0},
+                    {x:0, y:-6.75*planeHeight, z:0},
+                ];
+            }
 
             app.camera.aspect = window.innerWidth / window.innerHeight;
             app.camera.fov = 2 * Math.atan( window.innerHeight / ( 2 * 1000 ) )*180/Math.PI;
             app.camera.updateProjectionMatrix();
-            
-            //Adjust home projects
-         /*   _.each(homePr, function(obj, key){
-                obj.rd.setSize( window.innerWidth, window.innerHeight );
-                obj.pl.position.set(bigRefPlane[key].position.x, bigRefPlane[key].position.y, bigRefPlane[key].position.z);                
-                for(var j = 0; j < 4; j++){
-                    obj.pl.geometry.vertices[j].set(
-                        bigRefPlane[key].geometry.vertices[j].x,
-                        bigRefPlane[key].geometry.vertices[j].y,
-                        bigRefPlane[key].geometry.vertices[j].z,
-                    );
-                    obj.pl.geometry.verticesNeedUpdate = true;
-                    obj.rd.render(obj.sc, app.camera);
-                }
-            })*/
-
-            //Adjust project page projects 
-        /*    _.each(projPr, function(obj, key){
-                obj.position.set(bigRefPlane[key].position.x, bigRefPlane[key].position.y, bigRefPlane[key].position.z);                
-                for(var j = 0; j < 4; j++){
-                    obj.geometry.vertices[j].set(
-                        bigRefPlane[key].geometry.vertices[j].x,
-                        bigRefPlane[key].geometry.vertices[j].y,
-                        bigRefPlane[key].geometry.vertices[j].z,
-                    );
-                    obj.geometry.verticesNeedUpdate = true;
-                    app.render();
-                }
-            }) */  
 
             //Adjust Renderers
             app.projectrenderer.setSize( window.innerWidth, window.innerHeight );
@@ -507,6 +418,7 @@
                 app.menuscene.remove(obj.smallRefPlane);
                 app.scene.remove(obj.menuPr.cssPr);
             })
+
             _.each(currProjArr, function(obj, key){
                 var smallplane = new THREE.Mesh(new THREE.BoxGeometry(planeWidth, planeHeight, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0x0000ff, side: THREE.FrontSide }));
                 smallplane.position.set(planePosArr[key].x, planePosArr[key].y, planeZPos);
@@ -528,13 +440,21 @@
                 }
 
                 var cssPr = obj.menuPr.cssPr;
-                cssPr.element.style.height = planeHeight + 1 + "px";
-                cssPr.element.style.width = planeWidth + "px"; 
-                cssPr.position.x = planePosArr[key].x;
-                cssPr.position.y = planePosArr[key].y - 1;
-                cssPr.position.z = 0;
 
-                obj.menuPr.cssPr.position.set(planePosArr[key].x,obj.smallRefPlane.position.y,obj.smallRefPlane.position.z)
+                if(app.isMobile()){
+                    cssPr.element.style.height = planeHeight + 1 + "px";
+                    cssPr.element.style.width = planeWidth + 1 + "px"; 
+                    cssPr.position.x = planePosArr[key].x + planeWidth/10;
+                    cssPr.position.y = planePosArr[key].y - 1;
+                    cssPr.position.z = 0;
+                }else{
+                    cssPr.element.style.height = planeHeight + 1 + "px";
+                    cssPr.element.style.width = planeWidth + "px"; 
+                    cssPr.position.x = planePosArr[key].x;
+                    cssPr.position.y = planePosArr[key].y - 1;
+                    cssPr.position.z = 0;
+                }
+
                 app.scene.add(cssPr);
 
                 var refPlane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0xff0000, side: THREE.FrontSide }))
@@ -580,33 +500,6 @@
                     obj.homePr.pl.geometry.verticesNeedUpdate = true;
                     obj.homePr.rd.render(obj.homePr.sc, app.camera);
                 }
-                /*var imgAspect = obj.projPr.material.map.image.width/obj.projPr.material.map.image.height,
-                windowAspect = window.innerWidth/window.innerHeight;
-
-                if (windowAspect > imgAspect){
-                    obj.bigRefPlane.scale.x = window.innerWidth;
-                    obj.bigRefPlane.scale.y = window.innerWidth/imgAspect;                
-                }
-                else{
-                    obj.bigRefPlane.scale.x = window.innerHeight*imgAspect;
-                    obj.bigRefPlane.scale.y = window.innerHeight;                   
-                }
-                obj.bigRefPlane.updateMatrix(); 
-                obj.bigRefPlane.geometry.applyMatrix( obj.bigRefPlane.matrix );
-                obj.bigRefPlane.matrix.identity();
-                obj.bigRefPlane.position.set( 0, 0, 0 );
-                obj.bigRefPlane.rotation.set( 0, 0, 0 );
-                obj.bigRefPlane.scale.set( 1, 1, 1 );
-
-                for(var j = 0; j < 4; j++){
-                    obj.projPr.geometry.vertices[j].set(
-                        obj.bigRefPlane.geometry.vertices[j].x,
-                        obj.bigRefPlane.geometry.vertices[j].y,
-                        obj.bigRefPlane.geometry.vertices[j].z
-                    );
-                    obj.projPr.geometry.verticesNeedUpdate = true;
-                    app.render();
-                }*/
                 app.render();
             })            
         },   
@@ -626,30 +519,51 @@
         addCSSProjects : function(){
             var self = this;
 
-            self.renderer.setSize(window.innerWidth, window.innerHeight);
+            self.renderer.setSize($(".menu-container").width(), $(".menu-container").height());
+            //self.renderer.setSize(window.innerWidth, window.innerHeight);
             self.renderer.domElement.style.position = "absolute";
             self.renderer.domElement.style.top = "0";
             self.renderer.domElement.style.left = "0";
+            self.renderer.domElement.className = "menu-css-container";
             
             $(".css-threed").append(self.renderer.domElement);
 
             var planeWidth = app.planeWidth
             ,planeHeight = app.planeHeight
             ,planePosArr = app.planePosArr
-            _.each($(".projListCon"), function (obj, key) {  
-                var element = obj;
-                element.style.height = planeHeight + 1 + "px";
-                element.style.width = planeWidth + "px";                
-                //CSS Object
-                div = new THREE.CSS3DObject(element);
-                div.position.x = planePosArr[key].x;
-                div.position.y = planePosArr[key].y - 1;
-                div.position.z = 0;
+            ;
 
-                self.currProjSet.projArr[key].menuPr.cssPr = div;
-                self.scene.add(div);                
-                self.renderer.render(self.scene, self.camera)
-            });                
+            if(app.isMobile()){
+                _.each($(".projListCon"), function (obj, key) {  
+                    var element = obj;
+                    element.style.height = planeHeight + 1 + "px";
+                    element.style.width = planeWidth + 1 + "px";                
+                    //CSS Object
+                    div = new THREE.CSS3DObject(element);
+                    div.position.x = planePosArr[key].x + planeWidth/10;
+                    div.position.y = planePosArr[key].y - 1;
+                    div.position.z = 0;
+
+                    self.currProjSet.projArr[key].menuPr.cssPr = div;
+                    self.scene.add(div);                
+                    self.renderer.render(self.scene, self.camera)
+                });
+            }else{
+                _.each($(".projListCon"), function (obj, key) {  
+                    var element = obj;
+                    element.style.height = planeHeight + 1 + "px";
+                    element.style.width = planeWidth + "px";                
+                    //CSS Object
+                    div = new THREE.CSS3DObject(element);
+                    div.position.x = planePosArr[key].x;
+                    div.position.y = planePosArr[key].y - 1;
+                    div.position.z = 0;
+
+                    self.currProjSet.projArr[key].menuPr.cssPr = div;
+                    self.scene.add(div);                
+                    self.renderer.render(self.scene, self.camera)
+                });                
+            }
         },
         addWebGLProjects : function(){
             var planeWidth = app.planeWidth
@@ -657,6 +571,10 @@
             ,planePosArr = app.planePosArr
             ,self = this;
             
+            var scene = new THREE.Scene(),
+            renderer = new THREE.CSS3DRenderer()
+            ;
+
             var camera = new THREE.PerspectiveCamera(2 * Math.atan( window.innerHeight / ( 2 * 1000 ) )*180/Math.PI, window.innerWidth / window.innerHeight, 1, 10000)
             ,light = new THREE.HemisphereLight(0xffffff, 0xffffff)
             ,projectrenderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
@@ -666,10 +584,9 @@
             ;
             
             camera.position.set(0, 0, 1000);
-            // camera.position.set(0, 1500, 2500);                     
+            // camera.position.set(0, 1500, 4500);                     
             // camera.rotateX(-0.4);
             light.color.set(0xffffff);          
-            
                
             projectrenderer.setSize(window.innerWidth, window.innerHeight);
             projectrenderer.domElement.style.position = "absolute";
@@ -677,12 +594,13 @@
             projectrenderer.domElement.style.left = "0";
             $(".project-container").append(projectrenderer.domElement);
             
-            menurenderer.setSize(window.innerWidth, window.innerHeight);
+            //menurenderer.setSize(window.innerWidth, window.innerHeight);
+            menurenderer.setSize($(".menu-container").width(), $(".menu-container").height());
             menurenderer.domElement.style.position = "absolute";
             menurenderer.domElement.style.top = "0";
             menurenderer.domElement.style.left = "0";
-            $(".menu-container").append(menurenderer.domElement);  
-                            
+            $(".menu-container").append(menurenderer.domElement);                                      
+
             //1.  Add to home
             _.each(self.currProjSet.projArr, function (obj, key) {
                 var homerenderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
@@ -723,6 +641,7 @@
 
                 homeplane.position.set(0, 0, planeZPos);
                 refPlane.position.set(0, 0, planeZPos);
+                refPlane.name = "Big Ref Plane";
 
                 scene.add(light);
                 scene.add(homeplane);
@@ -782,13 +701,14 @@
                         smallplane.geometry.vertices[j].z
                     );
                 }
+
                 menuplane.position.set(planePosArr[key].x, planePosArr[key].y, planePosArr[key].z);
                 light = new THREE.HemisphereLight(0xffffff, 0xffffff)
                 light.color.set(0xffffff);                
                 menuscene.add(light);
                 menuscene.add(menuplane);
-                //menuscene.add(refPlane);
-                //menuscene.add(smallplane);
+                // menuscene.add(refPlane);
+                // menuscene.add(smallplane);
                 obj.menuPr = {
                     pl:menuplane,
                     cssPr:{}
@@ -796,27 +716,16 @@
             });
             light = new THREE.HemisphereLight(0xffffff, 0xffffff)
             light.color.set(0xffffff);                
-            projectscene.add(light);
-                
+            projectscene.add(light);           
+            
             self.menurenderer = menurenderer;
             self.projectrenderer = projectrenderer;
             self.menuscene = menuscene;
             self.projectscene = projectscene;
             self.camera = camera;
-            app.render();
-        },
-        clearWebGLScene : function(){
-            /*$(".home-container canvas").remove();
-            var menuPr = _.pluck(app.currProjSet.projArr, 'menuPr');
-            var projPr = _.pluck(app.currProjSet.projArr, 'projPr');
-
-            _.each(menuPr, function(obj){
-                app.menuscene.remove(obj.pl);
-            })
-
-            _.each(projPr, function(obj){
-                app.projectscene.remove(obj);
-            })*/
+            self.renderer = renderer;
+            self.scene = scene;
+            app.render();                    
         },
         startWebGLAnimation : function(){
             TweenLite.ticker.addEventListener("tick", this.render, this);
@@ -978,48 +887,32 @@
                 }
             });            
             
-            if(window.innerWidth <= 480){
-                menuTimeline
-                .add("enterProj")
-                .staggerTo(".projListCon", 1, {opacity:1}, 0.2, "enterProj")
-                .staggerTo(".white-layer", 1, {opacity:1}, 0.2, "enterProj")                
-                .to(".projListCon .text", 1, {opacity:1, y:0, color:"rgba(0,0,0,1)"}, "enterProj")            
-                .to($(".burger #menu-line1"), 0.5, {top:4, left:8, y:4, width:25, rotationZ:0}, "enterProj")
-                .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "enterProj")
-                .to($(".burger #menu-line3"), 0.5, {top:20, left:8, y:6, width:25, rotationZ:0}, "enterProj")
-                ;
-            }else{
-                var menuProjects = _.pluck(app.currProjSet.projArr, 'menuPr');
-                var menuPlanes = _.pluck(menuProjects, 'pl');
-                var menuMaterials = _.pluck(menuPlanes, 'material');
-                app.startWebGLAnimation()
-                
-                menuTimeline
-                .staggerTo(".projListCon", 0.5, {opacity:1}, 0.05, "enterProj")            
-                .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"}, "enterProj")            
-                .to(".project-container", 0.5, {opacity:0})            
-                ;
-                
-                TweenMax.staggerTo(menuMaterials, 0.5, {opacity:1}, 0.05)            
-            }
+            var menuProjects = _.pluck(app.currProjSet.projArr, 'menuPr');
+            var menuPlanes = _.pluck(menuProjects, 'pl');
+            var menuMaterials = _.pluck(menuPlanes, 'material');
+            app.startWebGLAnimation()
+            
+            menuTimeline
+            .staggerTo(".projListCon", 0.5, {opacity:1}, 0.05, "enterProj")            
+            .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"}, "enterProj")            
+            .to(".project-container", 0.5, {opacity:0})            
+            ;
+            
+            TweenMax.staggerTo(menuMaterials, 0.5, {opacity:1}, 0.05)            
             app.menuTimeline = menuTimeline;
         },
         _resetMenu:function(){
-            _.each(app.currProjSet.projArr, function (obj, key) {  
-                if(window.innerWidth <= 480){
-                    $(obj.menuPr.cssPr).css("opacity", 0);
-                }else{                
-                    obj.menuPr.pl.material.opacity = 0;
-                    for(var j = 0; j < 4; j++){
-                        obj.menuPr.pl.position.set(obj.smallRefPlane.position.x, obj.smallRefPlane.position.y, obj.smallRefPlane.position.z);
-                        obj.menuPr.pl.geometry.vertices[j].set(
-                            obj.smallRefPlane.geometry.vertices[j].x,
-                            obj.smallRefPlane.geometry.vertices[j].y,
-                            obj.smallRefPlane.geometry.vertices[j].z,
-                        );
-                        obj.menuPr.pl.geometry.verticesNeedUpdate = true;
-                        app.render();
-                    }
+            _.each(app.currProjSet.projArr, function (obj, key) { 
+                obj.menuPr.pl.material.opacity = 0;
+                for(var j = 0; j < 4; j++){
+                    obj.menuPr.pl.position.set(obj.smallRefPlane.position.x, obj.smallRefPlane.position.y, obj.smallRefPlane.position.z);
+                    obj.menuPr.pl.geometry.vertices[j].set(
+                        obj.smallRefPlane.geometry.vertices[j].x,
+                        obj.smallRefPlane.geometry.vertices[j].y,
+                        obj.smallRefPlane.geometry.vertices[j].z,
+                    );
+                    obj.menuPr.pl.geometry.verticesNeedUpdate = true;
+                    app.render();
                 }
             });
         },
@@ -1037,6 +930,9 @@
                 }
                 obj.projPr.material.opacity = 1;
             });
+            if(app.isTablet()){
+                $(".project-container canvas").css("top", 0);                                                        
+            }
         },
         createProjectTl: function(){
             var projTimeLine = new TimelineMax({
@@ -1171,26 +1067,21 @@
             $("#projetsReview").css({
                 visibility: "visible"
             })
+            if(app.isTablet()){
+                $(".menu-css-container, .menu-container canvas").css("top", 250);                                
+            }
         },
         prepareMenuCSS : function(){
-            if(window.innerWidth <=480){
+            if(app.isMobile()){
                 $("body").css({
-                    overflowY:"visible"
+                    overflowY:"hidden"
                 });
-                $(".projListCon").css({
-                    top:50
-                })
-                _.each($(".projListCon"), function (obj, key) {  
-                    $(obj).find(".white-layer").css({
-                        background:"url("+ app.currProjSet.projArr[key].background +")",
-                        backgroundSize:"cover"
-                    })
-                    $(obj).find(".projetsDetails").css({
-                        opacity:1
-                    })
-                }); 
-            }else{
-                $("body").css("overflow-y", "hidden");                
+            }else if(app.isTablet()){
+                $("body").css({overflowY:"visible"});
+                $(".menu-css-container, .menu-container canvas").css("top", 250);                                
+            }
+            else{
+                $("body").css({overflowY:"visible"});
                 $(".webGL, .projListCon").css({
                     opacity:0
                 })
@@ -1268,6 +1159,9 @@
             $(".projListCon .text").css({
                 color: "rgba(0,0,0,0)"
             })
+            if(app.isTablet()){
+                $(".menu-css-container, .menu-container canvas").css("top", 250);                                
+            }
         },
         reorderProjects: function(){
             var planeWidth = app.planeWidth
@@ -1281,7 +1175,7 @@
             $(".home-container canvas").remove();
             
             //Clear Menu Scene
-            if(window.innerWidth <= 480){                    
+            if(app.isMobile()){                    
                 $(".projListCon").remove();
             }else{
                 _.each(currProjArr, function(obj, key){
@@ -1295,7 +1189,7 @@
                 $(".home-container").append(obj.homePr.el);
                 
                 //Reorder Menu page projects
-                if(window.innerWidth <= 480){                    
+                if(app.isMobile()){                    
                     $(".css-threed").append(obj.menuPr.cssPr)
                 }else{
                     obj.menuPr.pl.position.set(obj.smallRefPlane.position.x,obj.smallRefPlane.position.y,obj.smallRefPlane.position.z)
@@ -1328,18 +1222,177 @@
                 if(app.projToHomeTl._active){
                     returnObj = true;
                 }
-            }/*
-            if(!(typeof app.letterTl === "undefined")){
-                if(app.letterTl._active){
-                    returnObj = true;
-                }
-            }*/
+            }
             return returnObj;
         }
     };
 
     $(function() {
         window.app.init();
+
+        function revCpl(tl){
+            tl.restart();
+            tl.pause();        
+            if(app.currentRoute != "projet"){
+                TweenMax.set($(".projetContent"), {css:{display: "none"}} )
+            }else{
+                TweenMax.set("body", {css:{overflowY: "visible"}})      
+                TweenMax.set($(".projetContent"), {clearProps: "display"} )
+            }       
+            setTimeout(function(){
+                TweenMax.set(".projetNav", {css:{opacity:1}})
+            }, 500)
+        }
+
+        function showCloseBtn(){
+            TweenMax.to("#close-profile", 0.5, {opacity:1})
+        }
+
+        function tlCpl(tl){
+            TweenMax.set($(".projetContent"), {clearProps:"display"})
+            TweenMax.set($(".projetContent"), {css:{display: "none"}})      
+            TweenMax.set(".projetNav", {css:{opacity:0}})
+            TweenMax.set("body", {css:{overflowY: "visible"}})      
+        }
+
+        var tl = new TimelineMax({
+            onComplete:tlCpl,
+            onCompleteParams:["{self}"],
+            onReverseComplete:revCpl,
+            onReverseCompleteParams:["{self}"]
+        });
+        
+        tl
+        .to([".main", ".css-threed"], 0.1, {clearProps:"display"})
+        .to(".body", 0.1, {clearProps:"overflowY"})
+        .to(".profile-content", 0.1, {display:"block", zIndex:4})
+        .add("showSq")
+        .to(".profile-square", 0.5, {opacity:1}, "showSq")
+
+        if(app.isMobile()){
+            tl.staggerTo(_.shuffle($(".profile-inner").slice()), 0.3, {
+                width:"100%", 
+                padding:"5%",
+                ease:Expo.easeOut
+            }, 0.07, "showSq" ,showCloseBtn, [])
+        }else{
+            tl.staggerTo(_.shuffle($(".profile-inner").slice()), 0.3, {
+                width:"100%", 
+                padding:"10%",
+                ease:Expo.easeOut
+            }, 0.07, "showSq" ,showCloseBtn, [])
+        }
+        tl.add("showProf", 1.5)
+        .to(".inner-text", 0.5, {opacity:1}, "showProf")
+        .to("body", 0.1, {overflowY: "hidden"}, "showProf")      
+        .to([".main", ".css-threed"], 0.1, {display:"none"}, "showProf")
+        ;
+
+        tl.stop();
+
+        $(".css-threed").swipe({
+            swipeStatus:function(event, phase, direction, distance, duration, fingers, fingerData, currentDirection){
+                if(app.isMobile()){
+                    var yPos = app.camera.position.y
+                    ,lowerBound = 0
+                    ,upperBound = -1*(app.planePosArr.length - 2)*app.planeHeight
+                    ;
+                    app.startWebGLAnimation();
+                    switch(currentDirection){
+                        case "up":
+                            yPos -= distance/5;
+                            if(yPos < upperBound){
+                                yPos = upperBound;
+                            }
+                        break;
+
+                        case "down":
+                            yPos += distance/5;
+                            if(yPos > lowerBound){
+                                yPos = lowerBound;
+                            }
+                        break;
+                    }
+                    TweenMax.to(app.camera.position, 0.2, {
+                        y:yPos,
+                        onComplete: function(){
+                            app.stopWebGLAnimation();                        
+                        }
+                    });
+                }
+            }
+        });
+
+        $(document).on("mouseenter", ".projListCon", function(e){ 
+            if(app.isAnimating()){
+                return;
+            }else{
+                e.preventDefault();
+                TweenMax.to($(e.currentTarget).find(".text"), 0.5, {top:-20})
+            }
+        });
+
+        $(document).on("mouseleave", ".projListCon", function(e){ 
+            if(app.isAnimating()){
+                return;
+            }else{
+                e.preventDefault();
+                TweenMax.to($(e.currentTarget).find(".text"), 0.5, {top:0})
+            }
+        });
+
+        $(document).on("click", ".projListCon", function(e){ 
+            e.preventDefault();
+            TweenMax.to($(e.currentTarget).find(".text"), 0.5, {
+                top:0,
+                onComplete: function(){
+                    Backbone.history.navigate($(e.currentTarget).find(".menuProjLink")[0].hash, {trigger:true})
+                }
+            })
+        });
+
+        $(document).on('click', ".profile", function(e){   
+            e.preventDefault();
+            tl.play();
+        })
+
+        $(document).on('click', "#close-profile", function(e){   
+            e.preventDefault();   
+            TweenMax.to("#close-profile", 0.5, {rotationZ:180, opacity:0})
+            tl.reverse();
+        })
+
+        $(document).on('mouseenter', "#close-profile", function(e){
+            TweenMax.to($(this), 0.7, {
+                width:55,  
+                height:55,
+                border:"2px solid #ccc",    
+                rotationZ:90,             
+                ease:Power2.easeOut
+            })
+            TweenMax.to($(".close-top"), 0.5, {
+                top:1,
+            })
+            TweenMax.to($(".close-bottom"), 0.5, {
+                top:-1,
+            })
+        })
+
+        $(document).on('mouseleave', "#close-profile", function(e){
+            TweenMax.to($(this), 0.7, {
+                width:45,  
+                height:45,
+                border:"4px solid #ccc",
+                rotationZ:0,
+                ease:Power2.easeOut
+            })
+            TweenMax.to($(".close-top"), 0.5, {
+                top:1,
+            })
+            TweenMax.to($(".close-bottom"), 0.5, {
+                top:-1,
+            })
+        })
     });
 
     app.Router = Backbone.Router.extend({
@@ -1433,15 +1486,7 @@
                 var menuPageText = new app.Views.MenuPageText();
                 menuPageText.render();    
 
-                if(window.innerWidth <= 480){
-                    _.each($(".projListCon"), function (obj, key) {  
-                        $(obj).css("top", 50);
-                        $(".css-threed").append($(obj))
-                        app.currProjSet.projArr[key].menuPr.cssPr = $(obj).clone();
-                    }); 
-                }else{
-                    app.addCSSProjects();
-                }                                      
+                app.addCSSProjects();
 
                 app.currentRoute = $(view.el)[0].className;
                 switch(app.currentRoute){
@@ -1475,11 +1520,8 @@
                 ctx.$el.append( view.$el );
                 ctx.currentPage = view;                
                 
-                //app.fixLettersForSkew()
-
                 loaderTl.play();
 
-                //console.log( 'Loading complete!');
             };
 
             manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
@@ -1761,8 +1803,6 @@
 
             ghostTextView.render();
 
-            //app.prepareLettersForAnim("projToHome")
-
             _.each($("#ghost-text .text"), function(obj){
                 tempObj = {
                     value : $(obj).text(),
@@ -1821,7 +1861,7 @@
             .to($(".project-container"), 0.5, {opacity:0}, "fixLetters")
             .to($(".main"), 0.5, {backgroundColor:"rgba(255,255,255,0.7)"}, "fixLetters")
             ;
-            if(window.innerWidth <= 768){
+            if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){                
                     projToHomeTl.set(obj, {
                       css : {
@@ -1831,7 +1871,7 @@
                       }
                     });
                 });
-            }else{
+            }else {
                 _.each(matchedElArr, function(obj, key){                
                     projToHomeTl.set(obj, {
                       css : {
@@ -1842,7 +1882,6 @@
                     });
                 });
             }
-            
             
             projToHomeTl
             .add("skewLetters")
@@ -1873,7 +1912,8 @@
             projToHomeTl
             .add("moveLetters")
             .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
-            if(window.innerWidth <= 768){
+            
+            if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){
                     projToHomeTl.to(obj, 1, {
                         top: posArr[key].end.top,
@@ -1977,21 +2017,14 @@
                       end : finPos
                 });
             });
-           
-           /* app.homeTimeline.tweenTo("label_"+idx+"-=0", {
-                onComplete: function(){
-                    app.homeToProjTl.play();//TweenMax.to($(".home-container canvas")[idx], 0.5, {opacity:1});
-                }
-            });*/
 
             homeToProjTl
             .add("fixLetters")
             .to($("a.projectTrigger"), 0.3, {bottom:0}, "fixLetters")
-            //.to($(".project-container"), 0.5, {opacity:1})
             .to($("#random-text .text").not(".matched"), 0.5, {opacity:0}, "fixLetters")
             ;        
 
-            if(window.innerWidth <= 768){
+            if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){                
                     homeToProjTl.set(obj, {
                       css : {
@@ -2012,6 +2045,7 @@
                     });
                 });
             }
+
             homeToProjTl
             .add("skewLetters")
             _.each(matchedElArr, function(obj, key){
@@ -2033,14 +2067,14 @@
             .add("moveLetters")
             .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
             
-            if(window.innerWidth <= 768){
+            if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){
                     homeToProjTl.to(obj, 1, {
                         top: posArr[key].end.top,
                         left: posArr[key].end.left
                     }, "moveLetters");
                 });
-            }else{
+            }else{ 
                 _.each(matchedElArr, function(obj, key){
                     homeToProjTl.to(obj, 1, {
                         top: posArr[key].end.top - 5,
@@ -2048,7 +2082,6 @@
                     }, "moveLetters");
                 });
             }
-
             homeToProjTl
             .add("changeColorLetters")
             .to("#ghost-text", 1, {opacity:1}, "changeColorLetters")
@@ -2069,7 +2102,6 @@
             });
 
             app.homeToProjTl = homeToProjTl;
-            //app.homeToProjTl.pause();
         },
         _getPosition: function(context, titreArr){
             var currentLetter = $(context).text(), tempArr = [];
@@ -2130,7 +2162,7 @@
             .to($(".burger li")[5], 0.3, {x:4, y:4}, "hideLetters")            
             .to($(".burger li"), 0.3, {delay:0.2, opacity:0}, "hideLetters")                            
             
-            if(window.innerWidth <= 480){
+            if(app.isMobile()){
                 homeToMenuTl
                 .to($(".burger #menu-line1"), 0.5, {top:4, left:8, y:4, width:25, rotationZ:0}, "hideLetters")
                 .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "hideLetters")
@@ -2146,7 +2178,7 @@
             .to("a.projectTrigger", 1, {color:"rgba(0,0,0,0.15)"}, "hideLetters")
             .to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "hideLetters")
             .to(".home-container", 1, {opacity:0}, "hideLetters")
-            .to("#projetsReview div.projetsDetails", 1, {opacity:0, height:0}, "hideLetters")
+            .to("#projetsReview", 1, {opacity:0}, "hideLetters")
             ;
             _.each(matched, function(obj, key){
                 var str = "";
@@ -2173,7 +2205,7 @@
                 });
             });
 
-            if(window.innerWidth <= 480){
+            if(app.isMobile()){
                 homeToMenuTl
                 .add("moveLetters")
                 .to(matched, 1, {transform:"skew(0)"}, "moveLetters")
@@ -2497,11 +2529,11 @@
                     reviews.render();
                     
                     app.prepareProjCSS();
-                    if(window.innerWidth <= 480){
+                    if(app.isMobile()){
                         $(".project-container").css("opacity", 0);            
                         $(".projListCon").css("opacity", 0);            
-                    }else{
-
+                    }else if(app.isTablet()){
+                        $(".menu-css-container, .menu-container canvas").css("top", 250);                                
                     }
                     app.createProjectTl();
                 }
@@ -2569,42 +2601,41 @@
 
             menuToProjTl
             .add("hideMenuComp")
-            if(window.innerWidth <= 480){
-                menuToProjTl
-                .to(window, 0.5, {scrollTo:{y:0}}, "hideMenuComp")
-            }
+            
             menuToProjTl
             .to(".main .ghost", 0.5, {color:"rgba(0,0,0,0.15)"}, "hideMenuComp")
             .to(".burger li", 0.5, {opacity:1, x:0, y:0}, "hideMenuComp")
             .to(".burger #menu-line1", 0.5, {top:17, left:0, y:1, width:25, rotationZ:90}, "hideMenuComp")
             .to(".burger #menu-line2", 0.5, {width:45, left:-2, top:17}, "hideMenuComp")
             .to(".burger #menu-line3", 0.5, {top:18, left:16, y:0, width:25, rotationZ:90}, "hideMenuComp")                    
-            
-            if(window.innerWidth <= 480){                
+          
+            var idx = currProjArr.indexOf(app.currentProject);
+            var matArr = [], cssPrArr = [];
+            _.each(currProjArr, function(obj, key){
+                if(idx != key){
+                    matArr.push(obj.menuPr.pl.material);
+                }
+                cssPrArr.push(obj.menuPr.cssPr.element);
+            })
+
+            var planeToAnim = app.currentProject.menuPr.pl;
+            var refPlane = app.currentProject.bigRefPlane;
+            var time = 0.5;
+            app.startWebGLAnimation();
+
+            menuToProjTl
+            .staggerTo(matArr, 1, {opacity:0}, 0, "hideMenuComp")
+            .staggerTo(cssPrArr, 1, {opacity:0}, 0, "hideMenuComp")
+
+            if(app.isMobile()){
                 menuToProjTl
-                .to(".projListCon .projetsDetails", 0.5, {opacity:0}, "hideMenuComp")                                .to($(".main .ghost").not(".matched"), 1, {opacity:0}, "hideMenuComp")
+                .to(planeToAnim.material, 1, {opacity:0}, "hideMenuComp")
+                .to(app.camera.position, 1, {y:0}, "hideMenuComp")
             }else{
-                var idx = currProjArr.indexOf(app.currentProject);
-                var matArr = [], cssPrArr = [];
-                _.each(currProjArr, function(obj, key){
-                    if(idx != key){
-                        matArr.push(obj.menuPr.pl.material);
-                    }
-                    cssPrArr.push(obj.menuPr.cssPr.element);
-                })
-
-                var planeToAnim = app.currentProject.menuPr.pl;
-                var refPlane = app.currentProject.bigRefPlane;
-                var time = 0.5;
-                app.startWebGLAnimation();
-
-                 menuToProjTl
-                .staggerTo(matArr, 1, {opacity:0}, 0, "hideMenuComp")
-                .staggerTo(cssPrArr, 1, {opacity:0}, 0, "hideMenuComp")
+                menuToProjTl
                 .to(planeToAnim.material, 1, {opacity:0.3}, "hideMenuComp")
-
             }
-
+            
             menuToProjTl
             .to($(".main .ghost").not(".matched"), 1, {opacity:0}, "hideMenuComp")
             ;
@@ -2624,12 +2655,11 @@
                 menuToProjTl.to(obj, 1, {transform: str}, "hideMenuComp");                
             });
 
-            if(window.innerWidth <= 480){
-                menuToProjTl
-                .to($(".projListCon"), 1, {opacity:0}, "hideMenuComp")            
-            }else{                
+            if(!app.isMobile()){
                 menuToProjTl
                 .add("focusProj")
+                .to($(".menu-css-container, .menu-container canvas"), time, {top:0}, "focusProj+=0.3")
+                .to(window, time, {scrollTo:{y:0}}, "focusProj+=0.3")                
                 .to(planeToAnim.geometry.vertices[0], time, {
                     ease:Power2.easeInOut,
                     x:refPlane.geometry.vertices[0].x - planeToAnim.position.x,
@@ -2662,7 +2692,6 @@
                         planeToAnim.geometry.verticesNeedUpdate = true;
                     }
                 }, "focusProj+=0.3")
-
             }
 
             menuToProjTl
@@ -2690,10 +2719,9 @@
             .to("#nav .social", 1, {borderColor:"#ccc"}, "changeColorLetters2")
             .to("#nav .social i", 1, {color:"#ccc"}, "changeColorLetters2")                   
             
-            if(window.innerWidth <= 480){
-            }else{
+            if(!app.isMobile()){
                 menuToProjTl
-                .to(planeToAnim.material, 1, {opacity:1}, "changeColorLetters2")                
+                .to(planeToAnim.material, 1, {opacity:1}, "changeColorLetters2")
             }
         },
         _animateProjectToMenu : function(previous, next, ctx){
@@ -2712,9 +2740,8 @@
                     ctx.currentPage = next; 
                     app.prepareMenuCSS();
                     
-                    if(window.innerWidth <= 480){                                           
+                    if(app.isMobile()){                                           
                         $(".project-container").css("opacity", 0);
-                        //TweenMax.set($(".projListCon"), {clearProps:"z-index"})
                     }else{
                         $(".project-container").css("opacity", 1);
                     }
@@ -2767,7 +2794,7 @@
                 });
             });
 
-            if(window.innerWidth <= 480){
+            if(app.isMobile()){
                 projToMenuTl
                 .add("hideProjectComp")
                 .to(".project-container", 1, {opacity:0}, "hideProjectComp")
@@ -2784,6 +2811,7 @@
                 .to(planeToAnim.material, 1, {opacity:0.2}, "hideProjectComp")
             }
             projToMenuTl
+            .to([".arrow-down", ".back-container"], 0.3, {opacity:0}, "hideProjectComp")
             .to($(".burger li")[0], 0.3, {x:-4, y:-4}, "hideProjectComp")
             .to($(".burger li")[1], 0.3, {y:-4}, "hideProjectComp")
             .to($(".burger li")[2], 0.3, {x:4, y:-4}, "hideProjectComp")
@@ -2792,7 +2820,7 @@
             .to($(".burger li")[5], 0.3, {x:4, y:4}, "hideProjectComp")            
             .to($(".burger li"), 0.3, {delay:0.2, opacity:0}, "hideProjectComp")                            
             
-            if(window.innerWidth <= 480){
+            if(app.isMobile()){
                 projToMenuTl
                 .to($(".burger #menu-line1"), 0.5, {top:4, left:8, y:4, width:25, rotationZ:0}, "hideProjectComp")
                 .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "hideProjectComp")
@@ -2847,7 +2875,7 @@
             .add("focusProj")
             .to($(".matched"), 1, {transform:"skew(0)"}, "focusProj")                        
             ;
-            if(window.innerWidth <= 480){
+            if(app.isMobile()){
                 _.each(matchedElArr, function(obj, key){
                     projToMenuTl.to(obj, 1, {
                         top: posArr[key].end.top - 100,
@@ -2861,12 +2889,11 @@
                         left: posArr[key].end.left - 55
                     }, "focusProj");
                 });
-               /* _.each(currProjArr, function(obj, key){
-                    var planeToAnim = obj.projPr,
-                    smallRefPlane = obj.smallRefPlane
-                    ;
 
-                })*/
+                if(app.isTablet()){
+                    projToMenuTl                    
+                    .to($(".project-container canvas"), time, {top:250}, "focusProj")
+                }
 
                 projToMenuTl
                 .to(planeToAnim.geometry.vertices[0], time, {
@@ -2901,19 +2928,12 @@
                         planeToAnim.geometry.verticesNeedUpdate = true;
                     }
                 }, "focusProj+=0.3")
-              
-            
+                              
 
                 projToMenuTl
                 .add("changeColorLetters")
-                //.to(".css-threed", 1, {opacity:1}, "changeColorLetters")
                 .to(".main", 1, {backgroundColor:"rgba(0,0,0,0)"}, "changeColorLetters")
                 ;
-
-                /*_.each(currProjArr, function(obj, key){
-                    projToMenuTl
-                    .to(obj.projPr.material, 1, {opacity:0.3}, "changeColorLetters")
-                })*/
             }
             
             app.projToMenuTl = projToMenuTl;
@@ -3095,7 +3115,7 @@
             var template = _.template($('script[name=header]').html());
             this.$el.html(template());        
             this.$el.find("li").css("opacity", 0);                           
-            if(window.innerWidth <= 480){                
+            if(app.isMobile()){                
                 this.$el.find("#menu-line1").css({top:4, left:8, width:25, transform:"rotateZ(0) translateY(4px)"});
                 this.$el.find("#menu-line2").css({width:25, left:8});
                 this.$el.find("#menu-line3").css({top:20, left:8, width:25, transform:"rotateZ(0) translateY(6px)"});
@@ -3204,7 +3224,7 @@
         },
         _scrollToSection: function(e){
             var scrollEl, scroll;
-            if(window.innerWidth <= 480){
+            if(app.isMobile()){
                 switch(e.currentTarget.className){
                     case 'clientLink':
                         scrollEl = $("#trigger1");
@@ -3324,7 +3344,6 @@
         },
         _navigateToProj: function(e){
             e.preventDefault();
-            app.homeTimeline.pause();
             var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
             app.homeTimeline.tweenTo("exitLabel_"+idx, {
                 onComplete: function(){
@@ -3345,7 +3364,7 @@
                         bottom:0,
                         onComplete : function(){
                             TweenMax.to("a.projectTrigger", {clearProps: "bottom"})
-                            app.homeTimeline.tweenFromTo("label_"+idx+"-=0", "exitLabel_"+idx);
+                            app.homeTimeline.tweenFromTo("label_"+idx, "exitLabel_"+idx);
                         }
                     })
                 }else{
@@ -3358,7 +3377,21 @@
             if(app.isAnimating()){
                 return;
             }else{
-                app.homeTimeline.play();
+                var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
+                if(idx == 7){
+                    app.homeTimeline.tweenTo("exitLabel_"+idx+"+=1", {
+                        onComplete : function(){
+                            app.homeTimeline.resume();
+                        }
+                    }).timeScale(2.5);
+                }
+                else{
+                    app.homeTimeline.tweenTo("label_"+(idx+1), {
+                        onComplete : function(){
+                            app.homeTimeline.resume();
+                        }
+                    }).timeScale(2.5);
+                }
             }
         },       
         render: function () {

@@ -19,7 +19,7 @@
 	}
 	.projListCon p{
 		padding-top: 1em;
-		font-size: 0.5em;
+		font-size: 0.7em;
 	}
 	.no-tablet{
 		display: none;
@@ -46,6 +46,12 @@
 	}
 	#random-text, #ghost-text{
 		line-height: 3em;
+	}
+	.projListCon p {
+	    font-size: 0.9em;
+	}
+	.projListCon h2 {
+	    margin-bottom: -0.75em;
 	}
 }
 

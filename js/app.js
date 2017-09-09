@@ -291,7 +291,7 @@
             this.instance = new app.Views.App();
             
             Backbone.history.start();
-            window.addEventListener( 'resize', self.onWindowResize, false );
+            window.addEventListener( 'resize', self.resizeProjects, false );
             //window.addEventListener( 'mousemove', self.onMouseMove, false );
             //window.addEventListener('scroll', function() { console.log("Scrolled"); });
             
@@ -343,12 +343,11 @@
                 $(".text").css({"transform":"skewX("+ -1*mouseX*0.01 +"deg) skewY("+ -1*mouseY*0.03 +"deg)"})
             }
         },
-        onWindowResize: function(){
+        resizeProjects: function(){
             var currProjArr   = app.currProjSet.projArr
             var menuPr        = _.pluck(currProjArr, 'menuPr')
             var projPr        = _.pluck(currProjArr, 'projPr')
             var homePr        = _.pluck(currProjArr, 'homePr')
-            var homeRenderArr = _.pluck(currProjArr, 'homerenderer')
             var bigRefPlane   = _.pluck(currProjArr, 'bigRefPlane')
             var smallRefPlane = _.pluck(currProjArr, 'smallRefPlane')            
             var planeZPos = 0;
@@ -368,6 +367,7 @@
             ;
         
             $(".menu-css-container, .menu-container canvas").css("top", 0);                                                
+            $("body").css("overflowY", "hidden");
 
             if(app.isTablet()){
                 console.log("Resize To Tab")
@@ -384,10 +384,10 @@
                     {x: 0.5*planeWidth, y:-1.5*planeHeight, z:0},
                 ];
                 $(".menu-css-container, .menu-container canvas").css("top", 250);                                                
-                //$("body").css("overflow", "visible");
+                $("body").css("overflowY", "visible");
+            
             }else if(app.isMobile()){
                 console.log("Resize To Mobile")
-                $("body").css("overflow", "hidden");
 
                 planeWidth = window.innerWidth
                 ,planeHeight = window.innerHeight/2.5        
@@ -408,15 +408,18 @@
             app.camera.updateProjectionMatrix();
 
             //Adjust Renderers
+            app.homeCSSRenderer.setSize( window.innerWidth, window.innerHeight );
             app.projectrenderer.setSize( window.innerWidth, window.innerHeight );
-            app.renderer.setSize( window.innerWidth, window.innerHeight );
             app.menurenderer.setSize( window.innerWidth, window.innerHeight );        
+            app.menuCSSRenderer.setSize( window.innerWidth, window.innerHeight );
+            
             _.each(currProjArr, function(obj){
+                app.homeCSSscene.remove(obj.homePr);
                 app.projectscene.remove(obj.bigRefPlane);
                 app.projectscene.remove(obj.smallRefPlane);
                 app.menuscene.remove(obj.bigRefPlane);
                 app.menuscene.remove(obj.smallRefPlane);
-                app.scene.remove(obj.menuPr.cssPr);
+                app.menuCSSscene.remove(obj.menuPr.cssPr);
             })
 
             _.each(currProjArr, function(obj, key){
@@ -436,36 +439,50 @@
                         smallplane.geometry.vertices[j].z
                     );
                     menuplane.geometry.verticesNeedUpdate = true;
-                    app.render();
                 }
 
                 var cssPr = obj.menuPr.cssPr;
 
                 if(app.isMobile()){
                     cssPr.element.style.height = planeHeight + 1 + "px";
-                    cssPr.element.style.width = planeWidth + 1 + "px"; 
+                    cssPr.element.style.width = planeWidth + 1 + "px";  
                     cssPr.position.x = planePosArr[key].x + planeWidth/10;
-                    cssPr.position.y = planePosArr[key].y - 1;
-                    cssPr.position.z = 0;
-                }else{
+                }else if(app.isTablet()){
                     cssPr.element.style.height = planeHeight + 1 + "px";
-                    cssPr.element.style.width = planeWidth + "px"; 
+                    cssPr.element.style.width = planeWidth + "px";  
                     cssPr.position.x = planePosArr[key].x;
-                    cssPr.position.y = planePosArr[key].y - 1;
-                    cssPr.position.z = 0;
+                }else{
+                    cssPr.element.style.height = planeHeight + 2 + "px";
+                    cssPr.element.style.width = planeWidth + "px";  
+                    cssPr.position.x = planePosArr[key].x;
                 }
 
-                app.scene.add(cssPr);
+                if(key >= 4 && !(app.isMobile()||app.isTablet()))
+                    cssPr.position.y = planePosArr[key].y - 2;
+                else if(app.isTablet())
+                    cssPr.position.y = planePosArr[key].y - 1;
+                else
+                    cssPr.position.y = planePosArr[key].y;
+
+                cssPr.position.z = planeZPos;
+
+                app.menuCSSscene.add(cssPr);
 
                 var refPlane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0xff0000, side: THREE.FrontSide }))
                 var imgAspect = obj.projPr.material.map.image.width/obj.projPr.material.map.image.height,
                 windowAspect = window.innerWidth/window.innerHeight;
-
+                var homePr = obj.homePr;
                 if (windowAspect > imgAspect){
+                    homePr.element.style.width = window.innerWidth + "px";
+                    homePr.element.style.height = window.innerWidth/imgAspect + "px";
+                    
                     refPlane.scale.x = window.innerWidth;
                     refPlane.scale.y = window.innerWidth/imgAspect;                
                 }
                 else{
+                    homePr.element.style.width = window.innerHeight*imgAspect + "px";
+                    homePr.element.style.height = window.innerHeight + "px";
+                    
                     refPlane.scale.x = window.innerHeight*imgAspect;
                     refPlane.scale.y = window.innerHeight;                   
                 }
@@ -477,6 +494,9 @@
                 refPlane.scale.set( 1, 1, 1 );
                 //app.projectscene.add(refPlane);
                 //app.menuscene.add(refPlane);
+                
+                homePr.position.set( 0, 0, 0 );
+                app.homeCSSscene.add(homePr);
 
                 obj.bigRefPlane = refPlane;
                 for(var j = 0; j < 4; j++){
@@ -486,22 +506,9 @@
                         obj.bigRefPlane.geometry.vertices[j].z
                     );
                     obj.projPr.geometry.verticesNeedUpdate = true;
-                    app.render();
-                }
-
-                obj.homePr.rd.setSize( window.innerWidth, window.innerHeight );
-                obj.homePr.pl.position.set(refPlane.position.x, refPlane.position.y, refPlane.position.z);                
-                for(var j = 0; j < 4; j++){
-                    obj.homePr.pl.geometry.vertices[j].set(
-                        refPlane.geometry.vertices[j].x,
-                        refPlane.geometry.vertices[j].y,
-                        refPlane.geometry.vertices[j].z,
-                    );
-                    obj.homePr.pl.geometry.verticesNeedUpdate = true;
-                    obj.homePr.rd.render(obj.homePr.sc, app.camera);
                 }
                 app.render();
-            })            
+            });
         },   
         insertTitle : function(titre){
             titre = $('<textarea />').html(titre).text();
@@ -516,216 +523,210 @@
             });
             return tmpProjName.join("");
         },
-        addCSSProjects : function(){
-            var self = this;
-
-            self.renderer.setSize($(".menu-container").width(), $(".menu-container").height());
-            //self.renderer.setSize(window.innerWidth, window.innerHeight);
-            self.renderer.domElement.style.position = "absolute";
-            self.renderer.domElement.style.top = "0";
-            self.renderer.domElement.style.left = "0";
-            self.renderer.domElement.className = "menu-css-container";
-            
-            $(".css-threed").append(self.renderer.domElement);
-
-            var planeWidth = app.planeWidth
-            ,planeHeight = app.planeHeight
-            ,planePosArr = app.planePosArr
-            ;
-
-            if(app.isMobile()){
-                _.each($(".projListCon"), function (obj, key) {  
-                    var element = obj;
-                    element.style.height = planeHeight + 1 + "px";
-                    element.style.width = planeWidth + 1 + "px";                
-                    //CSS Object
-                    div = new THREE.CSS3DObject(element);
-                    div.position.x = planePosArr[key].x + planeWidth/10;
-                    div.position.y = planePosArr[key].y - 1;
-                    div.position.z = 0;
-
-                    self.currProjSet.projArr[key].menuPr.cssPr = div;
-                    self.scene.add(div);                
-                    self.renderer.render(self.scene, self.camera)
-                });
-            }else{
-                _.each($(".projListCon"), function (obj, key) {  
-                    var element = obj;
-                    element.style.height = planeHeight + 1 + "px";
-                    element.style.width = planeWidth + "px";                
-                    //CSS Object
-                    div = new THREE.CSS3DObject(element);
-                    div.position.x = planePosArr[key].x;
-                    div.position.y = planePosArr[key].y - 1;
-                    div.position.z = 0;
-
-                    self.currProjSet.projArr[key].menuPr.cssPr = div;
-                    self.scene.add(div);                
-                    self.renderer.render(self.scene, self.camera)
-                });                
-            }
-        },
         addWebGLProjects : function(){
+            
+            // Initialize WebGL components
             var planeWidth = app.planeWidth
             ,planeHeight = app.planeHeight
             ,planePosArr = app.planePosArr
-            ,self = this;
-            
-            var scene = new THREE.Scene(),
-            renderer = new THREE.CSS3DRenderer()
-            ;
-
-            var camera = new THREE.PerspectiveCamera(2 * Math.atan( window.innerHeight / ( 2 * 1000 ) )*180/Math.PI, window.innerWidth / window.innerHeight, 1, 10000)
-            ,light = new THREE.HemisphereLight(0xffffff, 0xffffff)
+            ,planeZPos = 0
+            ,camera = new THREE.PerspectiveCamera(2 * Math.atan( window.innerHeight / ( 2 * 1000 ) )*180/Math.PI, window.innerWidth / window.innerHeight, 1, 10000)
+            ,homeCSSRenderer = new THREE.CSS3DRenderer()
+            ,homeCSSscene = new THREE.Scene()
             ,projectrenderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
-            ,menurenderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
             ,projectscene = new THREE.Scene()
+            ,menurenderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
             ,menuscene = new THREE.Scene()
+            ,menuCSSRenderer = new THREE.CSS3DRenderer()
+            ,menuCSSscene = new THREE.Scene()
+            ,self = this
             ;
             
-            camera.position.set(0, 0, 1000);
-            // camera.position.set(0, 1500, 4500);                     
-            // camera.rotateX(-0.4);
-            light.color.set(0xffffff);          
-               
+            // Set renderer sizes and attach to parents
+            homeCSSRenderer.setSize(window.innerWidth, window.innerHeight);
+            homeCSSRenderer.domElement.style.position = "absolute";
+            homeCSSRenderer.domElement.style.top = "0";
+            homeCSSRenderer.domElement.style.left = "0";
+            homeCSSRenderer.domElement.className = "home-css-container";
+            $(".home-container").append(homeCSSRenderer.domElement);
+
             projectrenderer.setSize(window.innerWidth, window.innerHeight);
             projectrenderer.domElement.style.position = "absolute";
             projectrenderer.domElement.style.top = "0";
             projectrenderer.domElement.style.left = "0";
             $(".project-container").append(projectrenderer.domElement);
             
-            //menurenderer.setSize(window.innerWidth, window.innerHeight);
-            menurenderer.setSize($(".menu-container").width(), $(".menu-container").height());
+            menurenderer.setSize(window.innerWidth, window.innerHeight);
             menurenderer.domElement.style.position = "absolute";
             menurenderer.domElement.style.top = "0";
             menurenderer.domElement.style.left = "0";
-            $(".menu-container").append(menurenderer.domElement);                                      
+            $(".menu-container").append(menurenderer.domElement);   
 
-            //1.  Add to home
-            _.each(self.currProjSet.projArr, function (obj, key) {
-                var homerenderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
-                ,scene = new THREE.Scene()               
-                ,homeplane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ transparent:true, opacity:1, map: obj.texture, side: THREE.FrontSide }))                    
-                ,refPlane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0xff0000, side: THREE.FrontSide }))
-                ,planeZPos = key*0
-                ;
+            menuCSSRenderer.setSize(window.innerWidth, window.innerHeight);
+            menuCSSRenderer.domElement.style.position = "absolute";
+            menuCSSRenderer.domElement.style.top = "0";
+            menuCSSRenderer.domElement.style.left = "0";
+            menuCSSRenderer.domElement.className = "menu-css-container";
+            $(".css-threed").append(menuCSSRenderer.domElement);
+            
+            camera.position.set(0, 0, 1000);
+            //camera.position.set(0, 1000, 2500);                     
+            //camera.rotateX(-0.4);
+ 
+            //Adding lights to scenes
+            var light = new THREE.HemisphereLight(0xffffff, 0xffffff)
+            light.color.set(0xffffff);          
+            homeCSSscene.add(light);
+
+            light = new THREE.HemisphereLight(0xffffff, 0xffffff)
+            light.color.set(0xffffff);
+            projectscene.add(light);
+            
+            light = new THREE.HemisphereLight(0xffffff, 0xffffff)
+            light.color.set(0xffffff);
+            menuscene.add(light);
+
+            //Adding all planes
+            _.each(self.currProjSet.projArr, function (obj, key) {             
                 
-                var imgAspect = homeplane.material.map.image.width/homeplane.material.map.image.height,
+                // Big Reference planes
+                var bigRefPlane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0xff0000, side: THREE.FrontSide }))
+                bigRefPlane.name = "Big Ref Plane";
+                obj.bigRefPlane = bigRefPlane;
+
+                // Small Reference planes
+                var smallRefPlane = new THREE.Mesh(new THREE.BoxGeometry(planeWidth, planeHeight, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0x0000ff, side: THREE.FrontSide }));
+                smallRefPlane.position.set(planePosArr[key].x, planePosArr[key].y, planeZPos);
+                smallRefPlane.name = "Small Ref Plane";
+                obj.smallRefPlane = smallRefPlane;
+
+                // Project WebGL projects
+                var bigWebGLplane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ transparent:true, opacity:1, map: obj.texture, side: THREE.FrontSide }));              
+
+                // Setting aspect from original texture
+                var imgAspect = bigWebGLplane.material.map.image.width/bigWebGLplane.material.map.image.height,
                 windowAspect = window.innerWidth/window.innerHeight;
 
+                // Home CSS projects
+                var homeDiv = document.createElement('div');
+                homeDiv.style.background = "url("+obj.background+")";
+                homeDiv.style.backgroundSize = "contain";
+                homeDiv.style.opacity = 0;
+                homeDiv.className = 'home-bg';
+                
+                var homeEl = new THREE.CSS3DObject(homeDiv);
+                homeEl.position.set(0, 0, planeZPos);
+
+                //Menu WebGL projects
+                var smallWebGLplane = new THREE.Mesh(new THREE.BoxGeometry(window.innerWidth, window.innerHeight, 0), new THREE.MeshPhongMaterial({ transparent:true, opacity:0, map: obj.texture, side: THREE.FrontSide }));
+                
+                //Menu CSS projects
+                var menuEl = $(".projListCon")[key];
+                var menuDiv = new THREE.CSS3DObject(menuEl);
+
+                if(app.isMobile()){
+                    menuEl.style.height = planeHeight + 1 + "px";
+                    menuEl.style.width = planeWidth + 1 + "px";  
+                    menuDiv.position.x = planePosArr[key].x + planeWidth/10;
+                }else if(app.isTablet()){
+                    menuEl.style.height = planeHeight + 1 + "px";
+                    menuEl.style.width = planeWidth + "px";  
+                    menuDiv.position.x = planePosArr[key].x;
+                }else{
+                    menuEl.style.height = planeHeight + 2 + "px";
+                    menuEl.style.width = planeWidth + "px";  
+                    menuDiv.position.x = planePosArr[key].x;
+                }
+                
+                if(key >= 4 && !(app.isMobile()||app.isTablet()))
+                    menuDiv.position.y = planePosArr[key].y - 2;
+                else if(app.isTablet())
+                    menuDiv.position.y = planePosArr[key].y - 1;
+                else
+                    menuDiv.position.y = planePosArr[key].y;
+
+                menuDiv.position.z = planeZPos;
+
+                // Setting correct sizes
                 if (windowAspect > imgAspect){
-                    homeplane.scale.x = window.innerWidth;
-                    homeplane.scale.y = window.innerWidth/imgAspect;
-                    refPlane.scale.x = window.innerWidth;
-                    refPlane.scale.y = window.innerWidth/imgAspect;                
+                    //Project planes
+                    bigWebGLplane.scale.x = window.innerWidth;
+                    bigWebGLplane.scale.y = window.innerWidth/imgAspect;
+                    
+                    //Home planes
+                    homeDiv.style.width = window.innerWidth + "px";
+                    homeDiv.style.height = window.innerWidth/imgAspect + "px"; 
+
+                    //Big Ref Planes
+                    bigRefPlane.scale.x = window.innerWidth;
+                    bigRefPlane.scale.y = window.innerWidth/imgAspect;               
                 }
-                else{
-                    homeplane.scale.x = window.innerHeight*imgAspect;
-                    homeplane.scale.y = window.innerHeight;                    
-                    refPlane.scale.x = window.innerHeight*imgAspect;
-                    refPlane.scale.y = window.innerHeight;                   
+                else{                   
+                    homeDiv.style.width = window.innerHeight*imgAspect + "px";
+                    homeDiv.style.height = window.innerHeight + "px";                   
+                    
+                    bigWebGLplane.scale.x = window.innerHeight*imgAspect;
+                    bigWebGLplane.scale.y = window.innerHeight;
+
+                    bigRefPlane.scale.x = window.innerHeight*imgAspect;
+                    bigRefPlane.scale.y = window.innerHeight;
                 }
-                refPlane.updateMatrix(); 
-                refPlane.geometry.applyMatrix( refPlane.matrix );
-                refPlane.matrix.identity();
-                refPlane.position.set( 0, 0, 0 );
-                refPlane.rotation.set( 0, 0, 0 );
-                refPlane.scale.set( 1, 1, 1 );
+                
+                bigRefPlane.updateMatrix(); 
+                bigRefPlane.geometry.applyMatrix( bigRefPlane.matrix );
+                bigRefPlane.matrix.identity();
+                bigRefPlane.position.set( 0, 0, 0 );
+                bigRefPlane.rotation.set( 0, 0, 0 );
+                bigRefPlane.scale.set( 1, 1, 1 );
 
-                homeplane.updateMatrix(); 
-                homeplane.geometry.applyMatrix( homeplane.matrix );
-                homeplane.matrix.identity();
-                homeplane.position.set( 0, 0, 0 );
-                homeplane.rotation.set( 0, 0, 0 );
-                homeplane.scale.set( 1, 1, 1 );
+                bigWebGLplane.updateMatrix(); 
+                bigWebGLplane.geometry.applyMatrix( bigWebGLplane.matrix );
+                bigWebGLplane.matrix.identity();
+                bigWebGLplane.position.set( 0, 0, 0 );
+                bigWebGLplane.rotation.set( 0, 0, 0 );
+                bigWebGLplane.scale.set( 1, 1, 1 );
 
-                homeplane.position.set(0, 0, planeZPos);
-                refPlane.position.set(0, 0, planeZPos);
-                refPlane.name = "Big Ref Plane";
-
-                scene.add(light);
-                scene.add(homeplane);
-                //scene.add(refPlane);
-
-                homerenderer.setSize(window.innerWidth, window.innerHeight);
-                homerenderer.domElement.style.position = "absolute";
-                homerenderer.domElement.style.top = "0";
-                homerenderer.domElement.style.opacity = "0";
-                homerenderer.domElement.style.left = "0";
-                $(".home-container").append(homerenderer.domElement);
-                homerenderer.render(scene, camera);
-
-                obj.bigRefPlane = refPlane;
-                obj.homePr = {
-                    el : homerenderer.domElement,
-                    rd : homerenderer,
-                    sc : scene,
-                    pl : homeplane
-                }
-                ;
-
-                var smallplane = new THREE.Mesh(new THREE.BoxGeometry(planeWidth, planeHeight, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0x0000ff, side: THREE.FrontSide }));
-                smallplane.position.set(planePosArr[key].x, planePosArr[key].y, planeZPos);
-                smallplane.name = "Small Ref Plane";
-                  
-                obj.smallRefPlane = smallplane;
-
-                var projplane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ transparent:true, opacity:1, map: obj.texture, side: THREE.FrontSide }));
-                projplane.position.set(0,0, planeZPos);
-
-                if (windowAspect > imgAspect){
-                    projplane.scale.x = window.innerWidth;
-                    projplane.scale.y = window.innerWidth/imgAspect;
-                }
-                else{
-                    projplane.scale.x = window.innerHeight*imgAspect;
-                    projplane.scale.y = window.innerHeight;
-                }
-                projplane.updateMatrix(); 
-                projplane.geometry.applyMatrix( projplane.matrix );
-                projplane.matrix.identity();
-                projplane.position.set( 0, 0, 0 );
-                projplane.rotation.set( 0, 0, 0 );
-                projplane.scale.set( 1, 1, 1 );
-
-                obj.projPr = projplane; 
-                //projectscene.add(smallplane);
-                //projectscene.add(refPlane);
-                projectscene.add(projplane);
-              
-                var menuplane = new THREE.Mesh(new THREE.BoxGeometry(window.innerWidth, window.innerHeight, 0), new THREE.MeshPhongMaterial({ transparent:true, opacity:0, map: obj.texture, side: THREE.FrontSide }));
+                //Menu Planes
                 for(var j = 0; j < 4; j++){
-                    menuplane.geometry.vertices[j].set(
-                        smallplane.geometry.vertices[j].x,
-                        smallplane.geometry.vertices[j].y,
-                        smallplane.geometry.vertices[j].z
+                    smallWebGLplane.geometry.vertices[j].set(
+                        smallRefPlane.geometry.vertices[j].x,
+                        smallRefPlane.geometry.vertices[j].y,
+                        smallRefPlane.geometry.vertices[j].z
                     );
                 }
+                smallWebGLplane.position.set(planePosArr[key].x, planePosArr[key].y, planePosArr[key].z);
 
-                menuplane.position.set(planePosArr[key].x, planePosArr[key].y, planePosArr[key].z);
-                light = new THREE.HemisphereLight(0xffffff, 0xffffff)
-                light.color.set(0xffffff);                
-                menuscene.add(light);
-                menuscene.add(menuplane);
-                // menuscene.add(refPlane);
-                // menuscene.add(smallplane);
+                //Adding planes to scenes               
+                //Home
+                homeCSSscene.add(homeEl);
+                obj.homePr = homeEl;
+                
+                //Project
+                // projectscene.add(bigRefPlane);
+                projectscene.add(bigWebGLplane);
+                obj.projPr = bigWebGLplane;
+                
+                //Menu
+                //menuscene.add(smallRefPlane);
+                menuscene.add(smallWebGLplane);
+                menuCSSscene.add(menuDiv);
                 obj.menuPr = {
-                    pl:menuplane,
-                    cssPr:{}
+                    pl:smallWebGLplane,
+                    cssPr:menuDiv
                 }
             });
-            light = new THREE.HemisphereLight(0xffffff, 0xffffff)
-            light.color.set(0xffffff);                
-            projectscene.add(light);           
-            
-            self.menurenderer = menurenderer;
+
+            self.homeCSSRenderer = homeCSSRenderer;
+            self.menuCSSRenderer = menuCSSRenderer;
             self.projectrenderer = projectrenderer;
-            self.menuscene = menuscene;
+            self.menurenderer = menurenderer;
+            self.homeCSSscene = homeCSSscene;
+            self.menuCSSscene = menuCSSscene;
             self.projectscene = projectscene;
+            self.menuscene = menuscene;
             self.camera = camera;
-            self.renderer = renderer;
-            self.scene = scene;
-            app.render();                    
+            app.render();
+
         },
         startWebGLAnimation : function(){
             TweenLite.ticker.addEventListener("tick", this.render, this);
@@ -736,7 +737,8 @@
         render: function(){
             this.menurenderer.render(this.menuscene, this.camera);
             this.projectrenderer.render(this.projectscene, this.camera);
-            this.renderer.render(this.scene, this.camera);
+            this.homeCSSRenderer.render(this.homeCSSscene, this.camera);
+            this.menuCSSRenderer.render(this.menuCSSscene, this.camera);
         }, 
         createHomeTl: function(){            
             if(typeof app.homeTimeline !== "undefined"){
@@ -747,6 +749,9 @@
             }
             
             var homeTimeLine = new TimelineMax({
+                onStart: function(){
+                    //console.log("started")
+                },
                 onComplete:homeTlCpl,
                 onCompleteParams:["{self}"]
             });
@@ -760,24 +765,24 @@
             _.each(app.currProjSet.projArr, function(obj, key){
                 var label = "label_" + key
                 ,exitLabel = "exitLabel_" + key
-                ;               
+                ;       
 
                 homeTimeLine
                 .add(label)
-                .to($(".home-container canvas")[key], 1, {opacity:1}, label)
+                .to($(".home-bg")[key], 1, {opacity:1}, label)
                 .to($("a.projectTrigger")[key], 1, {bottom:20}, label)
                 .to($("#projetsReview div.projetsDetails")[key], 1, {height:140}, label)
                 .to($("#projetsReview path")[key], 0.7, {strokeDashoffset:0}, label + "+=0.5")
                 .to($("#projetsReview .project-info")[key], 1, {opacity:1, left:0}, label + "+=0.6")
                 .add(exitLabel, label + "+=3")
                 .to($("a.projectTrigger")[key], 1.5, {bottom:0}, exitLabel)
+                .to($("#projetsReview div.projetsDetails")[key], 0.5, {height:0}, exitLabel + "+=1")
                 .to($("#projetsReview path")[key], 0.7, {strokeDashoffset:50}, exitLabel + "+=0.3")
                 .to($("#projetsReview .project-info")[key], 0.7, {opacity:0, left:10}, exitLabel + "+=0.5")
-                .to($("#projetsReview div.projetsDetails")[key], 0.5, {height:0}, exitLabel + "+=1")
-                .to($(".home-container canvas")[key], 0.2, {opacity:0})
+                .to($(".home-bg")[key], 0.2, {opacity:0})
                 ;
-                
             });
+            
             app.homeTimeline = homeTimeLine;
         },
         createScrollTl: function(){
@@ -913,6 +918,9 @@
                     );
                     obj.menuPr.pl.geometry.verticesNeedUpdate = true;
                     app.render();
+                }
+                if(app.isMobile()){                    
+                    obj.menuPr.cssPr.position.x = app.planePosArr[key].x + app.planeWidth/10;
                 }
             });
         },
@@ -1072,20 +1080,20 @@
             }
         },
         prepareMenuCSS : function(){
+            $("body").css({
+                overflowY:"hidden"
+            });
             if(app.isMobile()){
-                $("body").css({
-                    overflowY:"hidden"
-                });
             }else if(app.isTablet()){
                 $("body").css({overflowY:"visible"});
                 $(".menu-css-container, .menu-container canvas").css("top", 250);                                
             }
             else{
-                $("body").css({overflowY:"visible"});
-                $(".webGL, .projListCon").css({
-                    opacity:0
-                })
             }
+            $(".webGL, .projListCon").css({
+                opacity:0
+            })
+            //$("body").css({overflowY:"visible"});
             $(".outer.css-threed").css({
                 visibility:"visible"
             })
@@ -1171,32 +1179,27 @@
             self = this
             ;
 
-            //Clear Home Scene
-            $(".home-container canvas").remove();
-            
-            //Clear Menu Scene
-            if(app.isMobile()){                    
-                $(".projListCon").remove();
-            }else{
-                _.each(currProjArr, function(obj, key){
-                    app.menuscene.remove(obj.projPr);
-                    app.scene.remove(obj.cssPr);
-                });
-            }
+            //Clear Home and Menu Scenes
+            _.each(currProjArr, function(obj, key){
+                app.menuscene.remove(obj.menuPr);
+                app.menuCSSscene.remove(obj.cssPr);
+                app.homeCSSscene.remove(obj.homePr);
+            });
 
             _.each(currProjArr, function(obj, key){
-                //Reorder Home page projects
-                $(".home-container").append(obj.homePr.el);
-                
+
                 //Reorder Menu page projects
+                obj.menuPr.pl.position.set(obj.smallRefPlane.position.x,obj.smallRefPlane.position.y,obj.smallRefPlane.position.z)
                 if(app.isMobile()){                    
-                    $(".css-threed").append(obj.menuPr.cssPr)
+                    obj.menuPr.cssPr.position.set(obj.smallRefPlane.position.x + planeWidth/10,obj.smallRefPlane.position.y,obj.smallRefPlane.position.z)
                 }else{
-                    obj.menuPr.pl.position.set(obj.smallRefPlane.position.x,obj.smallRefPlane.position.y,obj.smallRefPlane.position.z)
                     obj.menuPr.cssPr.position.set(obj.smallRefPlane.position.x,obj.smallRefPlane.position.y,obj.smallRefPlane.position.z)
-                    app.menuscene.add(obj.menuPr.pl);
-                    app.scene.add(obj.menuPr.cssPr);
                 }
+                app.menuscene.add(obj.menuPr.pl);
+                app.menuCSSscene.add(obj.menuPr.cssPr);
+                
+                //Reorder Home page projects
+                app.homeCSSscene.add(obj.homePr);
             });
 
             app.render();
@@ -1208,11 +1211,6 @@
                     returnObj = true;
                 }
             }
-            if(!(typeof app.projToMenuTl === "undefined")){
-                if(app.projToMenuTl._active){
-                    returnObj = true;
-                }
-            }
             if(!(typeof app.homeToProjTl === "undefined")){
                 if(app.homeToProjTl._active){
                     returnObj = true;
@@ -1220,6 +1218,31 @@
             }
             if(!(typeof app.projToHomeTl === "undefined")){
                 if(app.projToHomeTl._active){
+                    returnObj = true;
+                }
+            }
+            if(!(typeof app.projToMenuTl === "undefined")){
+                if(app.projToMenuTl._active){
+                    returnObj = true;
+                }
+            }
+            if(!(typeof app.menuToProjTl === "undefined")){
+                if(app.menuToProjTl._active){
+                    returnObj = true;
+                }
+            }
+            if(!(typeof app.menuToHomeTl === "undefined")){
+                if(app.menuToHomeTl._active){
+                    returnObj = true;
+                }
+            }
+            if(!(typeof app.menuTimeline === "undefined")){
+                if(app.menuTimeline._active){
+                    returnObj = true;
+                }
+            }
+            if(!(typeof app.projTimeline === "undefined")){
+                if(app.projTimeline._active){
                     returnObj = true;
                 }
             }
@@ -1300,14 +1323,14 @@
                     app.startWebGLAnimation();
                     switch(currentDirection){
                         case "up":
-                            yPos -= distance/5;
+                            yPos -= distance;
                             if(yPos < upperBound){
                                 yPos = upperBound;
                             }
                         break;
 
                         case "down":
-                            yPos += distance/5;
+                            yPos += distance;
                             if(yPos > lowerBound){
                                 yPos = lowerBound;
                             }
@@ -1321,7 +1344,7 @@
                     });
                 }
             }
-        });
+        });     
 
         $(document).on("mouseenter", ".projListCon", function(e){ 
             if(app.isAnimating()){
@@ -1473,8 +1496,6 @@
 
             manager.onLoad = function () {
 
-                app.addWebGLProjects();
-                 
                 var mainView = new app.Views.MainView();
                 mainView.render();                            
                 var headerView = new app.Views.HeaderView();
@@ -1486,7 +1507,7 @@
                 var menuPageText = new app.Views.MenuPageText();
                 menuPageText.render();    
 
-                app.addCSSProjects();
+                app.addWebGLProjects();
 
                 app.currentRoute = $(view.el)[0].className;
                 switch(app.currentRoute){
@@ -1721,15 +1742,27 @@
             .add("fixLetters")
             .to($("#random-text .text").not(".matched"), 0.5, {opacity:0}, "fixLetters")
             
-            _.each(matchedElArr, function(obj, key){                
-                homeRandomTl.set(obj, {
-                  css : {
-                      position: "absolute",
-                      top: posArr[key].start.top,
-                      left: posArr[key].start.left
-                  }
+            if(app.isMobile() || app.isTablet()){
+                _.each(matchedElArr, function(obj, key){                
+                    homeRandomTl.set(obj, {
+                      css : {
+                          position: "absolute",
+                          top: posArr[key].start.top,
+                          left: posArr[key].start.left
+                      }
+                    });
                 });
-            });
+            }else{
+                _.each(matchedElArr, function(obj, key){                
+                    homeRandomTl.set(obj, {
+                      css : {
+                          position: "absolute",
+                          top: posArr[key].start.top - 5,
+                          left: posArr[key].start.left
+                      }
+                    });
+                });
+            }
 
             homeRandomTl
             .add("skewLetters")
@@ -1752,13 +1785,21 @@
             .add("moveLetters")
             .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
             
-            _.each(matchedElArr, function(obj, key){
-                homeRandomTl.to(obj, 1, {
-                    top: posArr[key].end.top,
-                    left: posArr[key].end.left
-                }, "moveLetters");
-            });
-
+            if(app.isMobile() || app.isTablet()){
+                _.each(matchedElArr, function(obj, key){
+                    homeRandomTl.to(obj, 1, {
+                        top: posArr[key].end.top,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }else{ 
+                _.each(matchedElArr, function(obj, key){
+                    homeRandomTl.to(obj, 1, {
+                        top: posArr[key].end.top - 5,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }
             homeRandomTl
             .add("changeColorLetters")
             .to("#ghost-text", 1, {opacity:1}, "changeColorLetters")
@@ -2723,6 +2764,8 @@
                 menuToProjTl
                 .to(planeToAnim.material, 1, {opacity:1}, "changeColorLetters2")
             }
+
+            app.menuToProjTl = menuToProjTl;
         },
         _animateProjectToMenu : function(previous, next, ctx){
              var titrePosArr = []
@@ -2959,10 +3002,14 @@
             TweenMax.to($(e.currentTarget).find("img")[1], .7, {rotationZ:"-=25", ease:Power4.easeOut})            
         },
         _navigateToHome : function(e){
-            if(app.currentRoute == "home"){
-                Backbone.history.loadUrl(Backbone.history.fragment);
+            if(app.isAnimating()){
+                return;
             }else{
-                Backbone.history.navigate("", {trigger:true})
+                if(app.currentRoute == "home"){
+                    Backbone.history.loadUrl(Backbone.history.fragment);
+                }else{
+                    Backbone.history.navigate("", {trigger:true})
+                }
             }
         },
         _glowIcons : function(e){
@@ -3020,13 +3067,17 @@
                 }
             }
         },
-        _navigateToMenu : function(e){            
-            TweenMax.to("a.projetTrigger", 0.5, {
-                bottom:0,
-                onComplete: function(){
-                    Backbone.history.navigate("#!/menu", {trigger: true})
-                }
-            })
+        _navigateToMenu : function(e){      
+            if(app.isAnimating()){
+                return;
+            }else{
+                TweenMax.to("a.projetTrigger", 0.5, {
+                    bottom:0,
+                    onComplete: function(){
+                        Backbone.history.navigate("#!/menu", {trigger: true})
+                    }
+                })
+            }      
         },    
         render: function () {
             var template = _.template($('script[name=header]').html());
@@ -3356,20 +3407,155 @@
             if(app.isAnimating()){
                 return;
             }else{
+                var self = this;
+                self.mouseover = true;
+                app.homeTimeline.seek(0).pause();
                 var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
-                app.currentProject = app.currProjSet.projArr[idx];                          
-                if($(e.currentTarget).css("bottom") == "0px"){
-                    app.homeTimeline.pause();
-                    TweenMax.to("a.projectTrigger", 0.3, {
-                        bottom:0,
-                        onComplete : function(){
-                            TweenMax.to("a.projectTrigger", {clearProps: "bottom"})
-                            app.homeTimeline.tweenFromTo("label_"+idx, "exitLabel_"+idx);
-                        }
-                    })
-                }else{
-                    app.homeTimeline.tweenTo("exitLabel_"+idx);
+                if(typeof self.letterUptl !== "undefined"){
+                    delete self.letterUptl;
                 }
+
+                var remTriggers = _.reject($("a.projectTrigger"), function(obj, key){
+                    return key == idx;
+                });
+
+                var remProjDetails = _.reject($("#projetsReview div.projetsDetails"), function(obj, key){
+                    return key == idx;
+                });
+
+                var remPaths = _.reject($("#projetsReview path"), function(obj, key){
+                    return key == idx;
+                });
+
+                var remProjInfo = _.reject($("#projetsReview .project-info"), function(obj, key){
+                    return key == idx;
+                });
+
+                var remBg = _.reject($(".home-bg"), function(obj, key){
+                    return key == idx;
+                });
+                
+                var letterUptl = new TimelineMax({                        
+                    onComplete: function(){
+                        if(!self.mouseover){
+                            console.log("mouseover")
+                            TweenMax.to("a.projectTrigger", 0.3, {
+                                bottom:0,
+                                onComplete: function(){
+                                    TweenMax.to("a.projectTrigger", {clearProps:"bottom"})
+                                }
+                            })
+                            TweenMax.to("#projetsReview div.projetsDetails", 0.3, {
+                                height:0,
+                                onComplete: function(){
+                                    TweenMax.to("#projetsReview div.projetsDetails", {clearProps:"height"})
+                                }
+                            })
+                            TweenMax.to(".home-bg", 0.3, {
+                                opacity:0,
+                                onComplete: function(){
+                                    TweenMax.to(".home-bg", {clearProps:"opacity"})
+                                }
+                            })
+                            TweenMax.to("#projetsReview path", 0.3, {
+                                strokeDashoffset:50,
+                                onComplete: function(){
+                                    TweenMax.to("#projetsReview path", {clearProps:"strokeDashoffset"})
+                                }
+                            })
+                            TweenMax.to("#projetsReview .project-info", 0.3, {
+                                opacity:0, left:10,
+                                onComplete: function(){
+                                    TweenMax.to("#projetsReview .project-info", {clearProps:["opacity","left"]})
+                                }
+                            })
+                            setTimeout(function(){
+                                if(!self.mouseover && !app.homeTimeline._active){
+                                    app.homeTimeline.restart();
+                                }
+                            }, 1000)
+                        }
+                        else{
+                            console.log("animate project info")
+                            var projectInfoTl = new TimelineMax({
+                                onReverseComplete: function(){
+                                    if(!self.mouseover){
+                                        TweenMax.to("a.projectTrigger", 0.3, {
+                                            bottom:0,
+                                            onComplete: function(){
+                                                TweenMax.to("a.projectTrigger", {clearProps:"bottom"})
+                                            }
+                                        })
+                                        TweenMax.to("#projetsReview div.projetsDetails", 0.3, {
+                                            height:0,
+                                            onComplete: function(){
+                                                TweenMax.to("#projetsReview div.projetsDetails", {clearProps:"height"})
+                                            }
+                                        })
+                                        TweenMax.to(".home-bg", 0.3, {
+                                            opacity:0,
+                                            onComplete: function(){
+                                                TweenMax.to(".home-bg", {clearProps:"opacity"})
+                                            }
+                                        })
+                                        TweenMax.to("#projetsReview path", 0.3, {
+                                            strokeDashoffset:50,
+                                            onComplete: function(){
+                                                TweenMax.to("#projetsReview path", {clearProps:"strokeDashoffset"})
+                                            }
+                                        })
+                                        TweenMax.to("#projetsReview .project-info", 0.3, {
+                                            opacity:0, left:10,
+                                            onComplete: function(){
+                                                TweenMax.to("#projetsReview .project-info", {clearProps:["opacity","left"]})
+                                            }
+                                        })
+                                        delete projectInfoTl;
+                                        setTimeout(function(){
+                                            if(!self.mouseover && !app.homeTimeline._active){
+                                                app.homeTimeline.restart();
+                                            }
+                                        }, 1000)
+                                    }
+                                }
+                            });
+
+                            projectInfoTl
+                            .add("enter")
+                            .to($("#projetsReview path")[idx], 0.4, {strokeDashoffset:0}, "enter")
+                            .to(remPaths, 0.4, {strokeDashoffset:50, onComplete: function(){
+                                    TweenMax.to(remPaths, {clearProps:"strokeDashoffset"})
+                                }
+                            }, "enter")
+                            .to($("#projetsReview .project-info")[idx], 0.4, {opacity:1, left:0}, "enter+=0.2")
+                            .to(remProjInfo, 0.4, {opacity:0, left:10}, "enter+=0.2")
+
+                            self.projectInfoTl = projectInfoTl;
+                        }
+                    }
+                });
+
+                letterUptl
+                .add("enter")
+                .to(e.currentTarget, 0.4, { bottom:20 }, "enter")
+                .to(remTriggers, 0.4, { bottom:0 , onComplete: function(){
+                        TweenMax.to(remTriggers, {clearProps:"bottom"}) 
+                    }
+                }, "enter")
+                .to($("#projetsReview div.projetsDetails")[idx], 0.4, {height:140}, "enter")
+                .to(remProjDetails, 0.4, { height:0 , onComplete: function(){
+                        TweenMax.to(remProjDetails, {clearProps:"height"}) 
+                    }
+                }, "enter")
+                .to($(".home-bg")[idx], 0.4, {opacity:1}, "enter")
+                .to(remBg, 0.4, {opacity:0, onComplete: function(){
+                        TweenMax.to(remBg, {clearProps:"opacity"}) 
+                    }
+                }, "enter")
+
+                self.letterUptl = letterUptl;
+
+                app.currentProject = app.currProjSet.projArr[idx]; 
             }
         },
         _letterDown : function(e){
@@ -3377,21 +3563,10 @@
             if(app.isAnimating()){
                 return;
             }else{
-                var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
-                if(idx == 7){
-                    app.homeTimeline.tweenTo("exitLabel_"+idx+"+=1", {
-                        onComplete : function(){
-                            app.homeTimeline.resume();
-                        }
-                    }).timeScale(2.5);
-                }
-                else{
-                    app.homeTimeline.tweenTo("label_"+(idx+1), {
-                        onComplete : function(){
-                            app.homeTimeline.resume();
-                        }
-                    }).timeScale(2.5);
-                }
+                var self = this;
+                self.mouseover = false;
+                if(typeof self.projectInfoTl !== "undefined")
+                    self.projectInfoTl.reverse().timeScale(2);                
             }
         },       
         render: function () {
@@ -3402,23 +3577,10 @@
     });
 
     app.Views.ProjectPageText = app.Extensions.View.extend({
-        el: '#random-text',  
-        insertTitle : function(titre){
-            titre = $('<textarea />').html(titre).text();
-            var tmpProjName = [];
-            _.each(titre, function(obj, key){
-                if(obj == "<")
-                    tmpProjName[key] = '<br/>';
-                else if(obj == " ")
-                    tmpProjName[key] = '<span class="text">&nbsp;</span>';
-                else if(!_.contains(["b","r","/",">"], obj))
-                    tmpProjName[key] = '<span class="text">' + obj + '</span>';
-            });
-            return tmpProjName.join("");
-        },
+        el: '#random-text',
         render: function () {
             var template = _.template($('script[name=random-text]').html());
-            this.$el.html(template({para:this.insertTitle(app.currentProject.titre)}));
+            this.$el.html(template({para:app.insertTitle(app.currentProject.titre)}));
             return app.Extensions.View.prototype.render.apply(this, arguments);
         }
     });

@@ -367,7 +367,7 @@
             ;
         
             $(".menu-css-container, .menu-container canvas").css("top", 0);                                                
-            $("body").css("overflowY", "hidden");
+            //$("body").css("overflowY", "hidden");
 
             if(app.isTablet()){
                 console.log("Resize To Tab")
@@ -384,7 +384,7 @@
                     {x: 0.5*planeWidth, y:-1.5*planeHeight, z:0},
                 ];
                 $(".menu-css-container, .menu-container canvas").css("top", 250);                                                
-                $("body").css("overflowY", "visible");
+                //$("body").css("overflowY", "visible");
             
             }else if(app.isMobile()){
                 console.log("Resize To Mobile")
@@ -452,15 +452,15 @@
                     cssPr.element.style.width = planeWidth + "px";  
                     cssPr.position.x = planePosArr[key].x;
                 }else{
-                    cssPr.element.style.height = planeHeight + 2 + "px";
+                    cssPr.element.style.height = planeHeight + 1 + "px";
                     cssPr.element.style.width = planeWidth + "px";  
                     cssPr.position.x = planePosArr[key].x;
                 }
 
                 if(key >= 4 && !(app.isMobile()||app.isTablet()))
-                    cssPr.position.y = planePosArr[key].y - 2;
+                    cssPr.position.y = planePosArr[key].y - 0.5;
                 else if(app.isTablet())
-                    cssPr.position.y = planePosArr[key].y - 1;
+                    cssPr.position.y = planePosArr[key].y + 0.5;
                 else
                     cssPr.position.y = planePosArr[key].y;
 
@@ -633,15 +633,15 @@
                     menuEl.style.width = planeWidth + "px";  
                     menuDiv.position.x = planePosArr[key].x;
                 }else{
-                    menuEl.style.height = planeHeight + 2 + "px";
+                    menuEl.style.height = planeHeight + 1 + "px";
                     menuEl.style.width = planeWidth + "px";  
                     menuDiv.position.x = planePosArr[key].x;
                 }
                 
                 if(key >= 4 && !(app.isMobile()||app.isTablet()))
-                    menuDiv.position.y = planePosArr[key].y - 2;
+                    menuDiv.position.y = planePosArr[key].y - 0.5;
                 else if(app.isTablet())
-                    menuDiv.position.y = planePosArr[key].y - 1;
+                    menuDiv.position.y = planePosArr[key].y + 0.5;
                 else
                     menuDiv.position.y = planePosArr[key].y;
 
@@ -2059,9 +2059,11 @@
                 });
             });
 
+            console.log(matchedElArr[0])
+
             homeToProjTl
             .add("fixLetters")
-            .to($("a.projectTrigger"), 0.3, {bottom:0}, "fixLetters")
+            //.to($("a.projectTrigger"), 0.3, {bottom:0}, "fixLetters")
             .to($("#random-text .text").not(".matched"), 0.5, {opacity:0}, "fixLetters")
             ;        
 
@@ -2111,14 +2113,14 @@
             if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){
                     homeToProjTl.to(obj, 1, {
-                        top: posArr[key].end.top,
+                        top: key>0?posArr[key].end.top:posArr[key].end.top+20,
                         left: posArr[key].end.left
                     }, "moveLetters");
                 });
             }else{ 
                 _.each(matchedElArr, function(obj, key){
                     homeToProjTl.to(obj, 1, {
-                        top: posArr[key].end.top - 5,
+                        top: key>0?posArr[key].end.top - 5:posArr[key].end.top + 15,
                         left: posArr[key].end.left
                     }, "moveLetters");
                 });
@@ -3071,12 +3073,12 @@
             if(app.isAnimating()){
                 return;
             }else{
-                TweenMax.to("a.projetTrigger", 0.5, {
+                Backbone.history.navigate("#!/menu", {trigger: true})
+                /*TweenMax.to("a.projetTrigger", 0.5, {
                     bottom:0,
                     onComplete: function(){
-                        Backbone.history.navigate("#!/menu", {trigger: true})
                     }
-                })
+                })*/
             }      
         },    
         render: function () {
@@ -3479,13 +3481,7 @@
                             console.log("animate project info")
                             var projectInfoTl = new TimelineMax({
                                 onReverseComplete: function(){
-                                    if(!self.mouseover){
-                                        TweenMax.to("a.projectTrigger", 0.3, {
-                                            bottom:0,
-                                            onComplete: function(){
-                                                TweenMax.to("a.projectTrigger", {clearProps:"bottom"})
-                                            }
-                                        })
+                                    if(!self.mouseover){                                        
                                         TweenMax.to("#projetsReview div.projetsDetails", 0.3, {
                                             height:0,
                                             onComplete: function(){
@@ -3565,6 +3561,12 @@
             }else{
                 var self = this;
                 self.mouseover = false;
+                TweenMax.to("a.projectTrigger", 0.3, {
+                    bottom:0,
+                    onComplete: function(){
+                        TweenMax.to("a.projectTrigger", {clearProps:"bottom"})
+                    }
+                })
                 if(typeof self.projectInfoTl !== "undefined")
                     self.projectInfoTl.reverse().timeScale(2);                
             }

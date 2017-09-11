@@ -580,7 +580,7 @@ a.menuProjLink{
     height: 100%;
     width: 100.2%;
     display: table;
-    background: rgba(255,255,255,0.8);
+    //background: rgba(255,255,255,0.8);
 }
 .projDetInner{
     padding-top: 20px;
@@ -612,7 +612,7 @@ a.menuProjLink{
 }
 .projListCon .text{
     opacity: 0;
-    color: rgba(0,0,0,1);
+    color: rgba(0,0,0,0.1);
 }
 
 /* Project Page CSS */

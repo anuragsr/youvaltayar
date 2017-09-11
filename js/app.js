@@ -442,28 +442,16 @@
                 }
 
                 var cssPr = obj.menuPr.cssPr;
-
+                cssPr.element.style.height = planeHeight + "px";
+                cssPr.element.style.width = planeWidth + "px";  
+                
                 if(app.isMobile()){
-                    cssPr.element.style.height = planeHeight + 1 + "px";
-                    cssPr.element.style.width = planeWidth + 1 + "px";  
                     cssPr.position.x = planePosArr[key].x + planeWidth/10;
-                }else if(app.isTablet()){
-                    cssPr.element.style.height = planeHeight + 1 + "px";
-                    cssPr.element.style.width = planeWidth + "px";  
-                    cssPr.position.x = planePosArr[key].x;
                 }else{
-                    cssPr.element.style.height = planeHeight + 1 + "px";
-                    cssPr.element.style.width = planeWidth + "px";  
                     cssPr.position.x = planePosArr[key].x;
                 }
 
-                if(key >= 4 && !(app.isMobile()||app.isTablet()))
-                    cssPr.position.y = planePosArr[key].y - 0.5;
-                else if(app.isTablet())
-                    cssPr.position.y = planePosArr[key].y + 0.5;
-                else
-                    cssPr.position.y = planePosArr[key].y;
-
+                cssPr.position.y = planePosArr[key].y;
                 cssPr.position.z = planeZPos;
 
                 app.menuCSSscene.add(cssPr);
@@ -623,28 +611,17 @@
                 //Menu CSS projects
                 var menuEl = $(".projListCon")[key];
                 var menuDiv = new THREE.CSS3DObject(menuEl);
-
+                
+                menuEl.style.height = planeHeight + "px";
+                menuEl.style.width = planeWidth + "px";  
+                
                 if(app.isMobile()){
-                    menuEl.style.height = planeHeight + 1 + "px";
-                    menuEl.style.width = planeWidth + 1 + "px";  
                     menuDiv.position.x = planePosArr[key].x + planeWidth/10;
-                }else if(app.isTablet()){
-                    menuEl.style.height = planeHeight + 1 + "px";
-                    menuEl.style.width = planeWidth + "px";  
-                    menuDiv.position.x = planePosArr[key].x;
                 }else{
-                    menuEl.style.height = planeHeight + 1 + "px";
-                    menuEl.style.width = planeWidth + "px";  
                     menuDiv.position.x = planePosArr[key].x;
                 }
-                
-                if(key >= 4 && !(app.isMobile()||app.isTablet()))
-                    menuDiv.position.y = planePosArr[key].y - 0.5;
-                else if(app.isTablet())
-                    menuDiv.position.y = planePosArr[key].y + 0.5;
-                else
-                    menuDiv.position.y = planePosArr[key].y;
 
+                menuDiv.position.y = planePosArr[key].y;
                 menuDiv.position.z = planeZPos;
 
                 // Setting correct sizes
@@ -899,11 +876,15 @@
             
             menuTimeline
             .staggerTo(".projListCon", 0.5, {opacity:1}, 0.05, "enterProj")            
-            .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"}, "enterProj")            
-            .to(".project-container", 0.5, {opacity:0})            
+            .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 0.1)"}, "enterProj")            
             ;
+
+            if($(".matched").length > 0){
+                TweenMax.to(".matched", 0.5, {opacity:0})            
+                TweenMax.to(".project-container", 1, {opacity:0})            
+            }
             
-            TweenMax.staggerTo(menuMaterials, 0.5, {opacity:1}, 0.05)            
+            TweenMax.staggerTo(menuMaterials, 0.5, {opacity:0.2}, 0.05)            
             app.menuTimeline = menuTimeline;
         },
         _resetMenu:function(){
@@ -2165,6 +2146,7 @@
             }
         },
         _animateHomeToMenu : function(previous, next, ctx){
+            $("a.projectTrigger").parent().addClass("matched");
             var homeToMenuTl = new TimelineMax({
                 onComplete: function(){
                     previous.remove();
@@ -2495,17 +2477,29 @@
             }, "scrollUp")
             .add("fixLetters")
             .to("#projetsReview div.projetsDetails", 0.2, {opacity:0, height:0}, "fixLetters")
-            .to($("#random-text .text").not(".matched"), 1, {opacity:0}, "fixLetters")
-            
-            _.each(matchedElArr, function(obj, key){                
-                nextProjectTl.set(obj, {
-                  css : {
-                      position: "absolute",
-                      top: posArr[key].start.top,
-                      left: posArr[key].start.left
-                  }
+            .to($("#random-text .text").not(".matched"), 1, {opacity:0}, "fixLetters")                    
+
+            if(app.isMobile() || app.isTablet()){
+                _.each(matchedElArr, function(obj, key){                
+                    nextProjectTl.set(obj, {
+                      css : {
+                          position: "absolute",
+                          top: posArr[key].start.top,
+                          left: posArr[key].start.left
+                      }
+                    });
                 });
-            });
+            }else{
+                _.each(matchedElArr, function(obj, key){                
+                    nextProjectTl.set(obj, {
+                      css : {
+                          position: "absolute",
+                          top: posArr[key].start.top - 5,
+                          left: posArr[key].start.left
+                      }
+                    });
+                });
+            }
 
             _.each(matchedElArr, function(obj, key){
                 var str = "";
@@ -2525,12 +2519,45 @@
             nextProjectTl
             .add("moveLetters")
             .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
+            
+            if(app.isMobile() || app.isTablet()){
+                _.each(matchedElArr, function(obj, key){
+                    nextProjectTl.to(obj, 1, {
+                        top: posArr[key].end.top,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }else{
+                _.each(matchedElArr, function(obj, key){
+                    nextProjectTl.to(obj, 1, {
+                        top: posArr[key].end.top - 5,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }
+
+            /*if(app.isMobile() || app.isTablet()){
+                _.each(matchedElArr, function(obj, key){
+                    nextProjectTl.to(obj, 1, {
+                        top: key>0?posArr[key].end.top:posArr[key].end.top+20,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }else{ 
+                _.each(matchedElArr, function(obj, key){
+                    nextProjectTl.to(obj, 1, {
+                        top: key>0?posArr[key].end.top - 5:posArr[key].end.top + 15,
+                        left: posArr[key].end.left
+                    }, "moveLetters");
+                });
+            }*/
+            /*
             _.each(matchedElArr, function(obj, key){
                 nextProjectTl.to(obj, 1, {
                     top: posArr[key].end.top,
                     left: posArr[key].end.left
                 }, "moveLetters");
-            });
+            });*/
 
             app.startWebGLAnimation();
 

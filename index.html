@@ -5,19 +5,14 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
-       <!--  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" /> -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <title>Youval Tayar | Freelance Art Director Paris</title>        
         <link rel="shortcut icon" type="image/png" href="images/favicon.png">
         <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <link rel="stylesheet" type="text/css" href="css/media.css">
     </head>
     <body>
-        <!-- <p class="nav-control">
-            <a href="#/">&larr; Home</a>
-            <a href="#!/menu">Menu &rarr;</a>
-            <a href="#!/projets/ensemble-correspondance">Project &rarr;</a>
-        </p> -->
-
         <div class="page loader is-visible">            
             <div class="loader-inner">
                 <div class="loader-inner-contain">
@@ -66,15 +61,17 @@
                     <div class="profile-inner youval-pic-top-phone"></div>
                 </div>
                 <div class="profile-square">
-                    <div class="profile-inner youval-pic-top">
-                        <!-- <img src="images/youval-tayar-top.jpg" class="youval-image"/> -->
+                    <div class="profile-inner youval-pic-top-desktop">
+                        <img src="images/youval-tayar-top.jpg" class="youval-image"/>
                     </div>
                 </div>
                 <div class="profile-square">
                     <div class="profile-inner bg-white"><span class="inner-text">"I tackle all my new creations with the ambition to make them memorable, both beautiful and useful."</span></div>
                 </div>
                 <div class="profile-square">
-                    <div class="profile-inner youval-pic-bottom-tablet"></div>
+                    <div class="profile-inner youval-pic-bottom-tablet">
+                        <img src="images/youval-tayar-bottom.jpg" class="youval-image youval-btm-img"/>
+                    </div>
                 </div>
             </div>
             <div class="bar">
@@ -82,8 +79,8 @@
                     <div class="profile-inner"></div>
                 </div>
                 <div class="profile-square no-tablet">
-                    <div class="profile-inner youval-pic-bottom">
-                        <!-- <img src="images/youval-tayar-bottom.jpg" class="youval-image"/> -->
+                    <div class="profile-inner">
+                        <img src="images/youval-tayar-bottom.jpg" class="youval-image youval-btm-img"/>
                     </div>
                 </div>
                 <div class="profile-square">
@@ -113,7 +110,7 @@
         </div>
 
         <div class="page outer css-threed">
-            <div class="header-el"></div>
+            <div class="header-el header-el-menu"></div>
         </div>
 
         <div class="page webGL home-container">
@@ -169,7 +166,7 @@
         </script>
         
         <script type="text/template" name="main">
-            <div class="header-el"></div>
+            <div class="header-el header-el-burger"></div>
             <div id="projetsReview">
             </div>
             <div class="arrow-down">
@@ -235,24 +232,28 @@
                 <div class="clientBox box">
                     <div id="trigger1"></div>
                     <div class="boxContent">
-                        <div class="contentNumber">001</div>
-                        <div class="numOverlay"></div>
-                        <div class="line-down"></div>
-                        <p><%= pr.clientBox %></p>
+                        <div class="content-num-contain">
+                            <div class="contentNumber">001</div>
+                            <div class="numOverlay"></div>
+                            <div class="line-down"></div>                        
+                        </div>
+                        <p><%= pr.clientBox %></p>                        
                     </div>
                 </div>    
                 <div class='rightBox box backgroundCover' style='background-image:url(<%= pr.rightBox %>)'></div>
                 <div class='leftBox box'>
-                    <div id="trigger2"></div>
                     <div class='boxContent'>
                         <p><%= pr.leftBoxBottom %></p>
                     </div>
                 </div>
                 <div class='projetBox box'>
+                    <div id="trigger2"></div>
                     <div class='boxContent'>
-                        <div class='contentNumber white'>002</div>
-                        <div class='numOverlay'></div>
-                        <div class='line-down white'></div>
+                        <div class="content-num-contain">
+                            <div class='contentNumber white'>002</div>
+                            <div class='numOverlay'></div>
+                            <div class='line-down white'></div>
+                        </div>
                         <p><%= pr.projetBox %></p>
                     </div>
                 </div>
@@ -260,9 +261,11 @@
                 <div class='resultatBox box'>
                     <div id="trigger4"></div>
                     <div class='boxContent'>
-                        <div class='contentNumber white'>003</div>
-                        <div class='numOverlay'></div>
-                        <div class='line-down white'></div>
+                        <div class="content-num-contain">
+                            <div class='contentNumber white'>003</div>
+                            <div class='numOverlay'></div>
+                            <div class='line-down white'></div>
+                        </div>
                         <p><%= pr.resultatBox %></p>
                     </div>
                 </div>
@@ -271,23 +274,32 @@
                         <p><%= pr.resultatBoxRight %></p>
                     </div>
                 </div>
-                <div class='resultatBoxLogoLeft box'>
+                <% if (typeof(pr.resultatLogo) !== "undefined") { %>
+                    <div class='resultatBoxLogoLeft box'>
+                        <div id="trigger5"></div>
+                        <div class='boxContent'>
+                            <div class='contentTitle'>Logotype</div>
+                            <%= pr.resultatLogo %>
+                        </div>
+                    </div>
+                <% } else{ %>
                     <div id="trigger5"></div>
-                    <div class='boxContent'>
-                        <div class='contentTitle'>Logotype</div>
-                        <%= pr.resultatLogo %>
+                <% } %>
+                <% if (typeof(pr.resultatFont) !== "undefined") { %>
+                    <div class='resultatBoxLogoCenter box'>
+                        <div class='boxContent'>
+                            <p><%= pr.resultatFont %></p>
+                        </div>
                     </div>
-                </div>
-                <div class='resultatBoxLogoCenter box'>
-                    <div class='boxContent'>
-                        <p><%= pr.resultatFont %></p>
+                <% } %>
+                <% if (typeof(pr.resultatFont) !== "undefined") { %>
+                    <div class='resultatBoxLogoRight box'>
+                        <div class='boxContent'>
+                            <p><%= pr.resultatColor %></p>
+                        </div>
                     </div>
-                </div>
-                <div class='resultatBoxLogoRight box'>
-                    <div class='boxContent'>
-                        <p><%= pr.resultatColor %></p>
-                    </div>
-                </div>
+                <% } %>
+                
                 <% if (typeof(pr.resultatBoxLogoFull) !== "undefined") { %>
                     <div class='resultatBoxLogoFull box backgroundCover' style='background-image:url(<%= pr.resultatBoxLogoFull %>)'>
                         <div id="trigger6"></div>
@@ -374,7 +386,7 @@
                         <div class="white-layer">
                             <div class="white-layer-table">
                                 <div class="white-layer-inner">
-                                    <div style="position:relative;" class="text"><%= pr.firstLetter %></div>
+                                    <span style="position:relative;" class="text"><%= pr.firstLetter %></span>
                                 </div>
                             </div>
                         </div>
@@ -390,6 +402,7 @@
         </script>
 
         <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/jquery.touchSwipe.min.js"></script>
         <script type="text/javascript" src="js/underscore.js"></script>
         <script type="text/javascript" src="js/backbone.js"></script>
         <script type="text/javascript" src="js/three.min.js"></script>

@@ -13,7 +13,13 @@
         <link rel="stylesheet" type="text/css" href="css/media.css">
     </head>
     <body>
-        <div class="page loader is-visible">            
+       <!--  <p class="nav-control">
+            <a href="#/">&larr; Home</a>
+            <a href="#!/menu">Menu &rarr;</a>
+            <a href="#!/projets/ensemble-correspondance">Project &rarr;</a>
+        </p>
+         -->
+        <div class="page loader is-visible">
             <div class="loader-inner">
                 <div class="loader-inner-contain">
                     <div class="img-contain">
@@ -105,11 +111,13 @@
             </div>
         </div>
         
+        <div class="header-el is-visible"></div>
+        
         <div class="page outer main is-visible">            
         </div>
 
         <div class="page outer css-threed">
-            <div class="header-el header-el-menu"></div>
+            <div class="spacer"></div>
         </div>
 
         <div class="page webGL home-container">
@@ -127,9 +135,31 @@
                     <img class="y-logo-img" src="images/y.png"/>
                     <img src="images/logo-blk.svg"/>
                 </a>
-                <h1>I'm <span class="profile">Youval</span>, <br/>Freelance <br class="yes-phone"/>Art Director</h1>
+                <h1 class="no-mobile">I'm <span class="profile">Youval</span>, <br/>Freelance <br class="yes-phone"/>Art Director</h1>
+                <div class="mobile-burger">
+                    <a class="burger no-desktop">
+                        <div class="menu-line-container">
+                            <div id="menu-line1" class="menu-line"></div>
+                            <div id="menu-line2" class="menu-line"></div>
+                            <div id="menu-line3" class="menu-line"></div>
+                        </div>
+                        <ul>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                        </ul>
+                        <ul>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                        </ul>
+                    </a>
+                </div>
+                <nav id="nav" class="no-desktop mobile-profile-btn">
+                    <div class="social"><a><i class="icon-envelope"></i></a></div>
+                </nav>
             </header>
-            <nav id="nav">
+            <nav id="nav" class="no-mobile">
                 <a class="burger">
                     <div class="menu-line-container">
                         <div id="menu-line1" class="menu-line"></div>
@@ -165,8 +195,8 @@
         </script>
         
         <script type="text/template" name="main">
-            <div class="header-el header-el-burger"></div>
-            <div id="projetsReview">
+            <div class="spacer"></div>            
+            <div id="projetsReview" class="no-mobile">
             </div>
             <div class="arrow-down">
                 <div class="down-btn" >
@@ -176,7 +206,7 @@
                     <p><i class="icon-angle-down"></i></p>         
                 </div>
             </div>
-            <div class="back-container">
+            <div class="back-container no-mobile">
                 <svg height="5" width="55" id="top-svg">
                     <line x1="0" y1="0" x2="55" y2="0" />
                 </svg>
@@ -331,7 +361,7 @@
                 </div>
                 <div class='navBox'>
                     <ul>
-                        <li style='text-align: left;'><a class='prevLink'><img src='images/arrow-left.png'></a></li>
+                        <li class="navFirst" style='text-align: left;'><a class='prevLink'><img src='images/arrow-left.png'></a></li>
                         <li>
                             <a class='burger allProj'>
                             <div class='menu-line-container'>
@@ -359,6 +389,7 @@
 
         <script type="text/template" name="random-text">
             <%= para %>
+            <p class="no-desktop proj-title"><%= prTitle %></p>
         </script>
 
         <script type="text/template" name="projetsReview">
@@ -382,7 +413,7 @@
             <% _.each(projets, function(pr, index) { %> 
                 <div class="projListCon">
                     <a class="menuProjLink" href="#!/projets/<%= pr.url %>">
-                        <div class="white-layer">
+                        <div class="white-layer" style="background:url(<%= pr.background%>); background-size:cover;">
                             <div class="white-layer-table">
                                 <div class="white-layer-inner">
                                     <span style="position:relative;" class="text"><%= pr.firstLetter %></span>

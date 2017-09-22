@@ -1,3 +1,8 @@
+.nav-control{
+    position: fixed;
+    top: 0;
+    z-index:4;
+}
 body{
     -webkit-user-select: none; /* Safari, iOS, and Android */
        -moz-user-select: none; /* Firefox */
@@ -78,7 +83,7 @@ body{ background-color: #FFFFFF; width: 100%; height: 100%; font-family: 'Presti
   opacity:1;
 }
 .loader{
-    z-index:4;
+    z-index:5;
     padding: 0;
     background: white;
 }
@@ -283,7 +288,7 @@ img.loader-img-anim{
     -o-background-size: cover;
 }
 .youval-pic-bottom{
-        background: url(../images/youval-tayar-bottom.jpg) no-repeat top;
+    background: url(../images/youval-tayar-bottom.jpg) no-repeat top;
     //background: url(../images/ybot.png) no-repeat top;
     //background-position: 30% 0%;
     background-size: cover;
@@ -292,12 +297,16 @@ img.loader-img-anim{
     -o-background-size: cover;
 }
 /*Header*/
+.spacer{
+    height: 100px;
+}
 .header-el{
     text-align: left;
     position: relative;
     width: 100%;
-    //padding: 40px 50px;
-    //z-index: 4;
+    padding: 40px 50px;
+    z-index: 4;
+    box-sizing: border-box;
 }
 .header{
     z-index:1; 
@@ -333,12 +342,9 @@ img.y-logo-img{
 
 /* Nav Menu and Burger*/
 #nav{ 
-    position: absolute;
-    top: 0px;
-    right: -60px;
-    height: 200px;
-    width: 250px;
+    position: relative;
     margin: 0;
+    float: right;
 }
 #nav a{ text-decoration: none; }
 #nav .social{ font-family: FontAwesome, sans-serif; display: inline-block; border: solid 1px #444; height: 18px; width: 21px; text-align: center; transform: rotate(45deg); margin-right: -2px; padding: 5px 0 0 2px; position: relative; z-index: 3; -webkit-transition: border 300ms ease-out; -moz-transition: border 300ms ease-out; -o-transition: border 300ms ease-out; transition: border 300ms ease-out; }
@@ -530,20 +536,18 @@ div.projetsDetails{
     position: relative;
     width: 100%;
 }
+.no-desktop{
+    display: none !important;
+}
+#random-text p{
+    opacity: 0;
+    color: #fff;    
+}
 #random-text, #ghost-text{
     position: absolute;
     top: 0;
     width: 100%;
-   /* font-family: 'FuturaBold', sans-serif;
-    color: rgba(0,0,0,0.15);
-    font-size: 4.5em;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    */
     line-height: 5em;
-
-    //white-space: nowrap;
-    //word-wrap:break-word;
 }
 #ghost-text{
     opacity: 0;
@@ -567,6 +571,9 @@ div.projetsDetails{
 }
 
 /* Project Squares on Menu Page */
+#projetsList{
+    padding-top: 25px;
+}
 .projListCon{
     cursor:pointer; 
     opacity:0;
@@ -584,10 +591,10 @@ a.menuProjLink{
 }
 .projListCon .projetsDetails{
     z-index: 2;
-    height: 100%;
+    height: 100.1%;
     width: 100.2%;
     display: table;
-    //background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.7);
 }
 .projDetInner{
     padding-top: 20px;
@@ -614,6 +621,7 @@ a.menuProjLink{
     display: table;
 }
 .white-layer-inner {
+    text-align: center;
     display: table-cell;
     vertical-align: middle;
 }

@@ -811,7 +811,14 @@
                 homeTimeLine
                 .set(".home-bg", {css:{opacity:0}})
                 .add(label)
-                .to($(".home-bg")[key], 1, {opacity:1}, label)
+                .add(
+                    function(){
+                        app.currentProject = app.currProjSet.projArr[key]; 
+                    }
+                )
+                .to($(".home-bg")[key], 1, {
+                    opacity:1 
+                }, label)
                 .to($("a.projectTrigger")[key], 1, {bottom:20}, label)
                 .to($("#projetsReview div.projetsDetails")[key], 1, {height:140}, label)
                 .to($("#projetsReview path")[key], 0.7, {strokeDashoffset:0}, label + "+=0.5")
@@ -921,9 +928,9 @@
 
             scene = new ScrollMagic.Scene({
                 triggerElement: "#trigger1",
-                triggerHook: 0
+                offset: window.innerHeight/2
             })
-            .setTween(".projetNav", 0.01, {position:"fixed", zIndex:4})
+            .setTween(".projetNav", 0.01, {position:"fixed"})
             //.addIndicators({name: "for fixing nav (duration: none)"})
             .addTo(scrollController)
 
@@ -933,6 +940,8 @@
                 ,scene = new ScrollMagic.Scene({
                     triggerElement: "#trigger" + index
                 })
+
+                //tl.set(".child-bar", {css:{width:0}})
 
                 switch(obj.length){
                     case 1: 
@@ -959,14 +968,24 @@
                         ,num2 = $(obj[1]).find(".contentNumber")
                         ;
                         if(line1.length > 0){
+                            var idx = $(".line-down").toArray().indexOf(line1[0]);
+                            var remBars = $(".child-bar").toArray().slice();
+                            remBars.splice(idx, 1);
                             tl
                             .to(line1, 0.5, {width:10}, "enter1+=0.2")
                             .to(num1, 0.5, {top:40}, "enter1+=0.2")
+                            .to(remBars, 0.5, {width:0}, "enter1+=0.2")
+                            .to($(".child-bar")[idx], 0.5, {width:"100%"}, "enter1+=0.2")
                         }
                         if(line2.length > 0){
+                            var idx = $(".line-down").toArray().indexOf(line2[0]);
+                            var remBars = $(".child-bar").toArray().slice();
+                            remBars.splice(idx, 1);
                             tl
                             .to(line2, 0.5, {width:10}, "enter2+=0.2")
                             .to(num2, 0.5, {top:40}, "enter2+=0.2")
+                            .to(remBars, 0.5, {width:0}, "enter2+=0.2")
+                            .to($(".child-bar")[idx], 0.5, {width:"100%"}, "enter2+=0.2")
                         }
                         break;
                     case 3: 
@@ -1034,6 +1053,8 @@
                 TweenMax.staggerTo(menuMaterials, 0.5, {opacity:0.2}, 0.05)            
             }
 
+            menuTimeline
+            .to(".css-threed", 0.5, {zIndex:3}, "enterProj")
             app.menuTimeline = menuTimeline;
         },
         _resetMenu:function(){
@@ -1669,10 +1690,10 @@
                     //To Menu
                     app.currentRoute = 'menu';
                     console.log("//To Menu");
-                    app.homeTimeline.restart();
                     app.homeTimeline.pause();
+                    /*app.homeTimeline.restart();
                     app.homeTimeline.seek(0).kill();
-                    this._animateHomeToMenu(previous, next, ctx);                   
+                    */this._animateHomeToMenu(previous, next, ctx);                   
                 }else if($(next.el).hasClass('projet')){
                     //To Project                  
                     app.currentRoute = 'projet';
@@ -1682,10 +1703,10 @@
                 }else{
                     //To Home
                     console.log("//To Home");
-                    app.homeTimeline.restart();
                     app.homeTimeline.pause();
+                    /*app.homeTimeline.restart();
                     app.homeTimeline.seek(0).kill();
-                    this._randomizeHome(previous, next, ctx);                   
+                    */this._randomizeHome(previous, next, ctx);                   
                 }
             }else if($(previous.el).hasClass('menu')){
                 //From Menu
@@ -1738,8 +1759,9 @@
             ,ghostTextView = new app.Views.GhostText()
             ,self = this
             ;
-
+            
             ghostTextView.render();
+
             _.each($("#ghost-text .text"), function(obj){
                 tempObj = {
                     value : $(obj).text(),
@@ -1837,6 +1859,7 @@
                     });
                 });
             }
+            
 
             homeRandomTl
             .add("skewLetters")
@@ -1858,6 +1881,7 @@
             homeRandomTl
             .add("moveLetters")
             .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
+            .to("a.projectTrigger", 1, {bottom:0}, "moveLetters")
             
             if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){
@@ -1997,7 +2021,7 @@
             
             projToHomeTl
             .add("skewLetters")
-            .to(["header", "#projetsReview", ".profile"], 0.5, {color:"#000", borderBottomColor:"#fff"}, "skewLetters")
+            .to(["header", "#projetsReview", ".profile"], 0.5, {color:"#000", borderBottomColor:"#000"}, "skewLetters")
             .fromTo(".header img", 0.5, {filter:"invert(100%)"},{filter:"invert(0%)"}, "skewLetters")
             .to(["nav .menu-line", "nav .burger li"], 0.5, {backgroundColor:"#000"}, "skewLetters")
             .to("#social-icons", 0.5, {borderTopColor:"#000"}, "skewLetters")
@@ -2320,9 +2344,11 @@
                 });
             });
 
+            homeToMenuTl
+            .add("moveLetters")
+            .to("a.projectTrigger", 1, {bottom:0}, "moveLetters")
             if(app.isMobile()){
                 homeToMenuTl
-                .add("moveLetters")
                 .to(matched, 1, {transform:"skew(0)"}, "moveLetters")
                 _.each(matched, function(obj, key){
                     homeToMenuTl.to(obj, 1, {
@@ -2332,11 +2358,10 @@
                 });
             }else{
                 homeToMenuTl
-                .add("moveLetters")
                 .to(matched, 1, {transform:"skew(0)"}, "moveLetters")            
                 _.each(matched, function(obj, key){
                     homeToMenuTl.to(obj, 1, {
-                        top: posArr[key].end.top - 155,
+                        top: posArr[key].end.top - 175,
                         left: posArr[key].end.left - 55
                     }, "moveLetters");
                 });
@@ -2698,7 +2723,6 @@
                 lettersToChoose = $(".css-threed .projListCon .text");
             }
             $(".projListCon .text").show();
-            console.log(lettersToChoose)
             _.each(lettersToChoose, function(obj, key){
                 var el = $(obj).clone();
                 el.addClass("ghost")
@@ -2754,8 +2778,7 @@
 
             menuToProjTl
             .add("hideMenuComp")
-            
-            menuToProjTl
+            .to(".css-threed", 0.5, {zIndex:2}, "hideMenuComp")
             .to(".main .ghost", 0.5, {color:"rgba(0,0,0,0.15)"}, "hideMenuComp")
             .to(".burger li", 0.5, {opacity:1, x:0, y:0}, "hideMenuComp")
             .to(".burger #menu-line1", 0.5, {top:17, left:0, y:1, width:25, rotationZ:90}, "hideMenuComp")
@@ -2935,7 +2958,6 @@
                 lettersToChoose = $(".css-threed .projListCon .text");
             }
             $(".projListCon .text").show();
-            console.log(lettersToChoose)
             _.each(lettersToChoose, function(obj){
                 tempObj = {
                     value : $(obj).text(),
@@ -3351,8 +3373,8 @@
         events:{
             'mouseenter .burger': '_animBurger',
             'mouseleave .burger': '_normBurger',
-            'mouseenter .projetNav a': '_showBar',
-            'mouseleave .projetNav a': '_hideBar',
+            //'mouseenter .projetNav a': '_showBar',
+            //'mouseleave .projetNav a': '_hideBar',
             'click .projetNav a': '_scrollToSection',
             'click a.prevLink': '_animateNextProject',
             'click a.nextLink': '_animatePrevProject',
@@ -3360,6 +3382,7 @@
         },
         _scrollToSection: function(e){
             var scrollEl, scroll;
+            //TweenMax.to($(".child-bar"), 0.1, {width:0})
             if(app.isMobile()){
                 switch(e.currentTarget.className){
                     case 'clientLink':
@@ -3392,7 +3415,39 @@
                 } 
                 TweenMax.to(window, 0.5, {scrollTo:{y:scroll*window.innerHeight}})
             }
-
+        },
+        _showBar(e){  
+            e.preventDefault();
+            //this._clearBars();
+            var currBar = $(e.currentTarget).find(".child-bar");
+            if(currBar.width() == 0){
+                this.mouseover = true;
+                TweenMax.to(currBar, 0.5, {
+                    width:"100%", 
+                    onComplete:function(){
+                        TweenMax.to(currBar, {clearProps:"width"});
+                    }, 
+                    ease:Expo.easeOut
+                });
+            }else{
+                return;
+            }
+        },
+        _hideBar(e){  
+            e.preventDefault();
+            if(this.mouseover){                
+                this.mouseover = false;
+                var currBar = $(e.currentTarget).find(".child-bar");
+                TweenMax.to(currBar, 0.5, {
+                    width:"0%", 
+                    onComplete:function(){
+                        TweenMax.to(currBar, {clearProps:"width"});
+                    }, 
+                    ease:Expo.easeOut
+                });
+            }else{
+                return;
+            }
         },
         _animateToMenu: function(e){
             TweenMax.to(window, 1, {
@@ -3442,15 +3497,6 @@
         },
         _normBurger : function(e){
             TweenMax.to($(e.currentTarget).find("li"), 0.3, {x:0, y:0})
-        },
-        _showBar(e){  
-            e.preventDefault();
-            this._clearBars();
-            TweenMax.to($(e.currentTarget).find(".child-bar"), 0.5, {width:"100%", ease:Expo.easeOut});
-        },
-        _hideBar(e){  
-            e.preventDefault();
-            TweenMax.to($(e.currentTarget).find(".child-bar"), 0.5, {width:"0%", ease:Expo.easeOut});
         },
         _clearBars(){
             TweenMax.to($(".child-bar"), 0.5, {width:"0%", ease:Expo.easeOut});

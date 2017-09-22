@@ -437,9 +437,7 @@
                     app.menuscene.remove(obj.bigRefPlane);
                     app.menuscene.remove(obj.smallRefPlane);
                     app.menuCSSscene.remove(obj.menuPr.cssPr);
-                    if(app.isMobile()){
-                        app.menuscene.remove(obj.menuPr.pl);
-                    }
+                    app.menuscene.remove(obj.menuPr.pl);
                 })
 
                 _.each(currProjArr, function(obj, key){
@@ -468,10 +466,10 @@
                     cssPr.position.y = planePosArr[key].y;
                     cssPr.position.z = planeZPos;
                     
-                    if(!app.isMobile()){
-                        app.menuscene.add(obj.menuPr.pl);
-                        app.menuCSSscene.add(cssPr);
-                    }
+                    /*if(!app.isMobile()){
+                    }*/
+                    app.menuscene.add(obj.menuPr.pl);
+                    app.menuCSSscene.add(cssPr);
                     
                     var refPlane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0xff0000, side: THREE.FrontSide }))
                     var imgAspect = obj.projPr.material.map.image.width/obj.projPr.material.map.image.height,

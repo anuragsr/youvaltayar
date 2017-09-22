@@ -176,4 +176,7 @@
 		position: relative;
 		top: -0.5em;
 	}
+	.menu-container{
+		opacity: 0 !important;
+	}
 }

@@ -1,3 +1,8 @@
+.nav-control{
+    position: fixed;
+    top: 0;
+    z-index:4;
+}
 body{
     -webkit-user-select: none; /* Safari, iOS, and Android */
        -moz-user-select: none; /* Firefox */
@@ -78,7 +83,7 @@ body{ background-color: #FFFFFF; width: 100%; height: 100%; font-family: 'Presti
   opacity:1;
 }
 .loader{
-    z-index:4;
+    z-index:5;
     padding: 0;
     background: white;
 }
@@ -89,58 +94,87 @@ body{ background-color: #FFFFFF; width: 100%; height: 100%; font-family: 'Presti
 }
 .loader-inner-contain{
     display: table-cell;
-    vertical-align: middle;
-    font-size: 2em;
-    font-family: "FuturaBold", sans-serif;
-    text-transform: uppercase;
+    vertical-align: middle;    
+}
+.popup-contain{
+    background: rgba(0,0,0,0.2);
+}
+.popup-contain{
+    opacity: 0;
+}
+.popup-inner{
+    border-radius: 5px;
+    position: relative;
+    color: #fff;
+    background: rgba(0,0,0,0.7);
+    width: 85%;
+    padding: 10px;
+    height: 60px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+.popup-arrow{
+    position: absolute;
+    top: 0;
+    font-size: 3em;
+}
+.popup-arrow:nth-child(1){
+    right: 10px;
 }
 .progress-bar{
-    width: 75%;
-    height: 5px;
+    width: 100%;
+    height: 100%;
     margin: 0 auto;
-    border-radius: 50px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
 .progress-inner{
-    background: #000;
+    background: #F1F1F1;
     height: 100%;
     width: 0%;
 }
+#progress {
+    font-size: 20px;
+}
 .img-contain{
     position: relative;
-    width: 250px;
+    width: 90px;
     margin: 0 auto;
 }
 img.loader-img-inner{
     position: absolute;
-    top: 35%;
+    top: 32%;
     left: 32%;
+    width: 32px;
 }
 img.loader-img-anim{
     -webkit-animation-name: spin;
-    -webkit-animation-duration: 20000ms;
+    -webkit-animation-duration: 1800ms;
     -webkit-animation-iteration-count: infinite;
-    -webkit-animation-timing-function: linear;
+    -webkit-animation-timing-function: ease-in-out;
     -moz-animation-name: spin;
-    -moz-animation-duration: 20000ms;
+    -moz-animation-duration: 1800ms;
     -moz-animation-iteration-count: infinite;
-    -moz-animation-timing-function: linear;
+    -moz-animation-timing-function: ease-in-out;
     -ms-animation-name: spin;
-    -ms-animation-duration: 20000ms;
+    -ms-animation-duration: 1800ms;
     -ms-animation-iteration-count: infinite;
-    -ms-animation-timing-function: linear;
+    -ms-animation-timing-function: ease-in-out;
     -o-transition: rotate(360deg);
 }
 @-moz-keyframes spin {
     from { -moz-transform: rotateZ(0deg); }
-    to { -moz-transform: rotateZ(360deg); }
+    to { -moz-transform: rotateZ(200deg); }
 }
 @-webkit-keyframes spin {
     from { -webkit-transform: rotateZ(0deg); }
-    to { -webkit-transform: rotateZ(360deg); }
+    to { -webkit-transform: rotateZ(200deg); }
 }
 @keyframes spin {
     from {transform:rotateZ(0deg);}
-    to {transform:rotateZ(360deg);}
+    to {transform:rotateZ(200deg);}
 }
 .outer{
     z-index:3;
@@ -215,7 +249,7 @@ img.loader-img-anim{
     transform: rotateZ(-45deg);
 }
 .bar{
-    height: 25%;
+    height: 25.5%;
     display: block;
 }
 .profile-square{
@@ -276,7 +310,7 @@ img.loader-img-anim{
     -o-background-size: cover;
 }
 .youval-pic-bottom{
-        background: url(../images/youval-tayar-bottom.jpg) no-repeat top;
+    background: url(../images/youval-tayar-bottom.jpg) no-repeat top;
     //background: url(../images/ybot.png) no-repeat top;
     //background-position: 30% 0%;
     background-size: cover;
@@ -285,12 +319,16 @@ img.loader-img-anim{
     -o-background-size: cover;
 }
 /*Header*/
+.spacer{
+    height: 100px;
+}
 .header-el{
     text-align: left;
     position: relative;
     width: 100%;
-    //padding: 40px 50px;
-    //z-index: 4;
+    padding: 40px 50px;
+    z-index: 4;
+    box-sizing: border-box;
 }
 .header{
     z-index:1; 
@@ -326,12 +364,9 @@ img.y-logo-img{
 
 /* Nav Menu and Burger*/
 #nav{ 
-    position: absolute;
-    top: 0px;
-    right: -60px;
-    height: 200px;
-    width: 250px;
+    position: relative;
     margin: 0;
+    float: right;
 }
 #nav a{ text-decoration: none; }
 #nav .social{ font-family: FontAwesome, sans-serif; display: inline-block; border: solid 1px #444; height: 18px; width: 21px; text-align: center; transform: rotate(45deg); margin-right: -2px; padding: 5px 0 0 2px; position: relative; z-index: 3; -webkit-transition: border 300ms ease-out; -moz-transition: border 300ms ease-out; -o-transition: border 300ms ease-out; transition: border 300ms ease-out; }
@@ -522,21 +557,21 @@ div.projetsDetails{
     padding-left: 5px;
     position: relative;
     width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+.no-desktop{
+    display: none !important;
+}
+#random-text p{
+    opacity: 0;
+    color: #fff;    
 }
 #random-text, #ghost-text{
     position: absolute;
     top: 0;
     width: 100%;
-   /* font-family: 'FuturaBold', sans-serif;
-    color: rgba(0,0,0,0.15);
-    font-size: 4.5em;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    */
     line-height: 5em;
-
-    //white-space: nowrap;
-    //word-wrap:break-word;
 }
 #ghost-text{
     opacity: 0;
@@ -560,6 +595,9 @@ div.projetsDetails{
 }
 
 /* Project Squares on Menu Page */
+#projetsList{
+    padding-top: 25px;
+}
 .projListCon{
     cursor:pointer; 
     opacity:0;
@@ -577,10 +615,10 @@ a.menuProjLink{
 }
 .projListCon .projetsDetails{
     z-index: 2;
-    height: 100%;
+    height: 100.1%;
     width: 100.2%;
     display: table;
-    //background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.7);
 }
 .projDetInner{
     padding-top: 20px;
@@ -607,6 +645,7 @@ a.menuProjLink{
     display: table;
 }
 .white-layer-inner {
+    text-align: center;
     display: table-cell;
     vertical-align: middle;
 }
@@ -646,10 +685,14 @@ a.menuProjLink{
     position: relative;
     top: -10px;
 }
+.projetNav a:hover .p-bar > .child-bar{
+    width: 100% !important;
+    transition: width 0.3s linear;
+}
 .child-bar{
+    width: 0;
     height: inherit;
     background: #fff;
-    width: 0%;
 }
 .projetContent h2 {font-family: 'FuturaBold', sans-serif; margin-bottom: 24px; font-size: 24px; text-transform: uppercase; }
 .clientBox { width: 60%; height: 100vh; background: #fff; color:#222; float:left; display: table; position: relative; }

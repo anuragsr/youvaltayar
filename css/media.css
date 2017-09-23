@@ -1,6 +1,6 @@
 @media (max-width:1281px) { /* hi-res laptops and desktops */ 
 	.text-container{
-		width: 70%;
+		width: 70%;	
 	}
 	/*#random-text, #ghost-text{
 		//word-wrap: break-word;
@@ -57,12 +57,18 @@
 
 @media (max-width:480px)  {	
 	/* smartphones, Android phones, landscape iPhone */
+	.spacer{
+		height: 5em;
+	}
 	.text{
 		font-size:2em;
 		padding: 2px;
 	}
-	.main, .css-threed{
+	.main, .css-threed, .header-el{
 		padding: 20px 20px;
+	}
+	.main{
+		padding-left: 15px;
 	}
 	#projetsReview{
 		padding: 5em 40px;		
@@ -101,13 +107,11 @@
         display: block;
         height: 40vh;
         position: relative;
-        //background:rgba(255,255,255,0.7);
         left: -10%;
 	}
 	.projListCon .text{
         color: rgba(0,0,0,1);
         opacity: 1;
-        //font-size: 3.5em;
 	}
 	.screen-video{
 	    padding-top: 10px;
@@ -115,16 +119,12 @@
 	.contentTitle{
 		top:25px;
 	}
-	.back-container, .arrow-down{
+	.arrow-down{
 		zoom:1;
 	}
 	.arrow-down{
 		zoom: 1.3;
 		bottom:2em;
-	}
-	.back-container{
-		left: 1.5em;
-		bottom: 3em;
 	}
 	#nav{
 		height: 50px;
@@ -145,5 +145,41 @@
 	}
 	#random-text, #ghost-text {
 		line-height: 2em;
+	}
+	.no-mobile{
+		display: none !important;
+	}
+	.no-desktop{
+		display: block !important;
+	}
+	.header{
+		width: 100%;
+		padding-bottom: 0;
+	}
+	.header-el{
+		zoom:1;
+	}
+	.mobile-burger{
+		display: inline-block;
+	    position: absolute;
+	    left: 43.5%;
+	    top:1em;
+	    //zoom: 1.2;
+	    transform: scale(1.2);
+	}
+	.mobile-profile-btn{
+		zoom: 1.6;
+	    margin-right: 0.4em !important;
+	    top: 0.45em;
+	}
+	.navFirst{
+		position: relative;
+		top: -0.5em;
+	}
+	.menu-container{
+		opacity: 0 !important;
+	}
+	.text-container{
+		height: auto;
 	}
 }

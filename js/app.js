@@ -292,8 +292,6 @@
             
             Backbone.history.start();
             window.addEventListener( 'resize', self.resizeProjects, false );
-            //window.addEventListener( 'mousemove', self.onMouseMove, false );
-            //window.addEventListener('scroll', function() { console.log("Scrolled"); });
             
             var vis = (function(){
                 var stateKey, 
@@ -466,8 +464,6 @@
                     cssPr.position.y = planePosArr[key].y;
                     cssPr.position.z = planeZPos;
                     
-                    /*if(!app.isMobile()){
-                    }*/
                     app.menuscene.add(obj.menuPr.pl);
                     app.menuCSSscene.add(cssPr);
                     
@@ -559,12 +555,8 @@
             homeCSSRenderer.domElement.style.left = "0";
             homeCSSRenderer.domElement.className = "home-css-container";
             $(".home-container").append(homeCSSRenderer.domElement);
-
-            if(app.isMobile()){
-                projectrenderer.setSize(window.innerWidth, screen.height);
-            }else{
-                projectrenderer.setSize(window.innerWidth, window.innerHeight);
-            }
+            
+            projectrenderer.setSize(window.innerWidth, window.innerHeight);
             projectrenderer.domElement.style.position = "absolute";
             projectrenderer.domElement.style.top = "0";
             projectrenderer.domElement.style.left = "0";
@@ -791,12 +783,10 @@
                 app.homeTimeline.pause();
                 app.homeTimeline.seek(0).kill();
                 delete app.homeTimeline;
+                delete homeTimeline;
             }
             
             var homeTimeLine = new TimelineMax({
-                onStart: function(){
-                    //console.log("started")
-                },
                 onComplete:homeTlCpl,
                 onCompleteParams:["{self}"]
             });
@@ -932,7 +922,7 @@
 
             scene = new ScrollMagic.Scene({
                 triggerElement: "#trigger1",
-                offset: window.innerHeight/2
+                offset: window.innerHeight/2 - 50
             })
             .setTween(".projetNav", 0.01, {position:"fixed"})
             //.addIndicators({name: "for fixing nav (duration: none)"})
@@ -1026,17 +1016,11 @@
                 }
             });            
             
-            menuTimeline
-            .to($(".burger li"), 0.3, {opacity:0}, "enterProj")                                        
-            ;
             
             if(app.isMobile()){
                 menuTimeline
                 .staggerTo(".main .projListCon", 0.5, {opacity:1}, 0.05, "enterProj")            
-                .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"}, "enterProj")            
-                .to($(".burger #menu-line1"), 0.5, {top:4, left:8, y:4, width:25, rotationZ:0}, "enterProj")
-                .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "enterProj")
-                .to($(".burger #menu-line3"), 0.5, {top:20, left:8, y:6, width:25, rotationZ:0}, "enterProj")
+                .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"}, "enterProj")
             }else{
                 var menuProjects = _.pluck(app.currProjSet.projArr, 'menuPr');
                 var menuPlanes = _.pluck(menuProjects, 'pl');
@@ -1051,6 +1035,7 @@
                 menuTimeline
                 .staggerTo(".css-threed .projListCon", 0.5, {opacity:1}, 0.05, "enterProj")            
                 .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 0.1)"}, "enterProj")            
+                .to($(".burger li"), 0.3, {opacity:0}, "enterProj")                                        
                 .to($(".burger #menu-line1"), 0.5, {top:6, left:8, y:4, width:25, rotationZ:0}, "enterProj")
                 .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "enterProj")
                 .to($(".burger #menu-line3"), 0.5, {top:18, left:8, y:6, width:25, rotationZ:0}, "enterProj")
@@ -1101,8 +1086,6 @@
             var projTimeLine = new TimelineMax({
                 onComplete:function(){
                     if(app.firstLoad && app.isMobile()){
-                        //show Popup
-                        console.log("Popup")
                         TweenMax.to(".popup-contain", 0.1, {display:"block"})
                         TweenMax.to(".popup-contain", 0.5, {opacity:1})
                         setTimeout(function(){
@@ -1556,9 +1539,7 @@
         },
         home: function () {    
             if(app.isMobile()){
-                app.currentProject = app.currProjSet.projArr[0];
-                app.currentProject.currIndex = 0;
-                var view = new app.Views.Projet();
+                var view = new app.Views.Menu();
                 app.instance.goto(view);
             }else{
                 var view = new app.Views.Home();
@@ -1734,9 +1715,7 @@
                     app.currentRoute = 'menu';
                     console.log("//To Menu");
                     app.homeTimeline.pause();
-                    /*app.homeTimeline.restart();
-                    app.homeTimeline.seek(0).kill();
-                    */this._animateHomeToMenu(previous, next, ctx);                   
+                    this._animateHomeToMenu(previous, next, ctx);                   
                 }else if($(next.el).hasClass('projet')){
                     //To Project                  
                     app.currentRoute = 'projet';
@@ -1747,9 +1726,7 @@
                     //To Home
                     console.log("//To Home");
                     app.homeTimeline.pause();
-                    /*app.homeTimeline.restart();
-                    app.homeTimeline.seek(0).kill();
-                    */this._randomizeHome(previous, next, ctx);                   
+                    this._randomizeHome(previous, next, ctx);                   
                 }
             }else if($(previous.el).hasClass('menu')){
                 //From Menu
@@ -2193,8 +2170,6 @@
                       end : finPos
                 });
             });
-
-            console.log(matchedElArr[0])
 
             homeToProjTl
             .add("fixLetters")
@@ -2823,10 +2798,14 @@
             .add("hideMenuComp")
             .to(".css-threed", 0.5, {zIndex:2}, "hideMenuComp")
             .to(".main .ghost", 0.5, {color:"rgba(0,0,0,0.15)"}, "hideMenuComp")
-            .to(".burger li", 0.5, {opacity:1, x:0, y:0}, "hideMenuComp")
-            .to(".burger #menu-line1", 0.5, {top:17, left:0, y:1, width:25, rotationZ:90}, "hideMenuComp")
-            .to(".burger #menu-line2", 0.5, {width:45, left:-2, top:17}, "hideMenuComp")
-            .to(".burger #menu-line3", 0.5, {top:18, left:16, y:0, width:25, rotationZ:90}, "hideMenuComp")                    
+            
+            if(!app.isMobile()){                
+                menuToProjTl
+                .to(".burger li", 0.5, {opacity:1, x:0, y:0}, "hideMenuComp")
+                .to(".burger #menu-line1", 0.5, {top:17, left:0, y:1, width:25, rotationZ:90}, "hideMenuComp")
+                .to(".burger #menu-line2", 0.5, {width:45, left:-2, top:17}, "hideMenuComp")
+                .to(".burger #menu-line3", 0.5, {top:18, left:16, y:0, width:25, rotationZ:90}, "hideMenuComp")                    
+            }
           
             var idx = currProjArr.indexOf(app.currentProject);
             var refPlane = app.currentProject.bigRefPlane;
@@ -3074,21 +3053,16 @@
 
             projToMenuTl
             .to([".arrow-down", ".back-container"], 0.3, {opacity:0}, "hideProjectComp")
-            .to($(".burger li")[0], 0.3, {x:-4, y:-4}, "hideProjectComp")
-            .to($(".burger li")[1], 0.3, {y:-4}, "hideProjectComp")
-            .to($(".burger li")[2], 0.3, {x:4, y:-4}, "hideProjectComp")
-            .to($(".burger li")[3], 0.3, {x:-4, y:4}, "hideProjectComp")
-            .to($(".burger li")[4], 0.3, {y:4}, "hideProjectComp")
-            .to($(".burger li")[5], 0.3, {x:4, y:4}, "hideProjectComp")            
-            .to($(".burger li"), 0.3, {delay:0.2, opacity:0}, "hideProjectComp")                            
-
-            if(app.isMobile()){
+            
+            if(!app.isMobile()){
                 projToMenuTl
-                .to($(".burger #menu-line1"), 0.5, {top:4, left:8, y:4, width:25, rotationZ:0}, "hideProjectComp")
-                .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "hideProjectComp")
-                .to($(".burger #menu-line3"), 0.5, {top:20, left:8, y:6, width:25, rotationZ:0}, "hideProjectComp")
-            }else{
-                projToMenuTl
+                .to($(".burger li")[0], 0.3, {x:-4, y:-4}, "hideProjectComp")
+                .to($(".burger li")[1], 0.3, {y:-4}, "hideProjectComp")
+                .to($(".burger li")[2], 0.3, {x:4, y:-4}, "hideProjectComp")
+                .to($(".burger li")[3], 0.3, {x:-4, y:4}, "hideProjectComp")
+                .to($(".burger li")[4], 0.3, {y:4}, "hideProjectComp")
+                .to($(".burger li")[5], 0.3, {x:4, y:4}, "hideProjectComp")            
+                .to($(".burger li"), 0.3, {delay:0.2, opacity:0}, "hideProjectComp")                            
                 .to($(".burger #menu-line1"), 0.5, {top:6, left:8, y:4, width:25, rotationZ:0}, "hideProjectComp")
                 .to($(".burger #menu-line2"), 0.5, {width:25, left:8}, "hideProjectComp")
                 .to($(".burger #menu-line3"), 0.5, {top:18, left:8, y:6, width:25, rotationZ:0}, "hideProjectComp")
@@ -3248,12 +3222,12 @@
             }    
         },
         _navigateToHome : function(e){
+            TweenMax.to($(".home-link").find("img")[1], 1.5, {rotationZ:"+=360", ease:Power4.easeOut})            
             if(app.isAnimating()){
                 return;
             }else{
                 if(app.isMobile()){ 
-                    var num = Math.floor(Math.random() * app.currProjSet.projArr.length)
-                    Backbone.history.navigate('#!/projets/' + app.currProjSet.projArr[num].url, { trigger:true })
+                    Backbone.history.navigate('#!/menu', { trigger:true })
                 }else{
                     if(app.currentRoute == "home"){
                         Backbone.history.loadUrl(Backbone.history.fragment);
@@ -3290,9 +3264,9 @@
             }
         },
         _animBurger : function(e){
-            if(app.isAnimating()){
+            if(app.isAnimating() || app.isMobile()){
                 return;
-            }else{
+            }else{                    
                 if(app.currentRoute != "menu"){
                     TweenMax.to($(e.currentTarget).find("li")[0], 0.2, {x:-2, y:-2})
                     TweenMax.to($(e.currentTarget).find("li")[1], 0.2, {y:-2})
@@ -3307,7 +3281,7 @@
             }
         },
         _normBurger : function(e){
-            if(app.isAnimating()){
+            if(app.isAnimating() || app.isMobile()){
                 return;
             }else{
                 if(app.currentRoute != "menu"){
@@ -3591,7 +3565,7 @@
                 var letterUptl = new TimelineMax({                        
                     onComplete: function(){
                         if(!self.mouseover){
-                            console.log("mouseover")
+                            console.log("Mouseover")
                             TweenMax.to("a.projectTrigger", 0.3, {
                                 bottom:0,
                                 onComplete: function(){
@@ -3629,7 +3603,7 @@
                             }, 1000)
                         }
                         else{
-                            console.log("animate project info")
+                            console.log("Animate Project Info")
                             var projectInfoTl = new TimelineMax({
                                 onReverseComplete: function(){
                                     if(!self.mouseover){                                        

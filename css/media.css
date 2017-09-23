@@ -1,6 +1,6 @@
 @media (max-width:1281px) { /* hi-res laptops and desktops */ 
 	.text-container{
-		width: 70%;
+		width: 70%;	
 	}
 	/*#random-text, #ghost-text{
 		//word-wrap: break-word;
@@ -178,5 +178,8 @@
 	}
 	.menu-container{
 		opacity: 0 !important;
+	}
+	.text-container{
+		height: auto;
 	}
 }

@@ -40,7 +40,16 @@
                             <img class="loader-img-inner" src="images/y.png"/>
                         </div><br/>
                         <div>
-                            <div class="progress-bar">
+                            <div class="progress-bar progress-top">
+                                <div class="progress-inner"></div>
+                            </div>
+                            <div class="progress-bar progress-bottom">
+                                <div class="progress-inner"></div>
+                            </div>
+                            <div class="progress-bar progress-right">
+                                <div class="progress-inner"></div>
+                            </div>
+                            <div class="progress-bar progress-left">
                                 <div class="progress-inner"></div>
                             </div>
                         </div>
@@ -105,7 +114,7 @@
                         <div class="profile-inner bg-black"></div>
                     </div>
                     <div class="profile-square">
-                        <div class="profile-inner bg-white"><span class="inner-text">bonjour@youvaltayar.com</span></div>
+                        <div class="profile-inner bg-white"><span class="inner-text"><a href="mailto:bonjour@youvaltayar.com">bonjour@youvaltayar.com</a></span></div>
                     </div>
                 </div>
                 <div class="bar">
@@ -259,7 +268,7 @@
                     </a>
                     <img src="images/list-img.png">
                     <a class="projetLink">
-                        <span>The Project</span>
+                        <span>The Brief</span>
                         <div class="p-bar pr-bar">
                             <div class="child-bar"></div>
                         </div>
@@ -353,7 +362,7 @@
                 <div class='resultatBoxFull box'>
                     <div id="trigger7"></div>
                     <div class='boxContent'>
-                        <div class='contentTitle'>Website</div>
+                        <div class='contentTitle'><%= pr.projetType %></div>
                         <p><%= pr.resultatBoxFull %></p>
                     </div>
                 </div>

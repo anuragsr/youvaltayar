@@ -1413,6 +1413,11 @@
                     returnObj = true;
                 }
             }
+            if(!(typeof app.homeRandomTl === "undefined")){
+                if(app.homeRandomTl._active){
+                    returnObj = true;
+                }
+            }
             return returnObj;
         },
         animateNextProject: function(){
@@ -1943,6 +1948,8 @@
             .add("changeColorLetters")
             .to("#ghost-text", 1, {opacity:1}, "changeColorLetters")
             .to("#random-text", 1, {opacity:0}, "changeColorLetters")
+
+            app.homeRandomTl = homeRandomTl;
         },
         _animateProjectToHome : function(previous, next, ctx){
             app.currentParaIdx = Math.floor(Math.random() * app.initParaArr.length);

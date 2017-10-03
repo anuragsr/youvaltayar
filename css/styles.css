@@ -65,9 +65,16 @@ table{ border-collapse: collapse; border-spacing: 0; }
     src: url('../fonts/AvenirLTStd-Light.eot'); /* IE9 Compat Modes */
     src: url('../fonts/AvenirLTStd-Light.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/AvenirLTStd-Light.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/AvenirLTStd-Light.svg#svgAvenirLTStd-Light') format('svg'); /* Legacy iOS */
 }
+.gloucester {font-family: "GloucesterBoldCondensed", Arial; font-size: 30px; }
+.goudyNormal {font-family: "GoudyOldStyle", Arial; font-size: 20px; }
+.avenirLight {font-family: "AvenirLight", Arial; font-size: 30px; }
+
 p { font-family: "Prestige", sans-serif; margin-bottom: 20px; font-size: 1em; line-height: 1.2em; }}
 h2 { font-family: "Prestige", sans-serif; margin-bottom: 20px; font-size: 1em; line-height: 1.2em; }}
 body{ background-color: #FFFFFF; width: 100%; height: 100%; font-family: 'Prestige', sans-serif; font-size: 1em; line-height: 1.2em; }
+
+.textcenter {text-align: center;}
+.sep-small {margin: 20px 0;}
 .page {
   box-sizing: border-box;
   position: absolute;
@@ -122,18 +129,36 @@ body{ background-color: #FFFFFF; width: 100%; height: 100%; font-family: 'Presti
     right: 10px;
 }
 .progress-bar{
-    width: 100%;
-    height: 100%;
+    width: 150%;
+    height: 1px;
     margin: 0 auto;
     position: fixed;
-    top: 0;
-    left: 0;
     z-index: -1;
 }
 .progress-inner{
-    background: #F1F1F1;
+    background: #222;
     height: 100%;
     width: 0%;
+}
+.progress-top {
+    top: 10%;
+    left: -25%;
+    transform: rotate(45deg);
+}
+.progress-bottom {
+    bottom: 10%;
+    transform: rotate(225deg);
+    right: -27%;
+}
+.progress-right {
+    top: 10%;
+    left: -25%;
+    transform: rotate(135deg);
+}
+.progress-left {
+    bottom: 10%;
+    left: -27%;
+    transform: rotate(-45deg);
 }
 #progress {
     font-size: 20px;
@@ -488,6 +513,7 @@ div.projetsDetails{
     bottom: 50px;
     left: 0;
     visibility:hidden;
+    z-index: 2;
 }
 .down-btn{
     width: 35px;
@@ -529,7 +555,8 @@ div.projetsDetails{
     position: absolute;
     bottom: 50px;
     left: 50px;
-    line-height: 0.75;    
+    line-height: 0.75;   
+    z-index: 100; 
     visibility:hidden;
 }
 .back-container svg#top-svg{
@@ -685,6 +712,8 @@ a.menuProjLink{
     position: relative;
     top: -10px;
 }
+.pr-bar {width: 21%;}
+.cl-bar {width: 24%;}
 .projetNav a:hover .p-bar > .child-bar{
     width: 100% !important;
     transition: width 0.3s linear;
@@ -748,10 +777,16 @@ a.menuProjLink{
 .resultatBox { width: 60%; height: 100vh; background: #4b413a; color:#fff; float:left; display: table; position: relative; }
 .resultatBoxContent {display: table-cell; vertical-align: middle; padding: 0 20%; }
 .resultatBoxRight { width: 40%; height: 100vh; display: table; text-align: center; background: #F5F5F5;}
-.resultatBoxLogoLeft { width: 33.333%; background: #fff; float:left; position: relative;}
+.resultatBoxLogoLeft { width: 33.333%; height: 100vh; display: table; vertical-align: middle; background: #fff; float:left; position: relative;}
 .resultatBoxLogoLeft img { width: 240px; display: block; margin: 0 auto;}
-.resultatBoxLogoCenter { width: 33.333%; display: table; background: #fff; float:left; color:#222; position: relative;}
-.resultatBoxLogoRight { width: 33.333%; display: table; background: #fff; float:left; color:#222; position: relative;}
+.resultatBoxLogoCenter { width: 33.333%; height: 100vh; display: table; vertical-align: middle; background: #fff; float:left; color:#222; position: relative;}
+.resultatBoxLogoRight { width: 33.333%; height: 100vh; display: table; vertical-align: middle; background: #fff; float:left; color:#222; position: relative;}
+.resultatBoxLogoLeft .boxContent, .resultatBoxLogoCenter .boxContent, .resultatBoxLogoRight .boxContent {
+    padding: 0 13%;
+}
+.resultatBoxLogoCenter .boxContent p, .resultatBoxLogoRight .boxContent p {
+    margin-bottom: 15px;
+}
 .resultatBoxFull {width: 100%; height: auto; background: #fff; text-align: center; display: table; position: relative;}
 .resultatBoxFull img {width: 50%;}
 .resultatBoxFull .boxContent {padding: 12% 0 10%;}
@@ -860,14 +895,14 @@ video, iframe {
 #projet_7 .resultatBox, #projet_7 .resultatBox .numOverlay {background: #171D39;}
 #projet_3 .resultatBoxLogoLeft, #projet_3 .resultatBoxLogoCenter, #projet_3 .resultatBoxLogoRight, #projet_7 .resultatBoxLogoLeft, #projet_7 .resultatBoxLogoCenter, #projet_7 .resultatBoxLogoRight {display: table; height: 100vh;}
 #projet_3 .resultatBoxLogoFull, #projet_7 .resultatBoxLogoFull {display: block;}
-#corneilla-color1 {background: #333;}
-#corneilla-color2 {background: #BCB69E;}
-#ensemble-color1 {background: #222222;}
-#ensemble-color2 {background: #7C645A;}
+#corneilla-color1 {background: #333; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
+#corneilla-color2 {background: #BCB69E; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
+#ensemble-color1 {background: #222222; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
+#ensemble-color2 {background: #7C645A; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
 
 .line-correspondance {width: 50px; height: 1px; background: #fff;}
 .prevLink img, .nextLink img {
-    width: 24%;
+    width: 85px;
     margin-top: -1%;
     cursor: pointer;
     -webkit-transition: all 150ms ease-out; -moz-transition: all 150ms ease-out; -o-transition: all 150ms ease-out; transition: all 150ms ease-out;

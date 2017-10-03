@@ -2,6 +2,10 @@
 	.text-container{
 		width: 70%;	
 	}
+	
+	#projetsList{
+		display: none;
+	}
 	/*#random-text, #ghost-text{
 		//word-wrap: break-word;
 		font-size:4em;
@@ -53,9 +57,9 @@
 	.projListCon h2 {
 	    margin-bottom: -0.75em;
 	}
-}
-
-@media (max-width:480px)  {	
+	.prevLink img, .nextLink img {
+		width: 65px;
+	}
 	/* smartphones, Android phones, landscape iPhone */
 	.spacer{
 		height: 5em;
@@ -182,4 +186,13 @@
 	.text-container{
 		height: auto;
 	}
+	.prevLink img, .nextLink img {
+		width: 55px;
+	}
+	#projetsList{
+		display: block;
+	}
+}
+
+@media (max-width:480px)  {	
 }

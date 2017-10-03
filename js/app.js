@@ -6,6 +6,7 @@
         currentProject: null,
         projects : [
             {
+                'projetType': 'Website',
                 'titre': 'COMITÉ<br/>LÉGER',
                 'menutitre': 'COMITÉ<br/>LÉGER',
                 'infos1': 'Comité du peintre Fernand Léger',
@@ -29,6 +30,7 @@
                 'videoEl': '<iframe src="https://player.vimeo.com/video/223770882?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
+                'projetType': 'Website',
                 'titre': 'ACTION<br/>AGAINST<br/>HUNGER',
                 'menutitre': 'ACTION AGAINST<br/>HUNGER',
                 'infos1': 'International humanitarian organization',
@@ -52,6 +54,7 @@
                 'videoEl': '<iframe src="https://player.vimeo.com/video/223770823?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
+                'projetType': 'Website',
                 'titre': 'TOSHIO<br/>BANDO',
                 'menutitre': 'TOSHIO<br/>BANDO',
                 'infos1': 'Comité du peintre Toshio Bando',
@@ -75,6 +78,7 @@
                 'videoEl': '<iframe src="https://player.vimeo.com/video/223770578?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
+                'projetType': 'Website',
                 'titre': 'LES JARDINS<br/>DE CORNEILLA',
                 'menutitre': 'LES JARDINS<br/>DE CORNEILLA',
                 'infos1': 'Maison d&rsquo;hôtes',
@@ -101,6 +105,7 @@
                 'videoEl': '<iframe src="https://player.vimeo.com/video/223770823?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
+                'projetType': 'Website',
                 'titre': 'STEVEN<br/>KIRSCH',
                 'menutitre': 'STEVEN<br/>KIRSCH',
                 'infos1': 'Bijoutier de luxe',
@@ -123,6 +128,7 @@
                 'videoEl': '<iframe src="https://player.vimeo.com/video/223772683?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
+                'projetType': 'Website',
                 'titre': 'RECUPER&rsquo;<br/>ACTEURS',
                 'menutitre': 'RECUPER&rsquo;<br/>ACTEURS',
                 'infos1': 'Webdocumentaire sur le recyclage',
@@ -146,6 +152,7 @@
                 'videoEl': '<iframe src="https://player.vimeo.com/video/223770691?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
+                'projetType': 'Website',
                 'titre': 'MARINE<br/>MANCINI',
                 'menutitre': 'MARINE<br/>MANCINI',
                 'infos1': 'Chant & Voix off',
@@ -169,6 +176,7 @@
                 'videoEl': '<iframe src="https://player.vimeo.com/video/223770785?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
+                'projetType': 'Website',
                 'titre': 'ENSEMBLE<br/>CORRESPON<br/>DANCES',
                 'menutitre': 'ENSEMBLE<br/>CORRESPON DANCES',
                 'infos1': 'Orchestre français, musique du XVIIe',
@@ -212,7 +220,7 @@
                 || navigator.userAgent.match(/iPod/i)
                 || navigator.userAgent.match(/BlackBerry/i)
                 || navigator.userAgent.match(/Windows Phone/i)
-                || window.innerWidth <= 480
+                || window.innerWidth <= 768
                 ){
                 return true;
             }
@@ -221,7 +229,7 @@
             }
         },
         isTablet: function(){
-            if(window.innerWidth <= 768 && window.innerWidth > 480){
+            if(window.innerWidth <= 1024 && window.innerWidth > 768){
                 return true;
             }
             else {
@@ -289,7 +297,9 @@
             this.currentRoute = "";
             this.router = new app.Router();
             this.instance = new app.Views.App();
-            
+            this.currentHeight = window.innerHeight;
+            this.currentWidth = window.innerWidth;
+
             Backbone.history.start();
             window.addEventListener( 'resize', self.resizeProjects, false );
             
@@ -343,179 +353,190 @@
         },
         resizeProjects: function(){
             //if(app.isMobile())
-            var currProjArr   = app.currProjSet.projArr
-            var menuPr        = _.pluck(currProjArr, 'menuPr')
-            var projPr        = _.pluck(currProjArr, 'projPr')
-            var homePr        = _.pluck(currProjArr, 'homePr')
-            var bigRefPlane   = _.pluck(currProjArr, 'bigRefPlane')
-            var smallRefPlane = _.pluck(currProjArr, 'smallRefPlane')            
-            var planeZPos = 0;
-            var menuPageText = new app.Views.MenuPageText();
+            //if(this.currentHeight != window.innerHeight || this.currentWidth != window.innerWidth){
+                /*alert( "Resizing!\nCurrent Height -" + app.currentHeight + 
+                       "\nNew Height - " + window.innerHeight + 
+                       "\nCurrent Width - " + app.currentWidth + 
+                       "\nNew Width - " + window.innerWidth
+                       )*/
 
-            var planeWidth = window.innerWidth/4
-            ,planeHeight = window.innerHeight/3.8        
-            ,planePosArr = [
-                {x:-1.5*planeWidth, y:0.5*planeHeight, z:0},
-                {x:-0.5*planeWidth, y:0.5*planeHeight, z:0},
-                {x: 0.5*planeWidth, y:0.5*planeHeight, z:0},
-                {x: 1.5*planeWidth, y:0.5*planeHeight, z:0},
-                {x:-1.5*planeWidth, y:-0.5*planeHeight, z:0},
-                {x:-0.5*planeWidth, y:-0.5*planeHeight, z:0},
-                {x: 0.5*planeWidth, y:-0.5*planeHeight, z:0},
-                {x: 1.5*planeWidth, y:-0.5*planeHeight, z:0},
-            ]
-            ;
-        
-            $(".menu-css-container, .menu-container canvas").css("top", 0);                                                            
+                var currProjArr   = app.currProjSet.projArr
+                var menuPr        = _.pluck(currProjArr, 'menuPr')
+                var projPr        = _.pluck(currProjArr, 'projPr')
+                var homePr        = _.pluck(currProjArr, 'homePr')
+                var bigRefPlane   = _.pluck(currProjArr, 'bigRefPlane')
+                var smallRefPlane = _.pluck(currProjArr, 'smallRefPlane')            
+                var planeZPos = 0;
+                var menuPageText = new app.Views.MenuPageText();
 
-            if(app.isTablet()){
-                console.log("Resize To Tab")
-                planeWidth = window.innerWidth/2
-                ,planeHeight = window.innerHeight/4        
+                var planeWidth = window.innerWidth/4
+                ,planeHeight = window.innerHeight/3.8        
                 ,planePosArr = [
-                    {x:-0.5*planeWidth, y: 1.5*planeHeight, z:0},
-                    {x: 0.5*planeWidth, y: 1.5*planeHeight, z:0},                    
-                    {x:-0.5*planeWidth, y: 0.5*planeHeight, z:0},
-                    {x: 0.5*planeWidth, y: 0.5*planeHeight, z:0},
+                    {x:-1.5*planeWidth, y:0.5*planeHeight, z:0},
+                    {x:-0.5*planeWidth, y:0.5*planeHeight, z:0},
+                    {x: 0.5*planeWidth, y:0.5*planeHeight, z:0},
+                    {x: 1.5*planeWidth, y:0.5*planeHeight, z:0},
+                    {x:-1.5*planeWidth, y:-0.5*planeHeight, z:0},
                     {x:-0.5*planeWidth, y:-0.5*planeHeight, z:0},
                     {x: 0.5*planeWidth, y:-0.5*planeHeight, z:0},
-                    {x:-0.5*planeWidth, y:-1.5*planeHeight, z:0},
-                    {x: 0.5*planeWidth, y:-1.5*planeHeight, z:0},
-                ];
-                $(".menu-css-container, .menu-container canvas").css("top", 250);                                                
-            }else if(app.isMobile()){
-                console.log("Resize To Mobile")
-                if(app.currentRoute == "menu"){
-                    //menuPageText.render(); 
+                    {x: 1.5*planeWidth, y:-0.5*planeHeight, z:0},
+                ]
+                ;
+            
+                $(".menu-css-container, .menu-container canvas").css("top", 0);                                                            
+
+                if(app.isTablet()){
+                    console.log("Resize To Tab")
+                    planeWidth = window.innerWidth/2
+                    ,planeHeight = window.innerHeight/4        
+                    ,planePosArr = [
+                        {x:-0.5*planeWidth, y: 1.5*planeHeight, z:0},
+                        {x: 0.5*planeWidth, y: 1.5*planeHeight, z:0},                    
+                        {x:-0.5*planeWidth, y: 0.5*planeHeight, z:0},
+                        {x: 0.5*planeWidth, y: 0.5*planeHeight, z:0},
+                        {x:-0.5*planeWidth, y:-0.5*planeHeight, z:0},
+                        {x: 0.5*planeWidth, y:-0.5*planeHeight, z:0},
+                        {x:-0.5*planeWidth, y:-1.5*planeHeight, z:0},
+                        {x: 0.5*planeWidth, y:-1.5*planeHeight, z:0},
+                    ];
+                    $(".menu-css-container, .menu-container canvas").css("top", 250);                                                
+                }else if(app.isMobile()){
+                    console.log("Resize To Mobile")
+                    if(app.currentRoute == "menu"){
+                        //menuPageText.render(); 
+                        $(".projListCon").css("opacity", 1);
+                        $(".css-threed").css("visibility", "hidden");
+                    }
+                }
+
+                if(!app.isMobile()){
+                    //$("#projetsList .projListCon").remove()
+                    if(app.currentRoute == "menu"){
+                        $(".css-threed").css("visibility", "visible");                    
+                    }
+                }else{
+                    if(app.currentRoute == "menu"){
+                        $(".css-threed").css("visibility", "hidden");                    
+                    }
+                }
+
+                if(app.isMobile() || app.isTablet()){
+                    if(app.currentRoute != "home"){
+                        $("body").css("overflowY", "visible");                                
+                    }else{
+                        $("body").css("overflowY", "hidden");                                
+                    }
+                }else{                
+                    if(app.currentRoute != "projet"){                    
+                        $("body").css("overflowY", "hidden");                                
+                    }else{
+                        $("body").css("overflowY", "visible");                                
+                    }
+                }
+
+                if((app.isMobile() && app.currentWidth != window.innerWidth) || !app.isMobile()){                                
+                    app.camera.aspect = window.innerWidth / window.innerHeight;
+                    app.camera.fov = 2 * Math.atan( window.innerHeight / ( 2 * 1000 ) )*180/Math.PI;
+                    app.camera.updateProjectionMatrix();            
+
+                    //Adjust Renderers
+                    app.homeCSSRenderer.setSize( window.innerWidth, window.innerHeight );
+                    app.projectrenderer.setSize( window.innerWidth, window.innerHeight );
+                    app.menurenderer.setSize( window.innerWidth, window.innerHeight );        
+                    app.menuCSSRenderer.setSize( window.innerWidth, window.innerHeight );
+                    
+                    _.each(currProjArr, function(obj){
+                        app.homeCSSscene.remove(obj.homePr);
+                        app.projectscene.remove(obj.bigRefPlane);
+                        app.projectscene.remove(obj.smallRefPlane);
+                        app.menuscene.remove(obj.bigRefPlane);
+                        app.menuscene.remove(obj.smallRefPlane);
+                        app.menuCSSscene.remove(obj.menuPr.cssPr);
+                        app.menuscene.remove(obj.menuPr.pl);
+                    })
+
+                    _.each(currProjArr, function(obj, key){
+                        var smallplane = new THREE.Mesh(new THREE.BoxGeometry(planeWidth, planeHeight, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0x0000ff, side: THREE.FrontSide }));
+                        smallplane.position.set(planePosArr[key].x, planePosArr[key].y, planeZPos);
+                        smallplane.name = "Small Ref Plane";
+                        obj.smallRefPlane = smallplane;
+                        //app.menuscene.add(smallplane);
+                        
+                        var menuplane = obj.menuPr.pl;
+                        menuplane.position.set(planePosArr[key].x, planePosArr[key].y, planePosArr[key].z);
+                        
+                        for(var j = 0; j < 4; j++){
+                            menuplane.geometry.vertices[j].set(
+                                smallplane.geometry.vertices[j].x,
+                                smallplane.geometry.vertices[j].y,
+                                smallplane.geometry.vertices[j].z
+                            );
+                            menuplane.geometry.verticesNeedUpdate = true;
+                        }
+
+                        var cssPr = obj.menuPr.cssPr;
+                        cssPr.element.style.height = planeHeight + "px";
+                        cssPr.element.style.width = planeWidth + "px";  
+                        cssPr.position.x = planePosArr[key].x;
+                        cssPr.position.y = planePosArr[key].y;
+                        cssPr.position.z = planeZPos;
+                        
+                        app.menuscene.add(obj.menuPr.pl);
+                        app.menuCSSscene.add(cssPr);
+                        
+                        var refPlane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0xff0000, side: THREE.FrontSide }))
+                        var imgAspect = obj.projPr.material.map.image.width/obj.projPr.material.map.image.height,
+                        windowAspect = window.innerWidth/window.innerHeight;
+                        var homePr = obj.homePr;
+                        if (windowAspect > imgAspect){
+                            homePr.element.style.width = window.innerWidth + "px";
+                            homePr.element.style.height = window.innerWidth/imgAspect + "px";
+                            
+                            refPlane.scale.x = window.innerWidth;
+                            refPlane.scale.y = window.innerWidth/imgAspect;                
+                        }
+                        else{
+                            homePr.element.style.width = window.innerHeight*imgAspect + "px";
+                            homePr.element.style.height = window.innerHeight + "px";
+                            
+                            refPlane.scale.x = window.innerHeight*imgAspect;
+                            refPlane.scale.y = window.innerHeight;                   
+                        }
+                        refPlane.updateMatrix(); 
+                        refPlane.geometry.applyMatrix( refPlane.matrix );
+                        refPlane.matrix.identity();
+                        refPlane.position.set( 0, 0, 0 );
+                        refPlane.rotation.set( 0, 0, 0 );
+                        refPlane.scale.set( 1, 1, 1 );
+                        //app.projectscene.add(refPlane);
+                        //app.menuscene.add(refPlane);
+                        
+                        homePr.position.set( 0, 0, 0 );
+                        app.homeCSSscene.add(homePr);
+
+                        obj.bigRefPlane = refPlane;
+                        for(var j = 0; j < 4; j++){
+                            obj.projPr.geometry.vertices[j].set(
+                                obj.bigRefPlane.geometry.vertices[j].x,
+                                obj.bigRefPlane.geometry.vertices[j].y,
+                                obj.bigRefPlane.geometry.vertices[j].z
+                            );
+                            obj.projPr.geometry.verticesNeedUpdate = true;
+                        }
+                        app.render();
+                    });
+
+                    app.currentWidth = window.innerWidth;
+                    var menuPageText = new app.Views.MenuPageText();
+                    menuPageText.render(); 
+                }
+                if(app.isMobile()){
                     $(".projListCon").css("opacity", 1);
-                    $(".css-threed").css("visibility", "hidden");
                 }
-            }
-
-            if(!app.isMobile()){
-                //$("#projetsList .projListCon").remove()
-                if(app.currentRoute == "menu"){
-                    $(".css-threed").css("visibility", "visible");                    
-                }
+            /*    
             }else{
-                if(app.currentRoute == "menu"){
-                    $(".css-threed").css("visibility", "hidden");                    
-                }
-            }
-
-            if(app.isMobile() || app.isTablet()){
-                if(app.currentRoute != "home"){
-                    $("body").css("overflowY", "visible");                                
-                }else{
-                    $("body").css("overflowY", "hidden");                                
-                }
-            }else{                
-                if(app.currentRoute != "projet"){                    
-                    $("body").css("overflowY", "hidden");                                
-                }else{
-                    $("body").css("overflowY", "visible");                                
-                }
-            }
-
-            if(!app.isMobile()){                
-                app.camera.aspect = window.innerWidth / window.innerHeight;
-                app.camera.fov = 2 * Math.atan( window.innerHeight / ( 2 * 1000 ) )*180/Math.PI;
-                app.camera.updateProjectionMatrix();            
-
-                //Adjust Renderers
-                app.homeCSSRenderer.setSize( window.innerWidth, window.innerHeight );
-                app.projectrenderer.setSize( window.innerWidth, window.innerHeight );
-                app.menurenderer.setSize( window.innerWidth, window.innerHeight );        
-                app.menuCSSRenderer.setSize( window.innerWidth, window.innerHeight );
-                
-                _.each(currProjArr, function(obj){
-                    app.homeCSSscene.remove(obj.homePr);
-                    app.projectscene.remove(obj.bigRefPlane);
-                    app.projectscene.remove(obj.smallRefPlane);
-                    app.menuscene.remove(obj.bigRefPlane);
-                    app.menuscene.remove(obj.smallRefPlane);
-                    app.menuCSSscene.remove(obj.menuPr.cssPr);
-                    app.menuscene.remove(obj.menuPr.pl);
-                })
-
-                _.each(currProjArr, function(obj, key){
-                    var smallplane = new THREE.Mesh(new THREE.BoxGeometry(planeWidth, planeHeight, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0x0000ff, side: THREE.FrontSide }));
-                    smallplane.position.set(planePosArr[key].x, planePosArr[key].y, planeZPos);
-                    smallplane.name = "Small Ref Plane";
-                    obj.smallRefPlane = smallplane;
-                    //app.menuscene.add(smallplane);
-                    
-                    var menuplane = obj.menuPr.pl;
-                    menuplane.position.set(planePosArr[key].x, planePosArr[key].y, planePosArr[key].z);
-                    
-                    for(var j = 0; j < 4; j++){
-                        menuplane.geometry.vertices[j].set(
-                            smallplane.geometry.vertices[j].x,
-                            smallplane.geometry.vertices[j].y,
-                            smallplane.geometry.vertices[j].z
-                        );
-                        menuplane.geometry.verticesNeedUpdate = true;
-                    }
-
-                    var cssPr = obj.menuPr.cssPr;
-                    cssPr.element.style.height = planeHeight + "px";
-                    cssPr.element.style.width = planeWidth + "px";  
-                    cssPr.position.x = planePosArr[key].x;
-                    cssPr.position.y = planePosArr[key].y;
-                    cssPr.position.z = planeZPos;
-                    
-                    app.menuscene.add(obj.menuPr.pl);
-                    app.menuCSSscene.add(cssPr);
-                    
-                    var refPlane = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0), new THREE.MeshPhongMaterial({ wireframe:true, opacity:1, color:0xff0000, side: THREE.FrontSide }))
-                    var imgAspect = obj.projPr.material.map.image.width/obj.projPr.material.map.image.height,
-                    windowAspect = window.innerWidth/window.innerHeight;
-                    var homePr = obj.homePr;
-                    if (windowAspect > imgAspect){
-                        homePr.element.style.width = window.innerWidth + "px";
-                        homePr.element.style.height = window.innerWidth/imgAspect + "px";
-                        
-                        refPlane.scale.x = window.innerWidth;
-                        refPlane.scale.y = window.innerWidth/imgAspect;                
-                    }
-                    else{
-                        homePr.element.style.width = window.innerHeight*imgAspect + "px";
-                        homePr.element.style.height = window.innerHeight + "px";
-                        
-                        refPlane.scale.x = window.innerHeight*imgAspect;
-                        refPlane.scale.y = window.innerHeight;                   
-                    }
-                    refPlane.updateMatrix(); 
-                    refPlane.geometry.applyMatrix( refPlane.matrix );
-                    refPlane.matrix.identity();
-                    refPlane.position.set( 0, 0, 0 );
-                    refPlane.rotation.set( 0, 0, 0 );
-                    refPlane.scale.set( 1, 1, 1 );
-                    //app.projectscene.add(refPlane);
-                    //app.menuscene.add(refPlane);
-                    
-                    homePr.position.set( 0, 0, 0 );
-                    app.homeCSSscene.add(homePr);
-
-                    obj.bigRefPlane = refPlane;
-                    for(var j = 0; j < 4; j++){
-                        obj.projPr.geometry.vertices[j].set(
-                            obj.bigRefPlane.geometry.vertices[j].x,
-                            obj.bigRefPlane.geometry.vertices[j].y,
-                            obj.bigRefPlane.geometry.vertices[j].z
-                        );
-                        obj.projPr.geometry.verticesNeedUpdate = true;
-                    }
-                    app.render();
-
-                });
-                var menuPageText = new app.Views.MenuPageText();
-                menuPageText.render(); 
-            }
-
-            if(app.isMobile()){
-                $(".projListCon").css("opacity", 1);
-            }
+                alert("Not Changed!")
+            }*/
         },   
         insertTitle : function(titre){
             titre = $('<textarea />').html(titre).text();
@@ -922,7 +943,7 @@
 
             scene = new ScrollMagic.Scene({
                 triggerElement: "#trigger1",
-                offset: window.innerHeight/2 - 50
+                offset: window.innerHeight/2 - 62
             })
             .setTween(".projetNav", 0.01, {position:"fixed"})
             //.addIndicators({name: "for fixing nav (duration: none)"})
@@ -1448,9 +1469,9 @@
             }})
         });
 
-        $("html, body, #wrapper").css({
+       /* $("html, body, #wrapper").css({
             height: $(window).height()
-        });
+        });*/
 
         $(document).on("mouseenter", ".projListCon", function(e){ 
             if(app.isAnimating()){

@@ -30,7 +30,7 @@
                 'videoEl': '<iframe src="https://player.vimeo.com/video/223770882?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
-                'projetType': 'Website',
+                'projetType': 'Graphic design',
                 'titre': 'ACTION<br/>AGAINST<br/>HUNGER',
                 'menutitre': 'ACTION AGAINST<br/>HUNGER',
                 'infos1': 'International humanitarian organization',
@@ -78,7 +78,7 @@
                 'videoEl': '<iframe src="https://player.vimeo.com/video/223770578?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
-                'projetType': 'Website',
+                'projetType': 'Identity & Website',
                 'titre': 'LES JARDINS<br/>DE CORNEILLA',
                 'menutitre': 'LES JARDINS<br/>DE CORNEILLA',
                 'infos1': 'Maison d&rsquo;hôtes',
@@ -176,7 +176,7 @@
                 'videoEl': '<iframe src="https://player.vimeo.com/video/223770785?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
-                'projetType': 'Website',
+                'projetType': 'Identity & Website',
                 'titre': 'ENSEMBLE<br/>CORRESPON<br/>DANCES',
                 'menutitre': 'ENSEMBLE<br/>CORRESPON DANCES',
                 'infos1': 'Orchestre français, musique du XVIIe',
@@ -210,7 +210,7 @@
             "WITH GREAT<br/>DESIGNS COME<br/>PRICELESS<br/>EMOTIONS",
             "FANCY A<br/>DRINK?<br/>LET'S MEET<br/>SOMEWHERE",
             "LOST IN<br/>THE MATRIX?<br/>COME, I'll BE<br/>YOUR GUIDE",
-            "YA GETTING<br/>BORED?<br/>JUST CLICK<br/>MY LOGO"
+            "YA GETTING<br/>BORED?<br/>JUST CLICK<br/>ON MY LOGO"
         ],  
         currentParaIdx : 0,
         isMobile: function(){
@@ -527,6 +527,9 @@
                     });
 
                     app.currentWidth = window.innerWidth;
+                    if(app.currentRoute == "projet"){
+                        app.createScrollTl();
+                    }
                     var menuPageText = new app.Views.MenuPageText();
                     menuPageText.render(); 
                 }
@@ -834,15 +837,15 @@
                 .to($(".home-bg")[key], 1, {
                     opacity:1 
                 }, label)
-                .to($("a.projectTrigger")[key], 1, {bottom:20}, label)
-                .to($("#projetsReview div.projetsDetails")[key], 1, {height:140}, label)
-                .to($("#projetsReview path")[key], 0.7, {strokeDashoffset:0}, label + "+=0.5")
-                .to($("#projetsReview .project-info")[key], 1, {opacity:1, left:0}, label + "+=0.6")
+                .to($("a.projectTrigger")[key], .7, {bottom:20}, label)
+                .to($("#projetsReview div.projetsDetails")[key], .7, {height:140}, label)
+                .to($("#projetsReview path")[key], 0.5, {strokeDashoffset:0}, label + "+=0.5")
+                .to($("#projetsReview .project-info")[key], .7, {opacity:1, left:0}, label + "+=0.6")
                 .add(exitLabel, label + "+=3")
-                .to($("a.projectTrigger")[key], 1.5, {bottom:0}, exitLabel)
-                .to($("#projetsReview div.projetsDetails")[key], 0.5, {height:0}, exitLabel + "+=1")
-                .to($("#projetsReview path")[key], 0.7, {strokeDashoffset:50}, exitLabel + "+=0.3")
-                .to($("#projetsReview .project-info")[key], 0.7, {opacity:0, left:10}, exitLabel + "+=0.5")
+                .to($("a.projectTrigger")[key], 1.2, {bottom:0}, exitLabel)
+                .to($("#projetsReview div.projetsDetails")[key], 0.3, {height:0}, exitLabel + "+=1")
+                .to($("#projetsReview path")[key], 0.5, {strokeDashoffset:50}, exitLabel + "+=0.3")
+                .to($("#projetsReview .project-info")[key], 0.5, {opacity:0, left:10}, exitLabel + "+=0.5")
                 .to($(".home-bg")[key], 0.2, {opacity:0})
                 ;
             });
@@ -921,7 +924,15 @@
             app.profileTl = tl;
         },
         createScrollTl: function(){
-            var scrollController = new ScrollMagic.Controller()
+
+            if(typeof scrollController !== "undefined"){
+                scene = null;
+                tl = null;
+                scrollController.destroy(true);
+                scrollController = null;
+            } 
+
+            scrollController = new ScrollMagic.Controller()
             ,scrollGroups = [
                 [".clientBox", $(".rightBox")[0]],
                 [".leftBox", ".projetBox"],
@@ -932,9 +943,6 @@
                 [".resultatBoxFull"],
                 [".resultatBox1", $(".rightBox")[1]]
             ]
-            ,tl
-            ,scene
-            ,index
             ;
 
             function insertProjVideo(parent){
@@ -943,7 +951,7 @@
 
             scene = new ScrollMagic.Scene({
                 triggerElement: "#trigger1",
-                offset: window.innerHeight/2 - 62
+                offset: window.innerHeight/2 - 66
             })
             .setTween(".projetNav", 0.01, {position:"fixed"})
             //.addIndicators({name: "for fixing nav (duration: none)"})
@@ -955,8 +963,6 @@
                 ,scene = new ScrollMagic.Scene({
                     triggerElement: "#trigger" + index
                 })
-
-                //tl.set(".child-bar", {css:{width:0}})
 
                 switch(obj.length){
                     case 1: 
@@ -987,20 +993,27 @@
                             var remBars = $(".child-bar").toArray().slice();
                             remBars.splice(idx, 1);
                             tl
-                            .to(line1, 0.5, {width:10}, "enter1+=0.2")
-                            .to(num1, 0.5, {top:40}, "enter1+=0.2")
-                            .to(remBars, 0.5, {width:0}, "enter1+=0.2")
-                            .to($(".child-bar")[idx], 0.5, {width:"100%"}, "enter1+=0.2")
+                            .to(line1, 0.3, {width:10}, "enter1+=0.2")
+                            .to(num1, 0.3, {top:40}, "enter1+=0.2")
+                            //.to(remBars, 0.3, {width:0}, "enter1+=0.2")
+                            //.to($(".child-bar")[idx], 0.3, {width:"100%"}, "enter1+=0.2")                                
+                            /*if(index == 1){
+                                tl
+                                .to($(".child-bar")[idx], 0.3, {width:"100%"}, "enter1+=0.5")
+                            }else{
+                                tl
+                                .to($(".child-bar")[idx], 0.3, {width:"100%"}, "enter1+=0.2")                                
+                            }*/
                         }
                         if(line2.length > 0){
                             var idx = $(".line-down").toArray().indexOf(line2[0]);
                             var remBars = $(".child-bar").toArray().slice();
                             remBars.splice(idx, 1);
                             tl
-                            .to(line2, 0.5, {width:10}, "enter2+=0.2")
-                            .to(num2, 0.5, {top:40}, "enter2+=0.2")
-                            .to(remBars, 0.5, {width:0}, "enter2+=0.2")
-                            .to($(".child-bar")[idx], 0.5, {width:"100%"}, "enter2+=0.2")
+                            .to(line2, 0.3, {width:10}, "enter2+=0.2")
+                            .to(num2, 0.3, {top:40}, "enter2+=0.2")
+                            //.to(remBars, 0.3, {width:0}, "enter2+=0.2")
+                            //.to($(".child-bar")[idx], 0.3, {width:"100%"}, "enter2+=0.2")
                         }
                         break;
                     case 3: 
@@ -1011,12 +1024,76 @@
                         .to(obj[2], 0.5, {top:0, opacity: 1}, "enter+=0.4")
                         break;
                 }
-                
+
                 scene
                 .setTween(tl)
                 //.addIndicators({name: index + " (duration: 0.5)"})
                 .addTo(scrollController)
             });
+
+    
+            tl = new TimelineMax()
+            ,scene = new ScrollMagic.Scene({
+                triggerElement: "#trigger" + 1,
+                offset: window.innerHeight/2 - 66,
+                duration: $(".navBox").offset().top - 2*window.innerHeight + 70
+            })
+
+            tl
+            .to(".nav-anim", 0.05, {width: "100%", ease:Linear.easeNone}, "enter")                               
+
+
+            scene
+            .setTween(tl)
+            //.addIndicators({name: "Nav Bar (duration: 0.5)"})
+            .addTo(scrollController)
+
+            tl = new TimelineMax()
+            ,scene = new ScrollMagic.Scene({
+                triggerElement: "#trigger" + 1,
+                offset: window.innerHeight/2 - 66
+            })
+
+            tl
+            .set($(".child-bar"), {css:{width:"0%"}})
+            .to($(".child-bar")[0], 0.3, {width:"100%"}, "enter")  
+            .to([$(".child-bar")[1], $(".child-bar")[2]], 0.3, {width:"0%"}, "enter")                                
+            
+            scene
+            .setTween(tl)
+            //.addIndicators({name: "Stroke 1 (duration: 0.5)"})
+            .addTo(scrollController)
+
+            tl = new TimelineMax()
+            ,scene = new ScrollMagic.Scene({
+                triggerElement: "#trigger" + 2,
+                offset: window.innerHeight/2 - 66
+            })
+
+            tl
+            .to($(".child-bar")[1], 0.3, {width:"100%"}, "enter")  
+            .to([$(".child-bar")[0], $(".child-bar")[2]], 0.3, {width:"0%"}, "enter")                                
+            
+            scene
+            .setTween(tl)
+            //.addIndicators({name: "Stroke 2 (duration: 0.5)"})
+            .addTo(scrollController)
+
+            tl = new TimelineMax()
+            ,scene = new ScrollMagic.Scene({
+                triggerElement: "#trigger" + 4,
+                offset: window.innerHeight/2 - 66
+            })
+
+            tl
+            .to($(".child-bar")[2], 0.3, {width:"100%"}, "enter")  
+            .to([$(".child-bar")[0], $(".child-bar")[1]], 0.3, {width:"0%"}, "enter")                                
+            
+            scene
+            .setTween(tl)
+            //.addIndicators({name: "Stroke 3 (duration: 0.5)"})
+            .addTo(scrollController)
+
         },
         createMenuTl: function(){
             var currProjArr = app.currProjSet.projArr
@@ -1040,8 +1117,8 @@
             
             if(app.isMobile()){
                 menuTimeline
-                .staggerTo(".main .projListCon", 0.5, {opacity:1}, 0.05, "enterProj")            
-                .to(".projListCon .text", 0.5, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"}, "enterProj")
+                .staggerTo(".main .projListCon", 0.3, {opacity:1}, 0.05, "enterProj")            
+                .to(".projListCon .text", 0.3, {opacity:1, y:0, color:"rgba(0, 0, 0, 1)"}, "enterProj")
             }else{
                 var menuProjects = _.pluck(app.currProjSet.projArr, 'menuPr');
                 var menuPlanes = _.pluck(menuProjects, 'pl');
@@ -1049,8 +1126,8 @@
                 app.startWebGLAnimation('menu')                
 
                 if($(".matched").length > 0){
-                    TweenMax.to(".matched", 0.5, {opacity:0})            
-                    TweenMax.to(".project-container", 1, {opacity:0})            
+                    TweenMax.to(".matched", 0.3, {opacity:0})            
+                    TweenMax.to(".project-container", .7, {opacity:0})            
                 }
 
                 menuTimeline
@@ -1108,9 +1185,9 @@
                 onComplete:function(){
                     if(app.firstLoad && app.isMobile()){
                         TweenMax.to(".popup-contain", 0.1, {display:"block"})
-                        TweenMax.to(".popup-contain", 0.5, {opacity:1})
+                        TweenMax.to(".popup-contain", 0.3, {opacity:1})
                         setTimeout(function(){
-                            TweenMax.to(".popup-contain", 0.5, {opacity:0, onComplete:function(){
+                            TweenMax.to(".popup-contain", 0.3, {opacity:0, onComplete:function(){
                                 TweenMax.set(".popup-contain", {css:{display:"none"}} )
                             }})
                         },3000)
@@ -1120,13 +1197,13 @@
                     app._resetMenu();                    
                 }
             })
-            ,time = 1
+            ,time = .7
             ,currReview = $("#projetsReview div.projetsDetails")[app.currentProject.currIndex]
             ;
 
             projTimeLine
             .add("enter")
-            .to($(".project-container"), 1, {opacity:1}, "enter")            
+            .to($(".project-container"), .7, {opacity:1}, "enter")            
             .to(currReview, time, {height:140}, "enter")
             .to($(currReview).find("path"), time, {stroke:"#fff", strokeDashoffset:0}, "enter+=0.3")
             .to(".proj-title", time, {opacity:1}, "enter+=0.3")
@@ -1499,7 +1576,6 @@
         $(document).on("click", ".projListCon", function(e){ 
             e.preventDefault();
             TweenMax.to($(e.currentTarget).find(".text"), 0.5, {
-                top:0,
                 onComplete: function(){
                     Backbone.history.navigate($(e.currentTarget).find(".menuProjLink")[0].hash, {trigger:true})
                 }
@@ -1519,38 +1595,38 @@
 
         $(document).on('click', "#close-profile", function(e){   
             e.preventDefault();   
-            TweenMax.to("#close-profile", 0.5, {rotationZ:180, opacity:0})
+            TweenMax.to("#close-profile", 0.4, {rotationZ:180, opacity:0})
             app.profileTl.reverse();
         })
 
         $(document).on('mouseenter', "#close-profile", function(e){
-            TweenMax.to($(this), 0.7, {
-                width:55,  
-                height:55,
+            TweenMax.to($(this), 0.5, {
+                width:52,  
+                height:52,
                 border:"2px solid #ccc",    
                 rotationZ:90,             
                 ease:Power2.easeOut
             })
-            TweenMax.to($(".close-top"), 0.5, {
+            TweenMax.to($(".close-top"), 0.4, {
                 top:1,
             })
-            TweenMax.to($(".close-bottom"), 0.5, {
+            TweenMax.to($(".close-bottom"), 0.4, {
                 top:-1,
             })
         })
 
         $(document).on('mouseleave', "#close-profile", function(e){
-            TweenMax.to($(this), 0.7, {
+            TweenMax.to($(this), 0.5, {
                 width:45,  
                 height:45,
                 border:"4px solid #ccc",
                 rotationZ:0,
                 ease:Power2.easeOut
             })
-            TweenMax.to($(".close-top"), 0.5, {
+            TweenMax.to($(".close-top"), 0.4, {
                 top:1,
             })
-            TweenMax.to($(".close-bottom"), 0.5, {
+            TweenMax.to($(".close-bottom"), 0.4, {
                 top:-1,
             })
         })
@@ -1882,7 +1958,7 @@
 
             homeRandomTl
             .add("fixLetters")
-            .to($("#random-text .text").not(".matched"), 0.5, {opacity:0}, "fixLetters")
+            .to($("#random-text .text").not(".matched"), 0.3, {opacity:0}, "fixLetters")
             
             if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){                
@@ -1921,24 +1997,24 @@
                 }else{
                     str+= "skewX(5deg) ";
                 }
-                homeRandomTl.to(obj, 1, {transform: str}, "skewLetters");                
+                homeRandomTl.to(obj, .7, {transform: str}, "skewLetters");                
             });
 
             homeRandomTl
             .add("moveLetters")
-            .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
-            .to("a.projectTrigger", 1, {bottom:0}, "moveLetters")
+            .to(matchedElArr, .7, {transform:"skew(0)"}, "moveLetters")
+            .to("a.projectTrigger", .7, {bottom:0}, "moveLetters")
             
             if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){
-                    homeRandomTl.to(obj, 1, {
+                    homeRandomTl.to(obj, .7, {
                         top: posArr[key].end.top,
                         left: posArr[key].end.left
                     }, "moveLetters");
                 });
             }else{ 
                 _.each(matchedElArr, function(obj, key){
-                    homeRandomTl.to(obj, 1, {
+                    homeRandomTl.to(obj, .7, {
                         top: posArr[key].end.top - 5,
                         left: posArr[key].end.left
                     }, "moveLetters");
@@ -1946,8 +2022,8 @@
             }
             homeRandomTl
             .add("changeColorLetters")
-            .to("#ghost-text", 1, {opacity:1}, "changeColorLetters")
-            .to("#random-text", 1, {opacity:0}, "changeColorLetters")
+            .to("#ghost-text", .7, {opacity:1}, "changeColorLetters")
+            .to("#random-text", .7, {opacity:0}, "changeColorLetters")
 
             app.homeRandomTl = homeRandomTl;
         },
@@ -2038,12 +2114,12 @@
             projToHomeTl
             .add("fixLetters")
             .to($("body"), 0.1, {overflowY:"hidden"}, "fixLetters")
-            .to($("#random-text .text").not(".matched"), 0.5, {opacity:0}, "fixLetters")
-            .to($(".matched"), 0.5, {color:"rgba(0,0,0,0.15)"}, "fixLetters")
-            .to($(".linkmatched"), 0.5, {color:"rgba(0,0,0,1)"}, "fixLetters")
-            .to($("a.projectTrigger"), 0.5, {bottom:0}, "fixLetters")
-            .to($(".project-container"), 0.5, {opacity:0}, "fixLetters")
-            .to($(".main"), 0.5, {backgroundColor:"rgba(255,255,255,0.7)"}, "fixLetters")
+            .to($("#random-text .text").not(".matched"), 0.3, {opacity:0}, "fixLetters")
+            .to($(".matched"), 0.3, {color:"rgba(0,0,0,0.15)"}, "fixLetters")
+            .to($(".linkmatched"), 0.3, {color:"rgba(0,0,0,1)"}, "fixLetters")
+            .to($("a.projectTrigger"), 0.3, {bottom:0}, "fixLetters")
+            .to($(".project-container"), 0.3, {opacity:0}, "fixLetters")
+            .to($(".main"), 0.3, {backgroundColor:"rgba(255,255,255,0.7)"}, "fixLetters")
             ;
             if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){                
@@ -2069,13 +2145,13 @@
             
             projToHomeTl
             .add("skewLetters")
-            .to(["header", "#projetsReview", ".profile"], 0.5, {color:"#000", borderBottomColor:"#000"}, "skewLetters")
-            .fromTo(".header img", 0.5, {filter:"invert(100%)"},{filter:"invert(0%)"}, "skewLetters")
-            .to(["nav .menu-line", "nav .burger li"], 0.5, {backgroundColor:"#000"}, "skewLetters")
-            .to("#social-icons", 0.5, {borderTopColor:"#000"}, "skewLetters")
-            .to("#nav .social", 0.5, {borderColor:"#333"}, "skewLetters")
-            .to("#projetsReview div.projetsDetails svg", 0.2, {attr:{stroke:"#00"}}, "skewLetters")
-            .to("#nav .social i", 0.5, {color:"#333"}, "skewLetters")
+            .to(["header", "#projetsReview", ".profile"], 0.3, {color:"#000", borderBottomColor:"#000"}, "skewLetters")
+            .fromTo(".header img", 0.3, {filter:"invert(100%)"},{filter:"invert(0%)"}, "skewLetters")
+            .to(["nav .menu-line", "nav .burger li"], 0.3, {backgroundColor:"#000"}, "skewLetters")
+            .to("#social-icons", 0.3, {borderTopColor:"#222"}, "skewLetters")
+            .to("#nav .social", 0.3, {borderColor:"#333"}, "skewLetters")
+            .to("#projetsReview div.projetsDetails svg", 0.2, {attr:{stroke:"#000"}}, "skewLetters")
+            .to("#nav .social i", 0.3, {color:"#333"}, "skewLetters")
             .to("#projetsReview div.projetsDetails", 0.2, {opacity:0, height:0}, "skewLetters")
             ;
             _.each(matchedElArr, function(obj, key){
@@ -2090,23 +2166,23 @@
                 }else{
                     str+= "skewX(5deg) ";
                 }
-                projToHomeTl.to(obj, 1, {transform: str}, "skewLetters");                
+                projToHomeTl.to(obj, .7, {transform: str}, "skewLetters");                
             });
 
             projToHomeTl
             .add("moveLetters")
-            .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
+            .to(matchedElArr, .7, {transform:"skew(0)"}, "moveLetters")
             
             if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){
-                    projToHomeTl.to(obj, 1, {
+                    projToHomeTl.to(obj, .7, {
                         top: posArr[key].end.top,
                         left: posArr[key].end.left
                     }, "moveLetters");
                 });
             }else{
                 _.each(matchedElArr, function(obj, key){
-                    projToHomeTl.to(obj, 1, {
+                    projToHomeTl.to(obj, .7, {
                         top: posArr[key].end.top - 5,
                         left: posArr[key].end.left
                     }, "moveLetters");
@@ -2115,8 +2191,8 @@
 
             projToHomeTl
             .add("changeColorLetters")
-            .to("#ghost-text", 1, {opacity:1}, "changeColorLetters")
-            .to("#random-text", 1, {opacity:0}, "changeColorLetters")
+            .to("#ghost-text", .7, {opacity:1}, "changeColorLetters")
+            .to("#random-text", .7, {opacity:0}, "changeColorLetters")
             ;    
 
             app.projToHomeTl = projToHomeTl; 
@@ -2201,7 +2277,7 @@
 
             homeToProjTl
             .add("fixLetters")
-            .to($("#random-text .text").not(".matched"), 0.5, {opacity:0}, "fixLetters")
+            .to($("#random-text .text").not(".matched"), 0.3, {opacity:0}, "fixLetters")
             ;        
 
             if(app.isMobile() || app.isTablet()){
@@ -2240,23 +2316,23 @@
                 }else{
                     str+= "skewX(5deg) ";
                 }
-                homeToProjTl.to(obj, 1, {transform: str}, "skewLetters");                
+                homeToProjTl.to(obj, .7, {transform: str}, "skewLetters");                
             });
 
             homeToProjTl
             .add("moveLetters")
-            .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
+            .to(matchedElArr, .7, {transform:"skew(0)"}, "moveLetters")
             
             if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){
-                    homeToProjTl.to(obj, 1, {
+                    homeToProjTl.to(obj, .7, {
                         top: key>0?posArr[key].end.top:posArr[key].end.top+20,
                         left: posArr[key].end.left
                     }, "moveLetters");
                 });
             }else{ 
                 _.each(matchedElArr, function(obj, key){
-                    homeToProjTl.to(obj, 1, {
+                    homeToProjTl.to(obj, .7, {
                         top: key>0?posArr[key].end.top - 5:posArr[key].end.top + 15,
                         left: posArr[key].end.left
                     }, "moveLetters");
@@ -2264,21 +2340,21 @@
             }
             homeToProjTl
             .add("changeColorLetters")
-            .to("#ghost-text", 1, {opacity:1}, "changeColorLetters")
-            .to("#random-text", 1, {opacity:0}, "changeColorLetters")
-            .to("#ghost-text .text", 1, {color:"#fff"}, "changeColorLetters")
-            .to(".main", 1, {backgroundColor:"rgba(0,0,0,0.5)"}, "changeColorLetters")
-            .to("#projetsReview div.projetsDetails", 0.2, {opacity:0, height:0}, "changeColorLetters")
-            .to(["header", "#projetsReview", ".profile"], 1, {color:"#fff", borderBottomColor:"#fff"}, "changeColorLetters")
-            .fromTo(".header img", 1, {filter:"invert(0%)"},{filter:"invert(100%)"}, "changeColorLetters")
-            .to(["nav .menu-line", "nav .burger li"], 1, {backgroundColor:"#fff"}, "changeColorLetters")
-            .to("#social-icons", 1, {borderTopColor:"#fff"}, "changeColorLetters")
-            .to("#nav .social", 1, {borderColor:"#ccc"}, "changeColorLetters")
-            .to("#nav .social i", 1, {color:"#ccc"}, "changeColorLetters")
+            .to("#ghost-text", .7, {opacity:1}, "changeColorLetters")
+            .to("#random-text", .7, {opacity:0}, "changeColorLetters")
+            .to("#ghost-text .text", .7, {color:"#fff"}, "changeColorLetters")
+            .to(".main", .7, {backgroundColor:"rgba(0,0,0,0.5)"}, "changeColorLetters")
+            .to("#projetsReview div.projetsDetails", 0.1, {opacity:0, height:0}, "changeColorLetters")
+            .to(["header", "#projetsReview", ".profile"], .7, {color:"#fff", borderBottomColor:"#fff"}, "changeColorLetters")
+            .fromTo(".header img", .7, {filter:"invert(0%)"},{filter:"invert(100%)"}, "changeColorLetters")
+            .to(["nav .menu-line", "nav .burger li"], .7, {backgroundColor:"#fff"}, "changeColorLetters")
+            .to("#social-icons", .7, {borderTopColor:"#fff"}, "changeColorLetters")
+            .to("#nav .social", .7, {borderColor:"#ccc"}, "changeColorLetters")
+            .to("#nav .social i", .7, {color:"#ccc"}, "changeColorLetters")
             ;
 
             _.each(matchedElArr, function(obj, key){
-                homeToProjTl.to([obj, $(obj).find("a")], 1, {color:"#fff"}, "changeColorLetters");
+                homeToProjTl.to([obj, $(obj).find("a")], .7, {color:"#fff"}, "changeColorLetters");
             });
 
             app.homeToProjTl = homeToProjTl;
@@ -2338,7 +2414,7 @@
             });
 
             homeToMenuTl
-            .to(unmatched, 1, {opacity:0}, "hideLetters")
+            .to(unmatched, .7, {opacity:0}, "hideLetters")
             .to($(".burger li")[0], 0.3, {x:-4, y:-4}, "hideLetters")
             .to($(".burger li")[1], 0.3, {y:-4}, "hideLetters")
             .to($(".burger li")[2], 0.3, {x:4, y:-4}, "hideLetters")
@@ -2392,21 +2468,21 @@
 
             homeToMenuTl
             .add("moveLetters")
-            .to("a.projectTrigger", 1, {bottom:0}, "moveLetters")
+            .to("a.projectTrigger", .7, {bottom:0}, "moveLetters")
             if(app.isMobile()){
                 homeToMenuTl
-                .to(matched, 1, {transform:"skew(0)"}, "moveLetters")
+                .to(matched, .7, {transform:"skew(0)"}, "moveLetters")
                 _.each(matched, function(obj, key){
-                    homeToMenuTl.to(obj, 1, {
+                    homeToMenuTl.to(obj, .7, {
                         top: posArr[key].end.top - 100,
                         left: posArr[key].end.left - 25
                     }, "moveLetters");
                 });
             }else{
                 homeToMenuTl
-                .to(matched, 1, {transform:"skew(0)"}, "moveLetters")            
+                .to(matched, .7, {transform:"skew(0)"}, "moveLetters")            
                 _.each(matched, function(obj, key){
-                    homeToMenuTl.to(obj, 1, {
+                    homeToMenuTl.to(obj, .7, {
                         top: posArr[key].end.top - 175,
                         left: posArr[key].end.left - 55
                     }, "moveLetters");
@@ -2531,9 +2607,9 @@
 
             menuToHomeTl
             .add("moveLetters")
-            .to(matchedEl, 1, {transform:"skew(0)"}, "moveLetters")
+            .to(matchedEl, .7, {transform:"skew(0)"}, "moveLetters")
             _.each(matchedElArr, function(obj, key){
-                menuToHomeTl.to(matchedElArr[key].el, 1, {
+                menuToHomeTl.to(matchedElArr[key].el, .7, {
                     top: matchedElArr[key].end.top,
                     left: matchedElArr[key].end.left
                 }, "moveLetters");
@@ -2541,8 +2617,8 @@
 
             menuToHomeTl
             .add("showHome")
-            .to("#ghost-text", 1, {opacity:1}, "showHome")
-            .to(matchedEl, 1, {opacity:0}, "showHome")
+            .to("#ghost-text", .7, {opacity:1}, "showHome")
+            .to(matchedEl, .7, {opacity:0}, "showHome")
         },
         _animateNextProject: function(previous, next, ctx){
             app.ghostText = app.insertTitle(app.currentProject.titre);
@@ -2680,23 +2756,23 @@
                 }else{
                     str+= "skewX(5deg) ";
                 }
-                nextProjectTl.to(obj, 1, {transform: str}, "fixLetters");                
+                nextProjectTl.to(obj, .7, {transform: str}, "fixLetters");                
             });
             
             nextProjectTl
             .add("moveLetters")
-            .to(matchedElArr, 1, {transform:"skew(0)"}, "moveLetters")
+            .to(matchedElArr, .7, {transform:"skew(0)"}, "moveLetters")
             
             if(app.isMobile() || app.isTablet()){
                 _.each(matchedElArr, function(obj, key){
-                    nextProjectTl.to(obj, 1, {
+                    nextProjectTl.to(obj, .7, {
                         top: posArr[key].end.top,
                         left: posArr[key].end.left
                     }, "moveLetters");
                 });
             }else{
                 _.each(matchedElArr, function(obj, key){
-                    nextProjectTl.to(obj, 1, {
+                    nextProjectTl.to(obj, .7, {
                         top: posArr[key].end.top - 5,
                         left: posArr[key].end.left
                     }, "moveLetters");
@@ -2705,16 +2781,16 @@
 
             nextProjectTl
             .add("changeColorLetters")
-            .to("#ghost-text", 1, {opacity:1}, "changeColorLetters")
-            .to("#ghost-text .text", 1, {color:"rgba(255,255,255,1)"}, "changeColorLetters")
-            .to("#random-text", 1, {opacity:0}, "changeColorLetters")
-            .to(currentPlane.material, 1, {
+            .to("#ghost-text", .7, {opacity:1}, "changeColorLetters")
+            .to("#ghost-text .text", .7, {color:"rgba(255,255,255,1)"}, "changeColorLetters")
+            .to("#random-text", .7, {opacity:0}, "changeColorLetters")
+            .to(currentPlane.material, .7, {
                 opacity:0, 
                 onStart: function(){
                     app.startWebGLAnimation('projToProj');
                 }
             }, "changeColorLetters")
-            .to(nextplane.material, 1, {opacity:1}, "changeColorLetters")
+            .to(nextplane.material, .7, {opacity:1}, "changeColorLetters")
             ;
         },
         _animateMenuToProject : function(previous, next, ctx){
@@ -2853,21 +2929,21 @@
 
 
                     menuToProjTl
-                    .staggerTo(matArr, 1, {opacity:0}, 0, "hideMenuComp")
-                    .staggerTo(cssPrArr, 1, {opacity:0}, 0, "hideMenuComp")
+                    .staggerTo(matArr, .7, {opacity:0}, 0, "hideMenuComp")
+                    .staggerTo(cssPrArr, .7, {opacity:0}, 0, "hideMenuComp")
                 })
             }
 
             if(app.isMobile()){
                 menuToProjTl
-                .to(".projListCon", 1, {opacity:0}, "hideMenuComp")
+                .to(".projListCon", .7, {opacity:0}, "hideMenuComp")
             }else{
                 menuToProjTl
-                .to(planeToAnim.material, 1, {opacity:0.3}, "hideMenuComp")
+                .to(planeToAnim.material, .7, {opacity:0.3}, "hideMenuComp")
             }
             
             menuToProjTl
-            .to($(".main .ghost").not(".matched"), 1, {opacity:0}, "hideMenuComp")
+            .to($(".main .ghost").not(".matched"), .7, {opacity:0}, "hideMenuComp")
             ;
 
             _.each(matchedElArr, function(obj, key){
@@ -2882,7 +2958,7 @@
                 }else{
                     str+= "skewX(5deg) ";
                 }
-                menuToProjTl.to(obj, 1, {transform: str}, "hideMenuComp");                
+                menuToProjTl.to(obj, .7, {transform: str}, "hideMenuComp");                
             });
 
             if(!app.isMobile()){                
@@ -2929,14 +3005,14 @@
 
             menuToProjTl
             .add("moveLetters")
-            .to(matchedElArr, 1, {transform:"skew(0)",
+            .to(matchedElArr, .7, {transform:"skew(0)",
                 onComplete:function(){
                     app.startWebGLAnimation('menuToProj');                    
                 }
             }, "moveLetters")
             ;
             _.each(matchedElArr, function(obj, key){
-                menuToProjTl.to(obj, 1, {
+                menuToProjTl.to(obj, .7, {
                     top: posArr[key].end.top,
                     left: posArr[key].end.left
                 }, "moveLetters");
@@ -2944,26 +3020,26 @@
 
             if(app.isMobile()){
                 menuToProjTl
-                .to(window, 1, {scrollTo:{y:0}}, "moveLetters")                
+                .to(window, .7, {scrollTo:{y:0}}, "moveLetters")                
             }
 
             menuToProjTl
             .add("changeColorLetters")
-            .to("#ghost-text", 0.5, {opacity:1}, "changeColorLetters")
-            .to($(".main .ghost"), 0.5, {opacity:0}, "changeColorLetters")
+            .to("#ghost-text", 0.3, {opacity:1}, "changeColorLetters")
+            .to($(".main .ghost"), 0.3, {opacity:0}, "changeColorLetters")
             .add("changeColorLetters2")
-            .to("#ghost-text .text", 1, {color:"#fff"}, "changeColorLetters2")
-            .to(".main", 1, {backgroundColor:"rgba(0,0,0,0.5)"}, "changeColorLetters2")
-            .to(["header", "#projetsReview", ".profile"], 1, {color:"#fff", borderBottomColor:"#fff"}, "changeColorLetters2")
-            .fromTo(".header img", 1, {filter:"invert(0%)"},{filter:"invert(100%)"}, "changeColorLetters2")
-            .to([".header-el .menu-line", ".header-el .burger li"], 1, {backgroundColor:"#fff"}, "changeColorLetters2")
-            .to("#social-icons", 1, {borderTopColor:"#fff"}, "changeColorLetters2")
-            .to("#nav .social", 1, {borderColor:"#ccc"}, "changeColorLetters2")
-            .to("#nav .social i", 1, {color:"#ccc"}, "changeColorLetters2")                   
+            .to("#ghost-text .text", .7, {color:"#fff"}, "changeColorLetters2")
+            .to(".main", .7, {backgroundColor:"rgba(0,0,0,0.5)"}, "changeColorLetters2")
+            .to(["header", "#projetsReview", ".profile"], .7, {color:"#fff", borderBottomColor:"#fff"}, "changeColorLetters2")
+            .fromTo(".header img", .7, {filter:"invert(0%)"},{filter:"invert(100%)"}, "changeColorLetters2")
+            .to([".header-el .menu-line", ".header-el .burger li"], .7, {backgroundColor:"#fff"}, "changeColorLetters2")
+            .to("#social-icons", .7, {borderTopColor:"#fff"}, "changeColorLetters2")
+            .to("#nav .social", .7, {borderColor:"#ccc"}, "changeColorLetters2")
+            .to("#nav .social i", .7, {color:"#ccc"}, "changeColorLetters2")                   
             
             if(!app.isMobile()){
                 menuToProjTl
-                .to(planeToAnim.material, 0.5, {opacity:1}, "changeColorLetters2")
+                .to(planeToAnim.material, 0.3, {opacity:1}, "changeColorLetters2")
             }
 
             app.menuToProjTl = menuToProjTl;
@@ -2994,7 +3070,7 @@
                         menuPageText.render(); 
 
                     }else{
-                        $(".project-container").css("opacity", 1);
+                        $(".project-container").css("opacity", .7);
                     }
                     
                     app.createMenuTl(); 
@@ -3143,7 +3219,7 @@
                 }else{
                     str+= "skewX(5deg) ";
                 }
-                projToMenuTl.to(obj, 0.5, {transform: str}, "hideProjectComp2");                
+                projToMenuTl.to(obj, 0.3, {transform: str}, "hideProjectComp2");                
             });
 
             if(!app.isMobile()){
@@ -3195,25 +3271,25 @@
             }
 
             projToMenuTl
-            .to($(".matched"), 1, {transform:"skew(0)"}, "moveLetters")                        
+            .to($(".matched"), .7, {transform:"skew(0)"}, "moveLetters")                        
             
             if(app.isMobile()){
                 _.each(matchedElArr, function(obj, key){
-                    projToMenuTl.to(obj, 1, {
+                    projToMenuTl.to(obj, .7, {
                         top: posArr[key].end.top - 135,
                         left: posArr[key].end.left - 20
                     }, "moveLetters");
                 });
             }else if(app.isTablet()){
                 _.each(matchedElArr, function(obj, key){
-                    projToMenuTl.to(obj, 1, {
+                    projToMenuTl.to(obj, .7, {
                         top: posArr[key].end.top - 165,
                         left: posArr[key].end.left - 55
                     }, "moveLetters");
                 });
             }else{
                 _.each(matchedElArr, function(obj, key){
-                    projToMenuTl.to(obj, 1, {
+                    projToMenuTl.to(obj, .7, {
                         top: posArr[key].end.top - 175,
                         left: posArr[key].end.left - 55
                     }, "moveLetters");
@@ -3250,7 +3326,7 @@
             }    
         },
         _navigateToHome : function(e){
-            TweenMax.to($(".home-link").find("img")[1], 1.5, {rotationZ:"+=360", ease:Power4.easeOut})            
+            TweenMax.to($(".home-link").find("img")[1], 2.8, {rotationZ:"+=660", ease:Power4.easeOut})            
             if(app.isAnimating()){
                 return;
             }else{

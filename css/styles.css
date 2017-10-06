@@ -232,6 +232,15 @@ img.loader-img-anim{
     padding:0;
     z-index:3;
 }
+.profile-content a {
+    text-decoration: none;
+    color: #222;
+}
+.profile-content .social {font-family: FontAwesome, sans-serif; display: inline-block; border: solid 1px #fff; height: 18px; width: 21px; text-align: center; transform: rotate(45deg); margin-right: -6px; padding: 5px 0 0 2px; position: relative; z-index: 3; -webkit-transition: border 300ms ease-out; -moz-transition: border 300ms ease-out; -o-transition: border 300ms ease-out; transition: border 300ms ease-out;}
+.profile-content .social a{ transform: rotate(-45deg); color: #fff; font-size: 0.8rem; display: block; position: relative; top: -4px; }
+.profile-content #social-icons-profile {border: none; padding: 0; width: auto;}
+.profile-content .social:hover {border-color: #ccc;}
+
 .close-profile-wrapper{
     display: table;
     position: absolute;
@@ -325,6 +334,9 @@ img.loader-img-anim{
     background: #444;
     color: #fff;
 }
+.bg-grey a {
+    color: #fff;
+}
 .youval-pic-top{
     background: url(../images/youval-tayar-top.jpg) no-repeat bottom;
     //background: url(../images/ytop.png) no-repeat bottom;
@@ -358,8 +370,8 @@ img.loader-img-anim{
 .header{
     z-index:1; 
     margin: 0; 
-    padding: 0 4px 18px 0; 
-    border-bottom: 1px solid rgb(204, 204, 204); 
+    padding: 0 4px 10px 0; 
+    border-bottom: 1px solid #666; 
     display: inline-block; 
     position:relative;
 }
@@ -383,8 +395,6 @@ img.y-logo-img{
     margin-right: 10px;
 }
 .header h1{ transform: translateY(-4px); padding-left: 4px; font-size: 16px; }
-.profile{border-bottom: 1px dotted #333;cursor: pointer; position: relative; bottom: 3px;-webkit-transition: all 200ms ease-out; -moz-transition: all 200ms ease-out; -o-transition: all 200ms ease-out; transition: all 200ms ease-out;}
-.profile:hover {bottom: 6px;}
 .yes-phone {display: none;}
 
 /* Nav Menu and Burger*/
@@ -466,6 +476,15 @@ img.y-logo-img{
     padding-top: 20px;
     width: 110px;
     margin: 0 auto;
+}
+
+.mobile-profile-btn .social {
+    width: 19px;
+    height: 16px;
+}
+
+.mobile-profile-btn .social a {
+    font-size: .7rem;
 }
 
 /* Projects Reviews */
@@ -698,6 +717,7 @@ a.menuProjLink{
     height: 67px; 
     display: table; 
     text-align: center; 
+    overflow: hidden;
     position: absolute; 
     top: 0px; 
     left: 0px; 
@@ -705,23 +725,34 @@ a.menuProjLink{
 }
 .projetNav a{ display: table-cell; vertical-align: middle; text-decoration: none; text-transform: uppercase; font-family: 'FuturaBold', sans-serif; color: #FFFFFF; font-size: 1em; cursor: pointer; width: 33.7%; }
 .projetNav img{margin-top: 25px;}
+
+/*Project Nav Animation Bar*/
+.nav-anim{
+    position: absolute;
+    background: #212121;
+    height: 100%;
+    width: 0%;
+    z-index: -1;
+}
 .p-bar{
     height: 2px;
     width: 25%;
     margin: 0 auto;
     position: relative;
     top: -10px;
+    transition: width 0.2s ease-out;
 }
 .pr-bar {width: 21%;}
 .cl-bar {width: 24%;}
 .projetNav a:hover .p-bar > .child-bar{
     width: 100% !important;
-    transition: width 0.3s linear;
+    transition: width 0.2s ease-out;
 }
 .child-bar{
     width: 0;
     height: inherit;
     background: #fff;
+    transition: width 0.2s ease-out;
 }
 .projetContent h2 {font-family: 'FuturaBold', sans-serif; margin-bottom: 24px; font-size: 24px; text-transform: uppercase; }
 .clientBox { width: 60%; height: 100vh; background: #fff; color:#222; float:left; display: table; position: relative; }
@@ -903,7 +934,7 @@ video, iframe {
 .line-correspondance {width: 50px; height: 1px; background: #fff;}
 .prevLink img, .nextLink img {
     width: 85px;
-    margin-top: -1%;
+    margin-top: -3%;
     cursor: pointer;
     -webkit-transition: all 150ms ease-out; -moz-transition: all 150ms ease-out; -o-transition: all 150ms ease-out; transition: all 150ms ease-out;
 }

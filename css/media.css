@@ -166,7 +166,7 @@
 	.mobile-burger{
 		display: inline-block;
 	    position: absolute;
-	    left: 43.5%;
+	    left: 46.5%;
 	    top:1em;
 	    //zoom: 1.2;
 	    transform: scale(1.2);
@@ -178,7 +178,6 @@
 	}
 	.navFirst{
 		position: relative;
-		top: -0.5em;
 	}
 	.menu-container{
 		opacity: 0 !important;
@@ -192,7 +191,23 @@
 	#projetsList{
 		display: block;
 	}
+	#nav .social {
+		width: 19px;
+		height: 16px;
+	}
+	#nav .social a {
+		font-size: .7rem;
+	}
+	.profile-content .social a {
+		top: 0;
+	}
 }
 
 @media (max-width:480px)  {	
+	.mobile-burger{
+	    left: 43.5%;
+	}
+	.youval-image {
+		right: -35px;
+	}
 }

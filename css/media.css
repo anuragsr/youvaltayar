@@ -97,6 +97,9 @@
     .boxContent {
     	padding: 25% 10%;
     }
+    .resultatBox1 .boxContent {
+    	padding: 12% 10% 10%;
+    }
 	.content-num-contain{
 		position: relative;
 	    top: -4em;

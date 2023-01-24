@@ -65,15 +65,41 @@ table{ border-collapse: collapse; border-spacing: 0; }
     src: url('../fonts/AvenirLTStd-Light.eot'); /* IE9 Compat Modes */
     src: url('../fonts/AvenirLTStd-Light.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/AvenirLTStd-Light.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/AvenirLTStd-Light.svg#svgAvenirLTStd-Light') format('svg'); /* Legacy iOS */
 }
+@font-face{
+    font-family: 'PoppinsBold';
+    src: url('../fonts/Poppins-Bold.eot'); /* IE9 Compat Modes */
+    src: url('../fonts/Poppins-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/Poppins-Bold.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/Poppins-Bold.svg#svgPoppins-Bold') format('svg'); /* Legacy iOS */
+}
+@font-face{
+    font-family: 'LatoRegular';
+    src: url('../fonts/Lato-Regular.eot'); /* IE9 Compat Modes */
+    src: url('../fonts/Lato-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/Lato-Regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/Lato-Regular.svg#svgLato-Regular') format('svg'); /* Legacy iOS */
+}
+@font-face{
+    font-family: 'OpenSansLight';
+    src: url('../fonts/OpenSans-Light.eot'); /* IE9 Compat Modes */
+    src: url('../fonts/OpenSans-Light.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/OpenSans-Light.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/OpenSans-Light.svg#svgOpenSans-Light') format('svg'); /* Legacy iOS */
+}
+@font-face{
+    font-family: 'RalewayBold';
+    src: url('../fonts/Raleway-Bold.eot'); /* IE9 Compat Modes */
+    src: url('../fonts/Raleway-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/Raleway-Bold.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/Raleway-Bold.svg#svgRaleway-Bold') format('svg'); /* Legacy iOS */
+}
+
 .gloucester {font-family: "GloucesterBoldCondensed", Arial; font-size: 30px; }
 .goudyNormal {font-family: "GoudyOldStyle", Arial; font-size: 20px; }
 .avenirLight {font-family: "AvenirLight", Arial; font-size: 30px; }
+.poppinsbold {font-family: "PoppinsBold", Arial; font-size: 30px; }
+.lato {font-family: "LatoRegular", Arial; font-size: 20px; }
+.ralewaybold {font-family: "RalewayBold", Arial; font-size: 20px; }
+.opensanslight {font-family: "OpenSansLight", Arial; font-size: 20px; }
 
 p { font-family: "Prestige", sans-serif; margin-bottom: 20px; font-size: 1em; line-height: 1.2em; }}
 h2 { font-family: "Prestige", sans-serif; margin-bottom: 20px; font-size: 1em; line-height: 1.2em; }}
 body{ background-color: #FFFFFF; width: 100%; height: 100%; font-family: 'Prestige', sans-serif; font-size: 1em; line-height: 1.2em; }
 
 .textcenter {text-align: center;}
+.centered {display: block; margin: 0 auto;}
 .sep-small {margin: 20px 0;}
 .page {
   box-sizing: border-box;
@@ -489,21 +515,24 @@ img.y-logo-img{
 
 /* Projects Reviews */
 
-#projetsReview{ font-family: 'Nexa Light', sans-serif; position: absolute; right: 0; bottom: 0; padding: 0 60px 30px 0; text-align: right; font-size: 1.2em; }
+#projetsReview{ z-index: 2; font-family: 'Nexa Light', sans-serif; position: absolute; right: 0; bottom: 0; padding: 0 60px 30px 0; text-align: right; font-size: 1.2em; }
 .projetNumber {
     font-family: "Prestige", sans-serif;
     font-size: 15px;
     line-height: 12px;
     margin-bottom: 0;
+    position: absolute;
+    right: 0;
+    height: 35px;
+    cursor: pointer;
 }
 .reviewContainer{ 
-    margin-bottom: 25px; 
+    padding-bottom: 37px; 
     display:block;
-    vertical-align: top;
+    position: relative;
 }
 div.projetsDetails{ 
-    overflow-x:visible; 
-    overflow-y:visible; 
+    overflow:visible; 
     height:0px; 
     display: block; 
     line-height: 1.2;
@@ -514,6 +543,10 @@ div.projetsDetails{
     stroke-width:1;
     stroke:#000;
     fill:none;
+}
+#projetsReview div div.projetsDetails { 
+    position: relative;
+    top: 10px; 
 }
 #projetsReview div div.projetsDetails h2{ font-size: .97em; line-height: 1.2em; margin-bottom: 4px; font-family: "FuturaBold", sans-serif; text-transform: uppercase; }
 #projetsReview div div.projetsDetails p{ font-size: 0.8em; margin:0; }
@@ -583,7 +616,7 @@ div.projetsDetails{
     top: -7px;
     left:-3px;
     stroke: rgb(255,255,255); 
-    stroke-width:5;
+    stroke-width:1;
     stroke-dasharray: 55 55;
     stroke-dashoffset: 55;
 } 
@@ -592,7 +625,7 @@ div.projetsDetails{
     top: 2px;
     left:-3px;
     stroke: rgb(255,255,255); 
-    stroke-width:5;
+    stroke-width:1;
     stroke-dasharray: 55 55;
     stroke-dashoffset: -55;
 }
@@ -617,7 +650,7 @@ div.projetsDetails{
     position: absolute;
     top: 0;
     width: 100%;
-    line-height: 5em;
+    line-height: 4em;
 }
 #ghost-text{
     opacity: 0;
@@ -632,7 +665,7 @@ div.projetsDetails{
     //display: inline-block;
     font-family: 'FuturaBold', sans-serif;
     color: rgba(0,0,0,0.15);
-    font-size: 4.5em;
+    font-size: 3.5em;
     text-transform: uppercase;
     padding: 10px;
     position: relative;
@@ -724,18 +757,18 @@ a.menuProjLink{
     z-index: 3;
 }
 .projetNav a{ display: table-cell; vertical-align: middle; text-decoration: none; text-transform: uppercase; font-family: 'FuturaBold', sans-serif; color: #FFFFFF; font-size: 1em; cursor: pointer; width: 33.7%; }
-.projetNav img{margin-top: 25px;}
+.projetNav img{position: absolute; top: 25px;}
 
 /*Project Nav Animation Bar*/
 .nav-anim{
     position: absolute;
-    background: #212121;
+    background: #282828;
     height: 100%;
     width: 0%;
     z-index: -1;
 }
 .p-bar{
-    height: 2px;
+    height: 1px;
     width: 25%;
     margin: 0 auto;
     position: relative;
@@ -920,9 +953,9 @@ video, iframe {
 #projet_1 .resultatBox, #projet_1 .resultatBox .numOverlay {background: #0075CD;}
 #projet_2 .resultatBox, #projet_2 .resultatBox .numOverlay {background: #3C3228;}
 #projet_3 .resultatBox, #projet_3 .resultatBox .numOverlay {background: #b6b099;}
-#projet_4 .resultatBox, #projet_4 .resultatBox .numOverlay {background: #ebb600;}
-#projet_5 .resultatBox, #projet_5 .resultatBox .numOverlay {background: #1A8E8B;}
-#projet_6 .resultatBox, #projet_6 .resultatBox .numOverlay {background: #304e83;}
+#projet_4 .resultatBox, #projet_4 .resultatBox .numOverlay {background: #65ba4d;}
+#projet_5 .resultatBox, #projet_5 .resultatBox .numOverlay {background: #0597AC;}
+#projet_6 .resultatBox, #projet_6 .resultatBox .numOverlay {background: #0800ED;}
 #projet_7 .resultatBox, #projet_7 .resultatBox .numOverlay {background: #171D39;}
 #projet_3 .resultatBoxLogoLeft, #projet_3 .resultatBoxLogoCenter, #projet_3 .resultatBoxLogoRight, #projet_7 .resultatBoxLogoLeft, #projet_7 .resultatBoxLogoCenter, #projet_7 .resultatBoxLogoRight {display: table; height: 100vh;}
 #projet_3 .resultatBoxLogoFull, #projet_7 .resultatBoxLogoFull {display: block;}
@@ -930,6 +963,13 @@ video, iframe {
 #corneilla-color2 {background: #BCB69E; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
 #ensemble-color1 {background: #222222; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
 #ensemble-color2 {background: #7C645A; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
+#dcbrain-color1 {background: #0A97AA; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
+#dcbrain-color2 {background: #515251; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
+#agreau-color1 {background: #65ba4d; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
+#agreau-color2 {background: #75563d; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
+#agreau-color3 {background: #0781be; display: inline-block; width: 70px; height: 130px; margin-right: 10px;}
+
+#logo-dcbrain {width: 200px;}
 
 .line-correspondance {width: 50px; height: 1px; background: #fff;}
 .prevLink img, .nextLink img {

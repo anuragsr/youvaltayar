@@ -12,7 +12,7 @@
                 'infos1': 'Comité du peintre Fernand Léger',
                 'infos2': 'Art Direction & Developpement',
                 'url': 'comite-leger',
-                'background': 'images/comiteleger/bg-comite.jpg',
+                'background': 'images/comiteleger/fernand-leger-comite-leger.jpg',
                 'images': [''],
                 'clientBox': '<h2>The client</h2><p>The Comité Léger, under the aegis of Nadia Léger’s grandson and great-granddaughter, is authorized to issue certificates of authenticity. It is also able to issue opinions on multiple works as lithographs, bronzes, ceramics and mosaics.</p><p>It commits itself to act independently, free from all conflicts of interest, within a strictly defined ethical framework and strict administrative management.</p>',
                 'rightBox': 'images/comiteleger/peintre.jpg',
@@ -27,7 +27,7 @@
                 'resultatBox1': '<img src="images/comiteleger/ipad-comite.jpg"/>',
                 'resultatBox2': 'images/comiteleger/iphone-comite.jpg',
                 'resultatBox3': '<a href="http://comiteleger.fr/" target="_blank" class="more-info-button">View website</a>',
-                'videoEl': '<iframe src="https://player.vimeo.com/video/223770882?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
+                'videoEl': '<iframe src="https://player.vimeo.com/video/223770882?autoplay=1&loop=1&muted=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
                 'projetType': 'Graphic design',
@@ -47,11 +47,11 @@
                 'resultatBox': '<h2>The result</h2><p> The first communication medium was a 4 pages printed document about the nutrition’s situation in Yemen, to show the organization’s role and what was left to do to help more people and save lives. Using the new identity of Action Against Hunger, I structured the information using reflexion and creativity, in order to create something very clear but also attractive. Printed in many copies, it was a success.</p><p>After this, other orders arrived as the work was appreciated and as I was getting closer to the team, including the main Middle East regional brochure, presenting the organization and their past actions in 2016, as well as their future actions for 2017.</p>',
                 'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>4 pages Yemen Nutrition Facts<br/>4 pages press kit<br/>Somalie Facebook publication<br/>32 pages Middle East Regional Office<br/>Run Against Hunger documents proposition</p>',
                 'resultatBoxFull1': '',
-                'resultatBoxFull': '<img src="images/acf/brochure-front.jpg"/>',
+                'resultatBoxFull': '<img class="centered" src="images/acf/brochure-front.jpg"/>',
                 'resultatBox1': '<img src="images/acf/brochure-inside.jpg"/>',
                 'resultatBox2': 'images/acf/brochure-regionale-open.jpg',
                 'resultatBox3': '<a href="http://youvaltayar.com/bat/acf/yemen-dashboard-november2016.pdf" target="_blank" class="more-info-button">View nutrition brochure</a><br/><a href="http://youvaltayar.com/bat/acf/regional-middleeast-december2016.pdf" target="_blank" class="more-info-button">View regional brochure</a>',
-                'videoEl': '<iframe src="https://player.vimeo.com/video/223770823?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
+                'videoEl': '<iframe src="https://player.vimeo.com/video/223770823?autoplay=1&loop=1&muted=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
                 'projetType': 'Website',
@@ -69,19 +69,19 @@
                 'leftBoxBottom': 'Identity<br/>Website',
                 'projetBox': '<h2>The brief</h2><p>Considering the amazing work Toshio Bando has produced along his life, it was normal for Jacques Boutersky to show this to the world, as Fujita once did. Toshio, who was a lot more descret than his friend, never talked about his work, although the quality is remarkable. A branding as well as a website was necessary.</p>',
                 'resultatBox': '<h2>The result</h2><p>First step was to create an identity out of nothing. But the comité was not really into having a logotype, as for them the name Toshio Bando was enough. After few discussions and few propositions, we agreed on one, relevant and simple, that would not alter the painter’s name. The letter "O" shape, with a red color, representing the three O contained in his name, as well as a modern Japan flag.</p><p>The second step was the website, mixing up modernism and history, easily accessible for people such as collectors who were more into art than websites. Fully responsive, the website is ajax built and has a very ergonomic way of presenting the artist’s work.',
-                'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Art Direction<br/>Development</p><p><span class="bold">Awards & Recognitions</span><br/><a href="http://www.cssdesignawards.com/sites/toshio-bando/29938/" target="_blank">CSSDA</a>, <a href="https://www.cssawards.net/website/toshio-bando/" target="_blank">CSS Awards</a>, <a href="http://www.csslight.com/website/18895/Toshio-Bando" target="_blank">CSS Light</a>, <a href="http://www.csswinner.com/details/toshio-bando/11198" target="_blank">CSS Winner</a></p>',
+                'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Art Direction<br/>Development</p><p><span class="bold">Awards & Recognitions</span><br/><a href="http://www.cssdesignawards.com/sites/toshio-bando/29938/" target="_blank">CSSDA</a>, <a href="https://www.cssawards.net/website/toshio-bando/" target="_blank">CSS Awards</a>, <a href="http://www.csslight.com/website/18895/Toshio-Bando" target="_blank">CSS Light</a></p>',
                 'resultatBoxFull1': '',
                 'resultatBoxFull': '<div class="bg-video"><div class="screen-video"></div></div>',
                 'resultatBox1': '<img src="images/toshio/ipad-toshio.jpg"/>',
                 'resultatBox2': 'images/toshio/iphone-toshio.jpg',
                 'resultatBox3': '<a href="http://toshio-bando.fr/" target="_blank" class="more-info-button">View website</a>',
-                'videoEl': '<iframe src="https://player.vimeo.com/video/223770578?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
+                'videoEl': '<iframe src="https://player.vimeo.com/video/223770578?autoplay=1&loop=1&muted=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
                 'projetType': 'Identity & Website',
                 'titre': 'LES JARDINS<br/>DE CORNEILLA',
                 'menutitre': 'LES JARDINS<br/>DE CORNEILLA',
-                'infos1': 'Maison d&rsquo;hôtes',
+                'infos1': 'Luxuary guest house',
                 'infos2': 'Art Direction & Developpement',
                 'url': 'les-jardins-de-corneilla',
                 'background': 'images/bg-jardins.jpg',
@@ -93,7 +93,7 @@
                 'leftBoxBottom': 'Identity<br/>Website',
                 'projetBox': '<h2>The brief</h2><p>As the guest house became more and more famous in the region, and after guetting its 5th épis from Gîtes de France, everything needed to be properly done in order to show to the visitors the best of the place. A logotype needed to be created, professional photographies needed to be taken and a new website had to be done.</p>',
                 'resultatBox': '<h2>The result</h2><p>As the aim was create a modern and luxuary image, the logotype was created uppon this. With a small and a large version, the main shape shows a modern plant with 2 leaves, to highlight the word "Jardins" (garden in english). The large version has the entire name inside this shape, the small version only has 2 letters.</p> <p>After this, high quality photographies were taken all over the place to brightly show the rooms of course, but also the garden, the pool and all the other equipments</p><p>Finally the website, playing mainly with photographies, with little but usefull text, using a system of modern blocks for a very clean result. The project was a success as the guest house is always fully booked since then with many positive reviews.</p>',
-                'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Art Direction<br/>Development</p><p><span class="bold">Awards & Recognitions</span><br/><a href="http://www.csswinner.com/details/les-jardins-de-corneilla/11211" target="_blank">CSS Winner</a>, <a href="http://www.csslight.com/website/20311/Les-Jardins-de-Corneilla" target="_blank">CSS Light</a></p>',
+                'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Art Direction<br/>Development</p><p><span class="bold">Awards & Recognitions</span><br/><a href="http://www.csslight.com/website/20311/Les-Jardins-de-Corneilla" target="_blank">CSS Light</a></p>',
                 'resultatLogo': '<img src="images/corneilla/logo-jardins-de-corneilla.png"/>',
                 'resultatFont': '<p>Gloucester Bold Condensed</p><span class="gloucester">A B C D E F G</span><br/><span class="gloucester">a b c d e f g</span><br/><div class="sep-small"></div><p>Goudy Old Style</p><span class="goudyNormal">A B C D E F G</span><br/><span class="goudyNormal">a b c d e f g</span>',
                 'resultatColor': '<p>#333333&nbsp; #BCB69E</p><span class="color-box" id="corneilla-color1"></span> <span class="color-box" id="corneilla-color2"></span>',
@@ -102,78 +102,86 @@
                 'resultatBox1': '<img src="images/corneilla/ipad-corneilla.jpg"/>',
                 'resultatBox2': 'images/corneilla/iphone-corneilla.jpg',
                 'resultatBox3': '<a href="http://lesjardinsdecorneilla.fr/" target="_blank" class="more-info-button">View website</a>',
-                'videoEl': '<iframe src="https://player.vimeo.com/video/223770823?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
+                'videoEl': '<iframe src="https://player.vimeo.com/video/223770823?autoplay=1&loop=1&muted=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
                 'projetType': 'Website',
-                'titre': 'STEVEN<br/>KIRSCH',
-                'menutitre': 'STEVEN<br/>KIRSCH',
-                'infos1': 'Bijoutier de luxe',
-                'infos2': 'Art Direction & Developpement',
-                'url': 'steven-kirsch',
-                'background': 'images/bg-steven.jpg',
-                'clientBox': '<h2>The client</h2><p>Founded in 2000, Steven Kirsch Inc., famous american jewelry, is located in the heart of New York’s Diamond District, and specializes in producing one-of-a-kind pieces. It has set it’s own standards of originality in fine jewelry, elevating the jewelers art to new height’s of grandeur through bold, innovative designs and superior workmanship. Steven Kirsch’s creativity sprang from a desire to display the finest quality gemstones in the most elegant settings possible, emphasizing the beauty of the gemstones themselves.</p>',
-                'rightBox': 'images/steven/diamond-creation.jpg',
-                'fullBox1': 'images/steven/banner-steven1.jpg',
+                'titre': 'AGREAU',
+                'menutitre': 'AGREAU',
+                'infos1': 'Ecological organization',
+                'infos2': 'Identity & Website',
+                'url': 'agreau',
+                'background': 'images/agreau/bg-agreau.jpg',
+                'clientBox': '<h2>The client</h2><p>The Agreau network brings together farmers, technical structures, communities, etc. to implement agro-ecology on farms and territories, with the historic pilot region being the south-west of France (supported in particular by the Adour-Garonne Water Agency). Based on the exchange and based on many farmers experiences, Agreau allows the continuous creation of technical and economical references, and the valorisation and transfer of knowledge. It is coordinated by the French Association of AgroForesterie.</p>',
+                'rightBox': 'images/agreau/mains-terre-agreau.jpg',
+                'fullBox1': 'images/agreau/champ-vignes.jpg',
                 'leftBoxTop': 'images/recuperacteurs/wall-creando.jpg',
                 'leftBoxBottom': 'Website',
                 'projetBox': '<h2>The brief</h2><p>A this time, a website was already existing, but the image it was reflecting was the opposite of where Steven Kirsch Inc. was evolving: the products were masterpieces, and the website had to show so. Moreover, as the artist was producing one-of-a-kind pieces, customers needed to understand all the possibilities offered for their future jewels.</p>',
-                'resultatBox': '<h2>The result</h2><p>The website was done under Black Negative agency direction, from which Cecile Martin managed the video and the webdesign part, while I did the development part. The combination brought a modern website, highlighting the magnificient work of the artist, and also helping visitors to find "their one" through the Search page.</p>',
+                'resultatBox': '<h2>The result</h2><p>The platform now have hundred of farms that are referenced, and the can be localized on a map. Different types of accounts can be created, lots of articles are published, a whole new tool for Agreau that has a huge impact on their development now.</p>',
                 'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Development</p>',
+                'resultatLogo': '<img src="images/agreau/logo-agreau.png"/>',
+                'resultatFont': '<p>Raleway Bold</p><span class="ralewaybold">A B C D E F G</span><br/><span class="ralewaybold">a b c d e f g</span><br/><div class="sep-small"></div><p>Open Sans Light</p><span class="opensanslight">A B C D E F G</span><br/><span class="opensanslight">a b c d e f g</span>',
+                'resultatColor': '<p>#65ba4d &nbsp; #75563d &nbsp; #0781be</p><span class="color-box" id="agreau-color1"></span> <span class="color-box" id="agreau-color2"></span> <span class="color-box" id="agreau-color3"></span>',
+                'resultatBoxLogoFull': 'images/agreau/plant-agreau.jpg',
                 'resultatBoxFull1': '',
                 'resultatBoxFull': '<div class="bg-video"><div class="screen-video"></div></div>',
-                'resultatBox1': '<img src="images/steven/ipad-steven.jpg"/>',
-                'resultatBox2': 'images/steven/iphone-steven.jpg',
-                'resultatBox3': '<a href="http://stevenkirsch.com/" target="_blank" class="more-info-button">View website</a>',
-                'videoEl': '<iframe src="https://player.vimeo.com/video/223772683?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
+                'resultatBox1': '<img src="images/agreau/ipad-agreau.jpg"/>',
+                'resultatBox2': 'images/agreau/iphone-agreau.jpg',
+                'resultatBox3': '<a href="http://agreau.fr/" target="_blank" class="more-info-button">View website</a>',
+                'videoEl': '<iframe src="https://player.vimeo.com/video/365035438?autoplay=1&loop=1&muted=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
                 'projetType': 'Website',
-                'titre': 'RECUPER&rsquo;<br/>ACTEURS',
-                'menutitre': 'RECUPER&rsquo;<br/>ACTEURS',
-                'infos1': 'Webdocumentaire sur le recyclage',
-                'infos2': 'Art Direction & Developpement',
-                'url': 'recuperacteurs',
-                'background': 'images/recuperacteurs/decharge.jpg',
+                'titre': 'DCBRAIN',
+                'menutitre': 'DCBRAIN',
+                'infos1': 'Networks optimization company',
+                'infos2': 'Identity & Website',
+                'url': 'dcbrain',
+                'background': 'images/dcbrain/barage-dcbrain.jpg',
                 'images': [''],
-                'clientBox': '<h2>The client</h2><p>Maeva Morin starts her adventure in Argentina in 2008 during a first 6 months trip there. At this time, she’s already very concerned about recycling, but she really starts the Recuper’Acteurs project in 2011, with Curioz’World association support.</p><p>It is after spending time studying their recycling practices alongside Creando Conciencia with whom she did the documentary, that the idea of mixing up France and Argentina was born.</p>',
-                'rightBox': 'images/recuperacteurs/maeva.jpg',
-                'fullBox1': 'images/recuperacteurs/recycled-objects.jpg',
+                'clientBox': '<h2>The client</h2><p>DCbrain is the Artificial Intelligence specialist applied to Energy and Logistics networks allowing industrial companies to optimize, forecast and make reliable flows to obtain operational recommendations in real time.</p>',
+                'rightBox': 'images/dcbrain/industry-dcbrain.jpg',
+                'fullBox1': 'images/dcbrain/bg-dcbrain.jpg',
                 'leftBoxTop': 'images/recuperacteurs/wall-creando.jpg',
-                'leftBoxBottom': 'Webdocumentary',
-                'projetBox': '<h2>The brief</h2><p>Very concerned about humanitarian and environmental causes, Maeva wanted to put this documentary into a format which could make an impact and last long. The aim was to reach the most people we could, knowing that we had to do something clear as well as attractive to make them read the whole documentary, and understand the importance of recycling and the possibilities it offers.</p>',
-                'resultatBox': '<h2>Result</h2><p>After thinking of few solutions, I chose to present this project as a web documentary containing all the pictures and audio records. The challenge was to set all this information into something people would read until the end. Therefore, I decided to make them follow a definite way accross the website, using the fullscreen format for an immersive experience, and setting up the right amount of information in each section.</p>',
-                'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Design & Development</p><p><span class="bold">Awards & Recognitions</span><br/>CSSDA, CSS Winner</p>',
+                'leftBoxBottom': 'Identity<br/>Website<br/>Print',
+                'projetBox': '<h2>The brief</h2><p>As the startup recently raised funds it grew up significantly and started to work with the biggest french companies using networks. DCbrain needed a brand new identity starting with a modernization of the logotype and new print documents. Then a new website was needed, for their image as well as for showing up their new services.</p>',
+                'resultatBox': '<h2>Result</h2><p>The new logotype had to convince the whole team that was really attached to the old one, as well as the new investors. After few attemps we decided to stay really close to the old one, but to really simplify the shape and to modernize all elements. The website was built uppon this new identity, offering to the user a real network experience.</p>',
+                'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Webesign & Development<br/>Logotype<br/>Print documents</p><p><span class="bold">Awards & Recognitions</span><br/>CSSDA, CSS Winner</p>',
+                'resultatLogo': '<img id="logo-dcbrain" src="images/dcbrain/logo-dcbrain.png"/>',
+                'resultatFont': '<p>Poppins Bold</p><span class="poppinsbold">A B C D E F G</span><br/><span class="poppinsbold">a b c d e f g</span><br/><div class="sep-small"></div><p>Lato</p><span class="lato">A B C D E F G</span><br/><span class="lato">a b c d e f g</span>',
+                'resultatColor': '<p>#0A97AA &nbsp; #515251</p><span class="color-box" id="dcbrain-color1"></span> <span class="color-box" id="dcbrain-color2"></span>',
+                'resultatBoxLogoFull': 'images/dcbrain/business-cards-dcbrain.jpg',
                 'resultatBoxFull1': '',
                 'resultatBoxFull': '<div class="bg-video"><div class="screen-video"></div></div>',
-                'resultatBox1': '<img src="images/recuperacteurs/ipad-recuperacteurs.jpg"/>',
-                'resultatBox2': 'images/recuperacteurs/wall-paint.jpg',
-                'resultatBox3': '<a href="http://recuperacteurs.fr" target="_blank" class="more-info-button">View website</a>',
-                'videoEl': '<iframe src="https://player.vimeo.com/video/223770691?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
+                'resultatBox1': '<img src="images/dcbrain/ipad-dcbrain.jpg"/>',
+                'resultatBox2': 'images/dcbrain/iphone-dcbrain.jpg',
+                'resultatBox3': '<a href="https://dcbrain.com/" target="_blank" class="more-info-button">View website</a>',
+                'videoEl': '<iframe src="https://player.vimeo.com/video/365035355?autoplay=1&loop=1&muted=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
                 'projetType': 'Website',
-                'titre': 'MARINE<br/>MANCINI',
-                'menutitre': 'MARINE<br/>MANCINI',
-                'infos1': 'Chant & Voix off',
+                'titre': 'CULTURE(S)<br/>DE MODE',
+                'menutitre': 'CULTURE(S)<br/>DE MODE',
+                'infos1': 'Fashion research network',
                 'infos2': 'Art Direction & Developpement',
-                'url': 'marinemancini',
-                'background': 'images/marine/bg-marine.jpg',
+                'url': 'culturesdemode',
+                'background': 'images/culturesdemode/bg-culturesdemode.jpg',
                 'images': [''],
-                'clientBox': '<h2>The client</h2><p>This young artist, inspired by Soul music and Gospel, sings for the Choeur Gospel de Paris in 2008, directed by Georges Seba (known for his work with Céline Dion, Yannick Noah...), with whom she did lots of stages and TV shows, and even a date with KASSAV’ to celebrate their 30 years anniversary at the Stade de France. In 2010, she got contacted through MySpace by Muttonheads DJ and Mathieu Bouthier with whom she composed the single New York City (signed at Universal USM) with Fun Radio partnership.</p><p>Since then, she works with many foreign DJs and multiply her artisctic collaborations.</p>',
-                'rightBox': 'images/marine/marine-mancini.jpg',
-                'fullBox1': 'images/marine/marine-studio.jpg',
+                'clientBox': '<h2>The client</h2><p>Culture(s) de mode is a network of researchers who analyze fashion, dissect, decipher, explore, create, expose, preserve, restore...Composed by anthropologists, archivists, researchers, museum curators, designers, writers...they gather under the aegis of Culture(s) de Mode, the first French network of fashion research, to promote the wealth of archives and knowledge about fashion in France.</p>',
+                'rightBox': 'images/culturesdemode/cultures-shooting.jpg',
+                'fullBox1': 'images/culturesdemode/cultures-black-society.jpg',
                 'leftBoxTop': 'images/recuperacteurs/wall-creando.jpg',
                 'leftBoxBottom': 'Identity<br/>Website',
-                'projetBox': '<h2>The brief</h2><p>As Marine was doing more and more projects, she needed another support aside MySpace and Soundcloud to extend and professionalise her image. She needed to be able to store and share her work (music and videos) to french and foreign artists, as well as producers and advertising companies. But most importantly she needed this support to evolve with her career.</p>',
-                'resultatBox': '<h2>The result</h2><p>First of all, I made a logo for her, so that people could easily identify her through a distinct sign amongst all the other artists. Considering her desire to be able to easily change her music style if she wanted, as she was still young. We agreed on a modern but destructured shape, that could translate the originality and freshness present in her songs.</p><p>Second step was to create the support, and the most suited solution was of course a website, as all her work was also digitably accessible. Following the logotype image, I realised for her a modern and clean website, putting her work in evidence, and that would make visitors curious about discovering all sections.',
-                'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Art Direction<br/>Development</p><p><span class="bold">Awards & Recognitions</span><br/>CSSDA, CSS Winner</p>',
+                'projetBox': '<h2>The brief</h2><p>This new project, funded by the french Ministère de la Culture and other partners, needed a website to gather different type of profiles working in the fashion world. A clear interface that would explain de project as well as offering the opportunity to become a member to participate to special events and workshops.</p>',
+                'resultatBox': '<h2>The result</h2><p>The website offers a sober interface, avoiding a particular style to group all fashion areas. The mebership program was a success with hundreds of subscriptions, and an interactive map permits to show all french instituions and their artefacts. The website is often updated with new features and the community keeps growing.',
+                'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Art Direction<br/>Webdesign<br/>Development</p>',
                 'resultatBoxFull1': '',
                 'resultatBoxFull': '<div class="bg-video"><div class="screen-video"></div></div>',
-                'resultatBox1': '<img src="images/marine/ipad-marine.jpg"/>',
-                'resultatBox2': 'images/marine/marine-profil.jpg',
-                'resultatBox3': '<a href="http://marinemancini.com/" target="_blank" class="more-info-button">View website</a>',
-                'videoEl': '<iframe src="https://player.vimeo.com/video/223770785?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
+                'resultatBox1': '<img src="images/culturesdemode/ipad-culturesdemode.jpg"/>',
+                'resultatBox2': 'images/culturesdemode/iphone-culturesdemode.jpg',
+                'resultatBox3': '<a href="https://culturesdemode.com/" target="_blank" class="more-info-button">View website</a>',
+                'videoEl': '<iframe src="https://player.vimeo.com/video/365035406?autoplay=1&loop=1&muted=1" width="600" height="400" frameborder="0"></iframe>'
             },
             {
                 'projetType': 'Identity & Website',
@@ -191,7 +199,7 @@
                 'leftBoxBottom': 'Identity<br/>Website',
                 'projetBox': '<h2>The brief</h2><p>As one of the most famous baroque orchestra in France, Ensemble Correspondances has already started its way on the international scene, and gets more and more success accross countries. It was urgent to rebrand all their identity as well as changing their previous website to be closer to what they really reprensent: beauty, grace, softness, travel...music from the 17 century, "A great century of music".</p>',
                 'resultatBox': '<h2>The result</h2><p>The creation of the logotype came first, and was quite the hard challenge, as the aim was to approach something modern but elegant and gracefull. And also because it was hard for the client itself to stop on a direction to take. After trying few shapes, we decided to keep something light and clear, using only typography, and discretly showing notes and tablatures with lines and letter p and d.</p><p>Next step was the website, an alliance of grace and modernism, with many contents well structured and easily accessible: presentation, history, musicians, programs, discography...Fully responsive, developped with ajax to enhance speed and let some music be played on all pages while navigating.</p>',
-                'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Art Direction<br/>Development</p><p><span class="bold">Awards & Recognitions</span><br/><a href="http://www.cssdesignawards.com/sites/ensemble-correspondances/30961" target="_blank">CSSDA</a>, <a href="http://www.csswinner.com/details/ensemble-correspondances/11669" target="_blank">CSS Winner</a>, <a href="http://www.csslight.com/website/20310/Ensemble-Correspondances" target="_blank">CSS Light</a></p>',
+                'resultatBoxRight': '<p><span class="bold">Deliverables</span><br/>Art Direction<br/>Development</p><p><span class="bold">Awards & Recognitions</span><br/><a href="http://www.cssdesignawards.com/sites/ensemble-correspondances/30961" target="_blank">CSSDA</a>, <a href="http://www.csslight.com/website/20310/Ensemble-Correspondances" target="_blank">CSS Light</a></p>',
                 'resultatLogo': '<img src="images/ensemble/logo-ensemble-correspondances.png"/>',
                 'resultatFont': '<p>Avenir Light</p><span class="avenirLight">A B C D E F G</span><br/><span class="avenirLight">a b c d e f g</span>',
                 'resultatColor': '<p>#222222&nbsp; #7C645A</p><span class="color-box" id="ensemble-color1"></span> <span class="color-box" id="ensemble-color2"></span>',
@@ -201,16 +209,16 @@
                 'resultatBox1': '<img src="images/ensemble/ipad-ensemble.jpg"/>',
                 'resultatBox2': 'images/ensemble/iphone-ensemble.jpg',
                 'resultatBox3': '<a href="http://ensemblecorrespondances.com/" target="_blank" class="more-info-button">View website</a>',
-                'videoEl': '<iframe src="https://player.vimeo.com/video/223772534?autoplay=1&loop=1" width="600" height="400" frameborder="0"></iframe>'
+                'videoEl': '<iframe src="https://player.vimeo.com/video/223772534?autoplay=1&loop=1&muted=1" width="600" height="400" frameborder="0"></iframe>'
             }
         ],
         initParaArr : [
-            "LET'S CREATE<br/>SOMETHING<br/>MEMORABLE<br/>AND ALIVE",
-            "MOVE YOUR<br/>BUSINESS<br/>TO A CRAZY<br/>NEW LEVEL",
-            "WITH GREAT<br/>DESIGNS COME<br/>PRICELESS<br/>EMOTIONS",
-            "FANCY A<br/>DRINK?<br/>LET'S MEET<br/>SOMEWHERE",
-            "LOST IN<br/>THE MATRIX?<br/>COME, I'll BE<br/>YOUR GUIDE",
-            "YA GETTING<br/>BORED?<br/>JUST CLICK<br/>ON MY LOGO"
+            "LET'S CREATE<br/>SOMETHING<br/>MEMORABLE<br/>AND EXCITING",
+            "TIME TO<br/>CLIMB HIGH,<br/>TO REACH A<br/>NEW DIMENSION",
+            "WITH GREAT<br/>DESIGNS COME<br/>MAGICAL<br/>EMOTIONS",
+            "FANCY A<br/>DRINK?<br/>I MAKE GOOD<br/>COCKTAILS",
+            "SCARED OF<br/>THE MATRIX?<br/>COME, I'LL BE<br/>YOUR GUIDE",
+            "YA GETTING<br/>BORED? WHY<br/>DON'T YA CLICK<br/>MY LOGO"
         ],  
         currentParaIdx : 0,
         isMobile: function(){
@@ -803,31 +811,46 @@
         }, 
         createHomeTl: function(){            
             if(typeof app.homeTimeline !== "undefined"){
-                app.homeTimeline.restart();
-                app.homeTimeline.pause();
                 app.homeTimeline.seek(0).kill();
-                delete app.homeTimeline;
-                delete homeTimeline;
             }
             
             var homeTimeLine = new TimelineMax({
-                onComplete:homeTlCpl,
+                onComplete:tlCpl,
                 onCompleteParams:["{self}"]
             });
             
-            function homeTlCpl(tl){
+            function tlCpl(tl){
                 setTimeout(function(){
                     tl.restart();
-                }, 3000)
+                }, 1000)
             }
+
+            homeTimeLine
+            .set(".home-bg", {css:{opacity:0}})
+            .set(".projectTrigger", {css:{bottom:0}})
+            .set("#projetsReview div.projetsDetails", {css:{height:0, visibility:"hidden"}})
+            .set("#projetsReview path", {css:{strokeDashoffset:50}})
+            .set("#projetsReview .project-info", {css:{opacity:0, left:10}})            
 
             _.each(app.currProjSet.projArr, function(obj, key){
                 var label = "label_" + key
+                ,midLabel = "midLabel_" + key
                 ,exitLabel = "exitLabel_" + key
                 ;       
+                
+                var remTriggers = _.reject($("a.projectTrigger"), function(obj, idx){
+                    return key == idx;
+                });
+
+                var remProjDetails = _.reject($("#projetsReview div.projetsDetails"), function(obj, idx){
+                    return key == idx;
+                });
+
+                var remBg = _.reject($(".home-bg"), function(obj, idx){
+                    return key == idx;
+                });
 
                 homeTimeLine
-                .set(".home-bg", {css:{opacity:0}})
                 .add(label)
                 .add(
                     function(){
@@ -837,19 +860,32 @@
                 .to($(".home-bg")[key], 1, {
                     opacity:1 
                 }, label)
+                .to(remBg, 1, {
+                    opacity:0 
+                }, label)
                 .to($("a.projectTrigger")[key], .7, {bottom:20}, label)
-                .to($("#projetsReview div.projetsDetails")[key], .7, {height:140}, label)
+                .to(remTriggers, .4, { bottom:0 }, label)
+                .to($("#projetsReview div.projetsDetails")[key], .7, {height:140, visibility:"visible"}, label)
+                .to(remProjDetails, .7, {
+                    height: 0,
+                }, label)
                 .to($("#projetsReview path")[key], 0.5, {strokeDashoffset:0}, label + "+=0.5")
                 .to($("#projetsReview .project-info")[key], .7, {opacity:1, left:0}, label + "+=0.6")
-                .add(exitLabel, label + "+=3")
-                .to($("a.projectTrigger")[key], 1.2, {bottom:0}, exitLabel)
-                .to($("#projetsReview div.projetsDetails")[key], 0.3, {height:0}, exitLabel + "+=1")
-                .to($("#projetsReview path")[key], 0.5, {strokeDashoffset:50}, exitLabel + "+=0.3")
-                .to($("#projetsReview .project-info")[key], 0.5, {opacity:0, left:10}, exitLabel + "+=0.5")
-                .to($(".home-bg")[key], 0.2, {opacity:0})
+                .add(midLabel, label + "+=3")
+                .to($("#projetsReview .project-info")[key], .3, {opacity:0, left:10}, midLabel + "+=0.5")
+                .to($("#projetsReview path")[key], .3, { strokeDashoffset:50 }, midLabel + "+=0.7")
+                .add(exitLabel)
+                .add(function(){                    
+                    if(key == app.currProjSet.projArr.length - 1){
+                        homeTimeLine.to($("a.projectTrigger")[key], .7, {bottom:0}, exitLabel)
+                        homeTimeLine.to($(".home-bg")[key], .7, {opacity:0}, exitLabel)
+                        homeTimeLine.to($("#projetsReview div.projetsDetails")[key], .7, {height:0, visibility:"hidden"}, exitLabel)
+                    }
+                })
                 ;
+
             });
-            
+
             app.homeTimeline = homeTimeLine;
         },
         createProfileTl: function(){
@@ -1214,7 +1250,100 @@
             ;
 
             app.projTimeline = projTimeLine;
-        },      
+        },
+        createLetterUpTl: function(idx){
+            app.mouseover = true;
+            app.homeTimeline.seek(0).pause();
+            
+            // if(typeof app.letterUptl !== "undefined"){
+            //     delete app.letterUptl;
+            // }
+
+            var remTriggers = _.reject($("a.projectTrigger"), function(obj, key){
+                return key == idx;
+            });
+
+            var remProjDetails = _.reject($("#projetsReview div.projetsDetails"), function(obj, key){
+                return key == idx;
+            });
+
+            var remBg = _.reject($(".home-bg"), function(obj, key){
+                return key == idx;
+            });
+            
+            var letterUptl = new TimelineMax();
+
+            letterUptl
+            .add("enter")
+            // .to("#projetsReview div.projetsDetails", {clearProps:["height", "visibility"]})                                    
+            .to("#projetsReview path", 0, { strokeDashoffset:50 }, "enter")
+            .to("#projetsReview .project-info", 0, { opacity:0, left:10 }, "enter")
+            .to($("a.projectTrigger")[idx], 0.4, { bottom:20 }, "enter")
+            .to(remTriggers, 0.4, { bottom:0 }, "enter")
+            .to($(".home-bg")[idx], 0.4, {opacity:1}, "enter")
+            .to(remBg, 0.4, { opacity:0 }, "enter")
+            .to($("#projetsReview div.projetsDetails")[idx], 0.4, {
+                height: 140,
+                cursor: "pointer",
+                visibility:"visible",
+                onComplete: function(){
+                    // console.log("Animate proj info")    
+                    if(app.mouseover){                            
+                        TweenMax.to($("#projetsReview path")[idx], 0.4, {strokeDashoffset:0})
+                        TweenMax.to($("#projetsReview .project-info")[idx], 0.4, {delay:0.2, opacity:1, left:0})
+                    }             
+                }
+            }, "enter")
+            .to(remProjDetails, 0.4, {
+                height: 0,
+                cursor: "default",
+                visibility:"hidden"
+            }, "enter")
+
+            // app.letterUptl = letterUptl;
+            app.currentProject = app.currProjSet.projArr[idx]; 
+        }, 
+        createLetterDownTl: function(){
+            app.mouseover = false;
+
+            TweenMax.to("a.projectTrigger", 0.3, {
+                bottom:0
+            })
+
+            TweenMax.to($(".home-bg"), 0.5, {
+                opacity:0
+            })
+
+            TweenMax.to($("#projetsReview path"), 0.3, {
+                strokeDashoffset:50
+            }) 
+
+            TweenMax.to($("#projetsReview .project-info"), 0.3, {
+                delay:0.2, 
+                opacity:0, 
+                left:10,
+                onComplete: function(){
+                    if(!app.mouseover){         
+                        TweenMax.to($("#projetsReview div.projetsDetails"), 0.3, {
+                            height:0,
+                            visibility: "visible",
+                            onComplete: function(){
+                                // TweenMax.to("#projetsReview div.projetsDetails", {clearProps:["height", "visibility"]})                                 
+                                // TweenMax.to(".home-bg", {clearProps:["opacity"]})                                 
+                                setTimeout( function(){
+                                    if(!app.mouseover){
+                                        // TweenMax.to("#projetsReview div.projetsDetails", {clearProps:["height", "visibility"]})                                 
+                                        // TweenMax.to(".home-bg", {clearProps:["opacity"]})                                 
+                                        // app.homeTimeline.play();
+                                        app.createHomeTl();
+                                    }
+                                }, 1000)
+                            }
+                        })
+                    }
+                }
+            })
+        }, 
         areTitlesInPara : function(para){
             var matches = []
             ,tempArr = []
@@ -1232,6 +1361,7 @@
             });
 
             _.every(app.projects, function(arrObj, arrKey) {
+                arrObj.origIndex = arrKey;
                 arrObj.letter = arrObj.titre.charAt(0);
                 matches = [], count = 1, tempObj = {};
                 tempArr.length = 0;
@@ -1311,7 +1441,7 @@
             
             $("body").css("overflow-y", "hidden");
             $(".main").css({
-                backgroundColor: "rgba(255,255,255,0.7)"
+                backgroundColor: "rgba(255,255,255,0.8)"
             })
             $(".webGL, .outer.css-threed").css({
                 opacity:0
@@ -1393,13 +1523,13 @@
             })
             $(".header, #projetsReview, .profile").css({
                 color:"#fff",
-                borderBottomColor:"#fff"
+                borderBottomColor:"#ccc"
             })
             $(".header-el .menu-line, .header-el .burger li").css({
                 backgroundColor:"#fff"
             })
             $("#social-icons").css({
-                borderTopColor:"#fff"
+                borderTopColor:"#ccc"
             })
             $("#nav .social").css({
                 borderColor:"#ccc"
@@ -2345,10 +2475,10 @@
             .to("#ghost-text .text", .7, {color:"#fff"}, "changeColorLetters")
             .to(".main", .7, {backgroundColor:"rgba(0,0,0,0.5)"}, "changeColorLetters")
             .to("#projetsReview div.projetsDetails", 0.1, {opacity:0, height:0}, "changeColorLetters")
-            .to(["header", "#projetsReview", ".profile"], .7, {color:"#fff", borderBottomColor:"#fff"}, "changeColorLetters")
+            .to(["header", "#projetsReview", ".profile"], .7, {color:"#fff", borderBottomColor:"#ccc"}, "changeColorLetters")
             .fromTo(".header img", .7, {filter:"invert(0%)"},{filter:"invert(100%)"}, "changeColorLetters")
             .to(["nav .menu-line", "nav .burger li"], .7, {backgroundColor:"#fff"}, "changeColorLetters")
-            .to("#social-icons", .7, {borderTopColor:"#fff"}, "changeColorLetters")
+            .to("#social-icons", .7, {borderTopColor:"#ccc"}, "changeColorLetters")
             .to("#nav .social", .7, {borderColor:"#ccc"}, "changeColorLetters")
             .to("#nav .social i", .7, {color:"#ccc"}, "changeColorLetters")
             ;
@@ -3030,10 +3160,10 @@
             .add("changeColorLetters2")
             .to("#ghost-text .text", .7, {color:"#fff"}, "changeColorLetters2")
             .to(".main", .7, {backgroundColor:"rgba(0,0,0,0.5)"}, "changeColorLetters2")
-            .to(["header", "#projetsReview", ".profile"], .7, {color:"#fff", borderBottomColor:"#fff"}, "changeColorLetters2")
+            .to(["header", "#projetsReview", ".profile"], .7, {color:"#fff", borderBottomColor:"#ccc"}, "changeColorLetters2")
             .fromTo(".header img", .7, {filter:"invert(0%)"},{filter:"invert(100%)"}, "changeColorLetters2")
             .to([".header-el .menu-line", ".header-el .burger li"], .7, {backgroundColor:"#fff"}, "changeColorLetters2")
-            .to("#social-icons", .7, {borderTopColor:"#fff"}, "changeColorLetters2")
+            .to("#social-icons", .7, {borderTopColor:"#ccc"}, "changeColorLetters2")
             .to("#nav .social", .7, {borderColor:"#ccc"}, "changeColorLetters2")
             .to("#nav .social i", .7, {color:"#ccc"}, "changeColorLetters2")                   
             
@@ -3418,7 +3548,10 @@
             'click .back-container': '_navigateBack',
             'mouseenter .down-btn': '_fillDownArrow',
             'mouseleave .down-btn': '_emptyDownArrow',
-            'click .arrow-down': '_scrollDown'
+            'click .arrow-down': '_scrollDown',
+            'mouseenter .projetNumber': '_letterUp',
+            'click .reviewContainer': '_navigateToProj',
+            'mouseleave .reviewContainer': '_letterDown',
         },
         _scrollDown: function(e){
             TweenMax.to(window, 1, {scrollTo:{y:window.innerHeight}});
@@ -3465,6 +3598,34 @@
                     history.back();
                 }
             })
+        },
+        _navigateToProj: function(e){
+            e.preventDefault();
+            if(app.currentRoute == 'home'){
+                var idx = $("div.reviewContainer").toArray().indexOf(e.currentTarget)
+                app.homeTimeline.tweenTo("midLabel_"+idx, {
+                    onComplete: function(){
+                        Backbone.history.navigate('#!/projets/' + app.currentProject.url, { trigger:true })            
+                    }
+                }).duration(0);
+            }
+        },
+        _letterUp : function(e){
+            e.preventDefault();
+            if(app.isAnimating() || app.currentRoute != 'home'){
+                return;
+            }else{
+                var idx = $(".projetNumber").toArray().indexOf(e.currentTarget);
+                app.createLetterUpTl(idx)
+            }
+        },
+        _letterDown : function(e){
+            e.preventDefault();
+            if(app.isAnimating() || app.currentRoute != 'home' || app.homeTimeline._active){
+                return;
+            }else{
+                app.createLetterDownTl();
+            }
         },
         render: function () {
             var template = _.template($('script[name=main]').html());
@@ -3627,7 +3788,7 @@
         _navigateToProj: function(e){
             e.preventDefault();
             var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
-            app.homeTimeline.tweenTo("exitLabel_"+idx, {
+            app.homeTimeline.tweenTo("midLabel_"+idx, {
                 onComplete: function(){
                     Backbone.history.navigate('#!/projets/' + app.currentProject.url, { trigger:true })            
                 }
@@ -3638,149 +3799,8 @@
             if(app.isAnimating()){
                 return;
             }else{
-                var self = this;
-                self.mouseover = true;
-                app.homeTimeline.seek(0).pause();
-                var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget)
-                if(typeof self.letterUptl !== "undefined"){
-                    delete self.letterUptl;
-                }
-
-                var remTriggers = _.reject($("a.projectTrigger"), function(obj, key){
-                    return key == idx;
-                });
-
-                var remProjDetails = _.reject($("#projetsReview div.projetsDetails"), function(obj, key){
-                    return key == idx;
-                });
-
-                var remPaths = _.reject($("#projetsReview path"), function(obj, key){
-                    return key == idx;
-                });
-
-                var remProjInfo = _.reject($("#projetsReview .project-info"), function(obj, key){
-                    return key == idx;
-                });
-
-                var remBg = _.reject($(".home-bg"), function(obj, key){
-                    return key == idx;
-                });
-                
-                var letterUptl = new TimelineMax({                        
-                    onComplete: function(){
-                        if(!self.mouseover){
-                            console.log("Mouseover")
-                            TweenMax.to("a.projectTrigger", 0.3, {
-                                bottom:0,
-                                onComplete: function(){
-                                    TweenMax.to("a.projectTrigger", {clearProps:"bottom"})
-                                }
-                            })
-                            TweenMax.to("#projetsReview div.projetsDetails", 0.3, {
-                                height:0,
-                                onComplete: function(){
-                                    TweenMax.to("#projetsReview div.projetsDetails", {clearProps:"height"})
-                                }
-                            })
-                            TweenMax.to(".home-bg", 0.3, {
-                                opacity:0,
-                                onComplete: function(){
-                                    TweenMax.to(".home-bg", {clearProps:"opacity"})
-                                }
-                            })
-                            TweenMax.to("#projetsReview path", 0.3, {
-                                strokeDashoffset:50,
-                                onComplete: function(){
-                                    TweenMax.to("#projetsReview path", {clearProps:"strokeDashoffset"})
-                                }
-                            })
-                            TweenMax.to("#projetsReview .project-info", 0.3, {
-                                opacity:0, left:10,
-                                onComplete: function(){
-                                    TweenMax.to("#projetsReview .project-info", {clearProps:["opacity","left"]})
-                                }
-                            })
-                            setTimeout(function(){
-                                if(!self.mouseover && !app.homeTimeline._active){
-                                    app.homeTimeline.restart();
-                                }
-                            }, 1000)
-                        }
-                        else{
-                            console.log("Animate Project Info")
-                            var projectInfoTl = new TimelineMax({
-                                onReverseComplete: function(){
-                                    if(!self.mouseover){                                        
-                                        TweenMax.to("#projetsReview div.projetsDetails", 0.3, {
-                                            height:0,
-                                            onComplete: function(){
-                                                TweenMax.to("#projetsReview div.projetsDetails", {clearProps:"height"})
-                                            }
-                                        })
-                                        TweenMax.to(".home-bg", 0.3, {
-                                            opacity:0,
-                                            onComplete: function(){
-                                                TweenMax.to(".home-bg", {clearProps:"opacity"})
-                                            }
-                                        })
-                                        TweenMax.to("#projetsReview path", 0.3, {
-                                            strokeDashoffset:50,
-                                            onComplete: function(){
-                                                TweenMax.to("#projetsReview path", {clearProps:"strokeDashoffset"})
-                                            }
-                                        })
-                                        TweenMax.to("#projetsReview .project-info", 0.3, {
-                                            opacity:0, left:10,
-                                            onComplete: function(){
-                                                TweenMax.to("#projetsReview .project-info", {clearProps:["opacity","left"]})
-                                            }
-                                        })
-                                        delete projectInfoTl;
-                                        setTimeout(function(){
-                                            if(!self.mouseover && !app.homeTimeline._active){
-                                                app.homeTimeline.restart();
-                                            }
-                                        }, 1000)
-                                    }
-                                }
-                            });
-
-                            projectInfoTl
-                            .add("enter")
-                            .to($("#projetsReview path")[idx], 0.4, {strokeDashoffset:0}, "enter")
-                            .to(remPaths, 0.4, {strokeDashoffset:50, onComplete: function(){
-                                    TweenMax.to(remPaths, {clearProps:"strokeDashoffset"})
-                                }
-                            }, "enter")
-                            .to($("#projetsReview .project-info")[idx], 0.4, {opacity:1, left:0}, "enter+=0.2")
-                            .to(remProjInfo, 0.4, {opacity:0, left:10}, "enter+=0.2")
-
-                            self.projectInfoTl = projectInfoTl;
-                        }
-                    }
-                });
-
-                letterUptl
-                .add("enter")
-                .to(e.currentTarget, 0.4, { bottom:20 }, "enter")
-                .to(remTriggers, 0.4, { bottom:0 , onComplete: function(){
-                        TweenMax.to(remTriggers, {clearProps:"bottom"}) 
-                    }
-                }, "enter")
-                .to($("#projetsReview div.projetsDetails")[idx], 0.4, {height:140}, "enter")
-                .to(remProjDetails, 0.4, { height:0 , onComplete: function(){
-                        TweenMax.to(remProjDetails, {clearProps:"height"}) 
-                    }
-                }, "enter")
-                .to($(".home-bg")[idx], 0.4, {opacity:1}, "enter")
-                .to(remBg, 0.4, {opacity:0, onComplete: function(){
-                        TweenMax.to(remBg, {clearProps:"opacity"}) 
-                    }
-                }, "enter")
-
-                self.letterUptl = letterUptl;
-
-                app.currentProject = app.currProjSet.projArr[idx]; 
+                var idx = $("a.projectTrigger").toArray().indexOf(e.currentTarget);
+                app.createLetterUpTl(idx); 
             }
         },
         _letterDown : function(e){
@@ -3788,16 +3808,7 @@
             if(app.isAnimating()){
                 return;
             }else{
-                var self = this;
-                self.mouseover = false;
-                TweenMax.to("a.projectTrigger", 0.3, {
-                    bottom:0,
-                    onComplete: function(){
-                        TweenMax.to("a.projectTrigger", {clearProps:"bottom"})
-                    }
-                })
-                if(typeof self.projectInfoTl !== "undefined")
-                    self.projectInfoTl.reverse().timeScale(2);                
+                app.createLetterDownTl();
             }
         },       
         render: function () {
